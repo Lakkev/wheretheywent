@@ -1,0 +1,25 @@
+---
+/**
+ * MapLayout — full-bleed map page. No site header/footer; TopBar is part of the map chrome.
+ * Critical CSS (tokens + map skeleton) is imported so the skeleton paints before any JS.
+ */
+import BaseLayout from './BaseLayout.astro';
+import '../styles/map.css';
+import type { Locale } from '../i18n/ui';
+interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  jsonLd?: unknown;
+}
+const { title, description, locale, jsonLd } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} locale={locale} jsonLd={jsonLd} bare bodyClass="map-page">
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
+    <link rel="preload" href="/data/v1/manifest.json" as="fetch" crossorigin />
+    <slot name="head" />
+  </Fragment>
+  <slot />
+</BaseLayout>

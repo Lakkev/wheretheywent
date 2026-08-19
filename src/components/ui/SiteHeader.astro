@@ -1,0 +1,34 @@
+---
+import { localizePath, stripLocale, useT, type Locale } from '../../i18n/ui';
+import LangSwitch from './LangSwitch.astro';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const here = stripLocale(Astro.url.pathname).replace(/\/$/, '') || '/';
+const items: { href: string; key: Parameters<typeof tr>[0] }[] = [
+  { href: '/', key: 'nav.map' },
+  { href: '/compare', key: 'nav.compare' },
+  { href: '/data', key: 'nav.data' },
+  { href: '/methodology', key: 'nav.methodology' },
+  { href: '/about', key: 'nav.about' },
+];
+const isCurrent = (href: string) => (href === '/' ? here === '/' : here.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href={localizePath('/', locale)}>{tr('site.name')}</a>
+    <nav class="site-nav" aria-label="Primary">
+      {
+        items.map((it) => (
+          <a href={localizePath(it.href, locale)} aria-current={isCurrent(it.href) ? 'page' : undefined}>
+            {tr(it.key)}
+          </a>
+        ))
+      }
+    </nav>
+    <LangSwitch locale={locale} />
+  </div>
+</header>

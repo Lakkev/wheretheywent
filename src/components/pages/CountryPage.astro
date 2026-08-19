@@ -1,0 +1,17 @@
+---
+import DocPage from './DocPage.astro';
+import { useT, type Locale } from '../../i18n/ui';
+import type { CountryFile } from '../../lib/types';
+interface Props {
+  locale: Locale;
+  iso3: string;
+  data: CountryFile;
+}
+const { locale, iso3, data } = Astro.props;
+const tr = useT(locale);
+const name = locale === 'zh-Hant' && data.meta.display_name_zh ? data.meta.display_name_zh : data.meta.display_name;
+---
+
+<DocPage locale={locale} title={tr('country.title', { name })}>
+  <p class="muted">{iso3} — country page (batch ④).</p>
+</DocPage>

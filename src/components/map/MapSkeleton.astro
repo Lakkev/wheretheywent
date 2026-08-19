@@ -1,0 +1,89 @@
+---
+/**
+ * Pure HTML/CSS skeleton of the map page chrome. Painted before any JS.
+ * The MapApp island renders the same layout and hides this once mounted.
+ */
+import { localizePath, useT, type Locale } from '../../i18n/ui';
+import LangSwitch from '../ui/LangSwitch.astro';
+interface Props {
+  locale: Locale;
+  yearMin: number;
+  yearMax: number;
+}
+const { locale, yearMin, yearMax } = Astro.props;
+const tr = useT(locale);
+---
+
+<div class="overlays" id="map-skeleton" aria-hidden="true">
+  <header class="topbar">
+    <a class="brand" href={localizePath('/', locale)}>{tr('site.name')}</a>
+    <span class="seg">
+      <button class="btn is-active" type="button">{tr('view.asylum')}</button>
+      <button class="btn" type="button">{tr('view.origin')}</button>
+    </span>
+    <select aria-label="Metric"><option>{tr('metric.refugees')}</option></select>
+    <span class="seg">
+      <button class="btn is-active" type="button">{tr('scale.abs')}</button>
+      <button class="btn" type="button">{tr('scale.per1k')}</button>
+    </span>
+    <span class="spacer"></span>
+    <nav class="site-nav" aria-label="Primary">
+      <a href={localizePath('/compare', locale)}>{tr('nav.compare')}</a>
+      <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
+      <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
+      <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
+    </nav>
+    <LangSwitch locale={locale} />
+  </header>
+
+  <aside class="rail panel">
+    <div class="panel-head"><span class="title">{tr('rail.title')}</span></div>
+    <div class="panel-body">
+      <div class="rail-controls">
+        <label>{tr('rail.search')}<input type="search" placeholder={tr('rail.search.placeholder')} /></label>
+        <label>{tr('rail.region')}<select><option>{tr('rail.region.all')}</option></select></label>
+      </div>
+      <div class="muted small">{tr('rail.top')}</div>
+      <ol class="ranklist">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <li><span class="rank">{i + 1}</span><span class="name muted">···</span><span class="val muted">···</span></li>
+        ))}
+      </ol>
+    </div>
+  </aside>
+
+  <div class="center">
+    <div class="map-controls">
+      <button class="btn icon" type="button" aria-label={tr('map.zoomIn')}>+</button>
+      <button class="btn icon" type="button" aria-label={tr('map.zoomOut')}>−</button>
+    </div>
+    <div class="legend">
+      <div class="title">{tr('metric.refugees')}</div>
+      <div class="ramp">
+        <span style="background:var(--ramp-blues-2)"></span><span style="background:var(--ramp-blues-3)"></span>
+        <span style="background:var(--ramp-blues-4)"></span><span style="background:var(--ramp-blues-5)"></span>
+        <span style="background:var(--ramp-blues-6)"></span><span style="background:var(--ramp-blues-7)"></span>
+        <span style="background:var(--ramp-blues-8)"></span>
+      </div>
+      <div class="ticks"><span>0</span><span>···</span></div>
+      <div class="swatches">
+        <span><i class="sw" style="background:var(--c-nodata)"></i>{tr('legend.nodata')}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gap" style="grid-area: panel"></div>
+
+  <div class="timeline">
+    <div class="year">{yearMax}</div>
+    <div>
+      <input type="range" min={yearMin} max={yearMax} value={yearMax} aria-label={tr('timeline.year')} />
+      <div class="ticks"><span>{yearMin}</span><span>{yearMax}</span></div>
+    </div>
+    <button class="btn" type="button">{tr('timeline.play')}</button>
+  </div>
+</div>
+<div class="attribution">
+  <span>{tr('map.attribution.data')}</span> · <span>{tr('map.attribution.boundaries')}</span> ·
+  <span>{tr('map.attribution.basemap')}</span>
+</div>

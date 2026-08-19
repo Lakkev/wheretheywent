@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wheretheywent.pages.dev/sitemap.xml

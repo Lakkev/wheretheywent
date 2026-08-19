@@ -1,0 +1,29 @@
+---
+import { localizePath, useT, type Locale } from '../../i18n/ui';
+import { getManifest } from '../../lib/data-server';
+import { CONTACT_EMAIL } from '../../lib/site';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const manifest = getManifest();
+const built = manifest?.generated_at ? manifest.generated_at.slice(0, 10) : '—';
+const snap = manifest?.snapshot_id ?? '—';
+const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Problem report')}&body=${encodeURIComponent('Page: ' + Astro.url.href + '\n\nWhat looks wrong:\n')}`;
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <div>
+      <strong>{tr('site.name')}</strong> · {tr('map.attribution.data')} ·
+      <a href={localizePath('/about/boundaries', locale)}>{tr('map.attribution.boundaries')}</a>
+    </div>
+    <div>
+      <span class="num">{tr('page.updated', { id: snap, date: built })}</span> ·
+      <a href={localizePath('/data', locale)}>{tr('nav.data')}</a> ·
+      <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
+      <a href={reportHref}>{tr('page.report')}</a>
+    </div>
+  </div>
+</footer>

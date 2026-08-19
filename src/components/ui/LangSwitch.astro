@@ -1,0 +1,25 @@
+---
+import { LOCALES, localizePath, stripLocale, useT, type Locale } from '../../i18n/ui';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const base = stripLocale(Astro.url.pathname);
+const search = Astro.url.search;
+---
+
+<nav class="lang-switch" aria-label={tr('nav.language')}>
+  {
+    LOCALES.map((l) => (
+      <a
+        href={localizePath(base, l) + search}
+        hreflang={l}
+        lang={l}
+        aria-current={l === locale ? 'true' : undefined}
+      >
+        {tr(l === 'en' ? 'nav.language.en' : 'nav.language.zh-Hant')}
+      </a>
+    ))
+  }
+</nav>
