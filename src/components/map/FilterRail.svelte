@@ -13,7 +13,11 @@
   }: { locale: Locale; view: ViewResult; searchEl?: HTMLInputElement } = $props();
   const tr = $derived(useT(locale));
   let query = $state('');
-  const open = $derived(ui.p === 'open');
+  const open = $derived(session.narrow ? session.railMobileOpen : ui.p === 'open');
+  function toggle() {
+    if (session.narrow) session.railMobileOpen = !session.railMobileOpen;
+    else ui.p = open ? 'closed' : 'open';
+  }
   const regions = $derived(data.countriesFile?.regions ?? []);
   const top = $derived(topRows(view, 20));
   const maxTop = $derived(top[0]?.value ?? 1);
@@ -50,7 +54,7 @@
       type="button"
       aria-expanded={open}
       aria-label={open ? tr('rail.collapse') : tr('rail.expand')}
-      onclick={() => (ui.p = open ? 'closed' : 'open')}>{open ? '‹' : '›'}</button
+      onclick={toggle}>{open ? '‹' : '›'}</button
     >
   </div>
   {#if open}
@@ -65,7 +69,7 @@
             placeholder={tr('rail.search.placeholder')}
             autocomplete="off"
             aria-autocomplete="list"
-            aria-controls="search-results"
+            aria-controls={matches.length ? 'search-results' : undefined}
           />
         </label>
         {#if matches.length}
@@ -174,6 +178,12 @@
     gap: 6px;
     font-size: var(--fs-sm);
     color: var(--c-text);
+    min-height: 26px;
+  }
+  .regions input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
   }
   .rank-head {
     display: flex;

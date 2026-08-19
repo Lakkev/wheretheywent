@@ -34,7 +34,10 @@ export interface MapState {
   p: RailState;
   t: boolean;
   tab: Tab;
+  /** Phase 2: flow arcs */
   f: boolean;
+  /** IDMC IDU event layer (near-real-time, estimates) */
+  e: boolean;
 }
 
 export interface CodecContext {
@@ -64,6 +67,7 @@ export function defaultState(ctx: CodecContext): MapState {
     t: false,
     tab: 'overview',
     f: false,
+    e: false,
   };
 }
 
@@ -83,6 +87,7 @@ const KEY_ORDER = [
   't',
   'tab',
   'f',
+  'e',
 ] as const;
 
 const ISO_RE = /^[A-Z0-9_]{3,4}$/;
@@ -164,6 +169,9 @@ export function encodeState(state: MapState, ctx: CodecContext): string {
       case 'f':
         if (s.f) p.set('f', '1');
         break;
+      case 'e':
+        if (s.e) p.set('e', '1');
+        break;
     }
   }
   const q = p.toString().replace(/%2C/g, ',').replace(/%2F/g, '/');
@@ -226,6 +234,11 @@ export function decodeState(search: string, ctx: CodecContext): DecodeResult {
     z.enum(['1', '0']).transform((x) => x === '1'),
     d.f,
   );
+  const e = get(
+    'e',
+    z.enum(['1', '0']).transform((x) => x === '1'),
+    d.e,
+  );
 
   const cmpRaw = list('cmp');
   const rRaw = list('r');
@@ -244,6 +257,7 @@ export function decodeState(search: string, ctx: CodecContext): DecodeResult {
     t,
     tab,
     f,
+    e,
   };
   const state = normalizeState(pre, ctx);
   // report dropped codes

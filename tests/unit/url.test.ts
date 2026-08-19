@@ -46,6 +46,7 @@ describe('url codec', () => {
       t: true,
       tab: 'series',
       f: true,
+      e: true,
     };
     const q = encodeState(s, ctx);
     const { state, errors } = decodeState(q, ctx);

@@ -61,6 +61,9 @@ export const session = $state({
   detailLoading: false,
   /** when true, state changes came from URL (popstate) — do not push history */
   applyingFromUrl: false,
+  /** narrow viewport (<900px): simplified layout, rail closed by default (not persisted in URL) */
+  narrow: false,
+  railMobileOpen: false,
 });
 
 let toastId = 0;

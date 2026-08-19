@@ -427,7 +427,10 @@
     cursor: pointer;
     font-size: var(--fs-md);
     line-height: 1;
-    padding: 0 2px;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0 4px;
+    border-radius: 50%;
   }
   .dot {
     display: inline-block;

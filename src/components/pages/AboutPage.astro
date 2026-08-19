@@ -1,13 +1,49 @@
 ---
 import DocPage from './DocPage.astro';
-import { useT, type Locale } from '../../i18n/ui';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { CONTACT_EMAIL, REPO_URL } from '../../lib/site';
+import { getManifest } from '../../lib/data-server';
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
+const manifest = getManifest();
+const report = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Problem report')}&body=${encodeURIComponent('Page URL (paste the link from the Share button):\n\nWhat looks wrong:\n\nWhat you expected (with a source if possible):\n')}`;
+const ORGS = [
+  { name: 'UNHCR, the UN Refugee Agency', url: 'https://donate.unhcr.org/', note: 'Mandated protection and assistance for refugees, asylum-seekers, stateless persons and many IDPs.' },
+  { name: 'Médecins Sans Frontières (MSF)', url: 'https://www.msf.org/donate', note: 'Medical care in conflict zones and displacement sites.' },
+  { name: 'International Rescue Committee (IRC)', url: 'https://www.rescue.org/', note: 'Emergency response and long-term support for displaced people.' },
+  { name: 'Norwegian Refugee Council (NRC)', url: 'https://www.nrc.no/', note: 'Shelter, legal aid, education, food security for displaced people.' },
+  { name: 'Danish Refugee Council (DRC)', url: 'https://drc.ngo/', note: 'Protection and durable solutions in 40+ countries.' },
+];
 ---
 
-<DocPage locale={locale} title={tr('page.about.title')}>
-  <p class="muted">About (batch ⑤).</p>
+<DocPage locale={locale} title={tr('page.about.title')} lede="Where They Went is an independent, non-commercial data platform that makes the published statistics on forced displacement easy to see, check, cite and reuse.">
+  <h2>Who it is for</h2>
+  <p>Journalists, researchers and NGO staff first; interested readers second. Success means being cited and reused — not page views. That order drives every decision: citation accuracy first, then a complete methodology, then data quality, then stable links, then visuals.</p>
+
+  <h2>What it is not</h2>
+  <ul>
+    <li><strong>It does not track people.</strong> Displaced people are a persecuted population; publishing individual locations or identities can expose their families to reprisals or jeopardise asylum claims. This site only ever handles group-level statistics published by UNHCR, IDMC and the UN — and that is non-negotiable.</li>
+    <li><strong>It does not collect donations.</strong> No money passes through this site (see below).</li>
+    <li><strong>It does not track you.</strong> No analytics, no cookies, no third-party scripts. The basemap tiles come from OpenFreeMap; the data and code are served as static files.</li>
+  </ul>
+
+  <h2>Data, licences and code</h2>
+  <p>Data is reproduced under its original open licences (UNHCR CC BY 4.0, IDMC CC BY-IGO, UN WPP CC BY 3.0 IGO, Natural Earth public domain); attribution travels inside every download. The site's own code is published for transparency and audit (<a href={REPO_URL} rel="noopener">repository</a>) but is <em>all rights reserved</em>. Current data snapshot: <code>{manifest?.snapshot_id ?? '—'}</code>.</p>
+  <p>Read the <a href={localizePath('/methodology', locale)}>methodology</a>, the <a href={localizePath('/about/boundaries', locale)}>boundaries & names policy</a>, and the <a href={localizePath('/data', locale)}>download centre</a>.</p>
+
+  <h2>Report a problem</h2>
+  <p>Every page has a "Report a problem" link that pre-fills the current view. Or write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> — <a href={report}>open a pre-filled report</a>. Please include the share link of the view and, if you can, the number you expected and where it is published. Data errors that trace back to an upstream source are reported upstream; errors in our pipeline are fixed and logged in <code>docs/data-verification.md</code>.</p>
+
+  <h2>Want to help people who were displaced?</h2>
+  <p>This site does not take donations and does not route money. The organisations below work directly with displaced people; each link goes to <em>their own</em> donation page, and each publishes audited financial reports. Independent evaluations are available from <a href="https://www.charitynavigator.org/" rel="noopener">Charity Navigator</a> and <a href="https://www.givewell.org/" rel="noopener">GiveWell</a>.</p>
+  <ul>
+    {ORGS.map((o) => (<li><a href={o.url} rel="noopener">{o.name}</a> — <span class="small muted">{o.note}</span></li>))}
+  </ul>
+  <p class="small muted">Listing here is informational, not an endorsement or a partnership; no referral fees are received.</p>
+
+  <h2>Maintenance</h2>
+  <p>The pipeline runs automatically every day and degrades gracefully: if a source is unavailable, the previous snapshot stays online and a notice appears. The project is designed to run at zero hosting cost and to be maintainable by a small team with AI assistance — see <code>docs/RUNBOOK.md</code> and <code>docs/ARCHITECTURE.md</code> in the repository.</p>
 </DocPage>

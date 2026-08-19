@@ -182,7 +182,8 @@
     switch (e.key) {
       case '/':
         e.preventDefault();
-        if (ui.p !== 'open') ui.p = 'open';
+        if (session.narrow) session.railMobileOpen = true;
+        else if (ui.p !== 'open') ui.p = 'open';
         setTimeout(() => searchEl?.focus(), 30);
         break;
       case 't':
@@ -219,6 +220,9 @@
     data.yearMax = yearMax;
     webgl = hasWebGL2();
     session.webgl2 = webgl;
+    const mq = matchMedia('(max-width: 900px)');
+    session.narrow = mq.matches;
+    mq.addEventListener('change', (e) => (session.narrow = e.matches));
     // decode URL early with static year bounds so the first paint is right
     applyFromUrl();
     (async () => {
@@ -299,6 +303,16 @@
           >
         </div>
         {#if !session.basemapOk}<div class="chip nobasemap">{tr('map.noBasemap')}</div>{/if}
+        {#if data.idu}
+          <button
+            class="btn idu-toggle"
+            class:is-active={ui.e}
+            type="button"
+            aria-pressed={ui.e}
+            title={tr('map.idu.body')}
+            onclick={() => (ui.e = !ui.e)}>◉ {tr('map.idu.title')}</button
+          >
+        {/if}
         <NowcastCard {locale} />
       {/if}
       <Legend {locale} {view} />
@@ -321,7 +335,7 @@
   <Dialogs {locale} {view} {permalink} />
 {/if}
 
-{#if webgl && raw.geo && data.countriesFile}
+{#if webgl && data.geoLoaded && raw.geo && data.countriesFile}
   <MapCanvas
     bind:this={mapRef}
     {styleUrl}
@@ -337,7 +351,7 @@
     {locale}
     countryIndex={raw.countryIndex}
     idu={data.idu}
-    showIdu={ui.f}
+    showIdu={ui.e}
     onselect={(iso3) => selectCountry(iso3)}
     onhover={(iso3) => (session.hover = iso3)}
     onmove={(p) => (ui.map = p)}
@@ -363,6 +377,21 @@
 {/if}
 
 <style>
+  .idu-toggle {
+    position: absolute;
+    left: var(--overlay-gap);
+    top: 132px;
+    font-size: var(--fs-xs);
+    box-shadow: var(--shadow-1);
+  }
+  .idu-toggle:not(.is-active) {
+    background: var(--c-surface);
+  }
+  @media (max-width: 900px) {
+    .idu-toggle {
+      top: 184px;
+    }
+  }
   .nobasemap {
     position: absolute;
     left: 56px;

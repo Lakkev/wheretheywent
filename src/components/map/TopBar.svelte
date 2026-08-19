@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ui, data, session, staleSources } from '../../lib/state.svelte';
+  import { ui, session, staleSources } from '../../lib/state.svelte';
   import { URL_METRICS } from '../../lib/url';
   import { useT, localizePath, LOCALES, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
@@ -21,7 +21,13 @@
   const stale = $derived(staleSources());
   const metricLabel = (m: string) => tr(`metric.${m}` as MessageKey);
   const pathWithQuery = () => (typeof location !== 'undefined' ? location.search : '');
+  let menuOpen = $state(false);
+  function closeMenuOnOutside(e: MouseEvent) {
+    if (!(e.target as HTMLElement).closest('.menu')) menuOpen = false;
+  }
 </script>
+
+<svelte:window onclick={closeMenuOnOutside} />
 
 <header class="topbar" aria-label="Controls">
   <a class="brand" href={localizePath('/', locale)}>{tr('site.name')}</a>
@@ -30,15 +36,15 @@
       class="btn"
       type="button"
       aria-pressed={ui.v === 'asylum'}
-      title={tr('view.asylum.help')}
-      onclick={() => (ui.v = 'asylum')}>{tr('view.asylum')}</button
+      title={tr('view.asylum') + ' — ' + tr('view.asylum.help')}
+      onclick={() => (ui.v = 'asylum')}>{tr('view.asylum.short')}</button
     >
     <button
       class="btn"
       type="button"
       aria-pressed={ui.v === 'origin'}
-      title={tr('view.origin.help')}
-      onclick={() => (ui.v = 'origin')}>{tr('view.origin')}</button
+      title={tr('view.origin') + ' — ' + tr('view.origin.help')}
+      onclick={() => (ui.v = 'origin')}>{tr('view.origin.short')}</button
     >
   </span>
   <label class="visually-hidden" for="metric-select">Metric</label>
@@ -57,7 +63,8 @@
       class="btn"
       type="button"
       aria-pressed={ui.n === 'per1k'}
-      onclick={() => (ui.n = 'per1k')}>{tr('scale.per1k')}</button
+      title={tr('scale.per1k')}
+      onclick={() => (ui.n = 'per1k')}>/1,000</button
     >
   </span>
   <label class="visually-hidden" for="scale-select">Scale</label>
@@ -78,13 +85,13 @@
   {/if}
   <span class="spacer"></span>
   <button class="btn ghost" type="button" onclick={onshare} title={tr('share.title')}
-    >🔗 {tr('share.copy')}</button
+    >🔗 <span class="lbl">{tr('share.copy')}</span></button
   >
   <button class="btn ghost" type="button" onclick={oncite} title={tr('cite.title')}
-    >❝ {tr('source.cite')}</button
+    >❝ <span class="lbl">{tr('source.cite')}</span></button
   >
   <button class="btn ghost" type="button" onclick={ondownload} title={tr('download.title')}
-    >⬇ {tr('download.title')}</button
+    >⬇ <span class="lbl">{tr('download.title')}</span></button
   >
   <button
     class="btn ghost icon"
@@ -93,23 +100,79 @@
     title={tr('keys.title')}
     aria-label={tr('keys.title')}>?</button
   >
-  <nav class="site-nav" aria-label="Primary">
-    <a href={localizePath('/compare', locale) + (ui.cmp.length ? `?cmp=${ui.cmp.join(',')}` : '')}
-      >{tr('nav.compare')}</a
+  <div class="menu">
+    <button
+      class="btn ghost icon"
+      type="button"
+      aria-expanded={menuOpen}
+      aria-haspopup="true"
+      aria-label={tr('nav.menu')}
+      onclick={() => (menuOpen = !menuOpen)}>☰</button
     >
-    <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
-    <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
-    <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
-  </nav>
-  <nav class="lang-switch" aria-label={tr('nav.language')}>
-    {#each LOCALES as l (l)}
-      <a
-        href={localizePath('/', l) + pathWithQuery()}
-        hreflang={l}
-        lang={l}
-        aria-current={l === locale ? 'true' : undefined}
-        >{tr(l === 'en' ? 'nav.language.en' : 'nav.language.zh-Hant')}</a
-      >
-    {/each}
-  </nav>
+    {#if menuOpen}
+      <div class="menu-panel">
+        <nav class="menu-nav" aria-label="Primary">
+          <a
+            href={localizePath('/compare', locale) +
+              (ui.cmp.length ? `?cmp=${ui.cmp.join(',')}` : '')}>{tr('nav.compare')}</a
+          >
+          <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
+          <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
+          <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
+          <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
+          <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
+        </nav>
+        <nav class="lang-switch" aria-label={tr('nav.language')}>
+          {#each LOCALES as l (l)}
+            <a
+              href={localizePath('/', l) + pathWithQuery()}
+              hreflang={l}
+              lang={l}
+              aria-current={l === locale ? 'true' : undefined}
+              >{tr(l === 'en' ? 'nav.language.en' : 'nav.language.zh-Hant')}</a
+            >
+          {/each}
+        </nav>
+      </div>
+    {/if}
+  </div>
 </header>
+
+<style>
+  .menu {
+    position: relative;
+  }
+  .menu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-2);
+    padding: var(--sp-2);
+    min-width: 200px;
+    z-index: 30;
+  }
+  .menu-nav {
+    display: grid;
+    gap: 2px;
+    margin-bottom: var(--sp-2);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .menu-nav a {
+    text-decoration: none;
+    color: var(--c-text);
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+  }
+  .menu-nav a:hover {
+    background: var(--c-surface-2);
+  }
+  @media (max-width: 1100px) {
+    .lbl {
+      display: none;
+    }
+  }
+</style>

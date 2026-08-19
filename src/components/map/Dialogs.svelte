@@ -16,6 +16,14 @@
   import { displayName } from '../../lib/data';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
+  import { localizePath } from '../../i18n/ui';
+  import type { DisputedNotes } from '../../lib/types';
+
+  let disputed = $state<DisputedNotes | null>(null);
+  $effect(() => {
+    if (session.dialog === 'boundaries' && !disputed)
+      void raw.client.disputed().then((n) => (disputed = n));
+  });
 
   let { locale, view, permalink }: { locale: Locale; view: ViewResult; permalink: string } =
     $props();
@@ -161,6 +169,35 @@
         <tr><td><kbd>?</kbd></td><td>{tr('keys.help')}</td></tr>
       </tbody>
     </table>
+  </Modal>
+{:else if session.dialog === 'boundaries'}
+  <Modal title={tr('page.boundaries.title')} onclose={close} wide>
+    {#if disputed}
+      <blockquote class="callout small">
+        {locale === 'zh-Hant' ? disputed.disclaimer_zh : disputed.disclaimer_en}
+      </blockquote>
+      <p class="small muted">
+        {tr('map.attribution.boundaries')} · {tr('detail.nameNote', { source: 'UNHCR' })}
+      </p>
+      <div class="notes">
+        {#each disputed.notes as n (n.id)}
+          <details class="small">
+            <summary
+              ><strong>{locale === 'zh-Hant' ? n.name_zh : n.name}</strong>{#if n.iso3}&nbsp;<code
+                  class="muted">{n.iso3}</code
+                >{/if}</summary
+            >
+            <p>{locale === 'zh-Hant' ? n.how_shown_zh : n.how_shown}</p>
+            <p class="muted">{locale === 'zh-Hant' ? n.source_naming_zh : n.source_naming}</p>
+          </details>
+        {/each}
+      </div>
+      <p class="small">
+        <a href={localizePath('/about/boundaries', locale)}>{tr('common.more')} →</a>
+      </p>
+    {:else}
+      <p class="muted">{tr('common.loading')}</p>
+    {/if}
   </Modal>
 {:else if session.dialog === 'stale'}
   <Modal

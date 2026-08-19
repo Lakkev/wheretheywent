@@ -13,3 +13,4 @@ playwright-report/
 .DS_Store
 Thumbs.db
 public/data/v1/_*
+public/vendor/

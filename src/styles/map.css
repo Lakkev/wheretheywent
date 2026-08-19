@@ -14,7 +14,8 @@ html.map-page,
   overflow: hidden;
 }
 .map-canvas {
-  position: absolute;
+  /* !important: maplibre-gl.css (loaded later) sets .maplibregl-map { position: relative } */
+  position: absolute !important;
   inset: 0;
   z-index: var(--z-map);
   background: var(--c-water);
@@ -486,6 +487,7 @@ html.map-page,
     grid-template-areas: 'top' 'center' 'timeline';
   }
   .rail {
+    grid-area: auto; /* absolutely positioned grid children would otherwise be placed in the (missing) 'rail' area */
     position: absolute;
     left: 0;
     top: var(--topbar-h);
@@ -499,6 +501,7 @@ html.map-page,
     width: 40px;
   }
   .detail {
+    grid-area: auto;
     position: absolute;
     right: 0;
     left: 0;
@@ -518,6 +521,39 @@ html.map-page,
   }
   .topbar .site-nav {
     display: none;
+  }
+  .topbar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 6px;
+    padding: 0 var(--sp-2);
+  }
+  .topbar .brand {
+    display: none;
+  }
+  .topbar > * {
+    flex-shrink: 0;
+  }
+  .map-controls {
+    top: 64px;
+  }
+  .topbar select {
+    max-width: 11rem;
+  }
+  .rail {
+    width: min(86vw, 340px);
+  }
+  .rail.is-collapsed {
+    width: 40px;
+    bottom: auto;
+    height: 44px;
+  }
+  .legend {
+    bottom: var(--overlay-gap);
+    right: var(--overlay-gap);
+  }
+  .nowcast-card {
+    max-width: 220px;
   }
 }
 

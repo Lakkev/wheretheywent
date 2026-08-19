@@ -81,6 +81,15 @@
   let usingFallback = false;
   let hoverId: string | null = null;
   let tooltip = $state<{ x: number; y: number; iso3: string } | null>(null);
+  let iduPopup = $state<{
+    x: number;
+    y: number;
+    text: string;
+    figure: number;
+    type: string;
+    date: string;
+    iso3: string;
+  } | null>(null);
   let destroyed = false;
   let lastAppliedPos: string | null = null;
   let suppressMove = false;
@@ -207,6 +216,9 @@
     await import('maplibre-gl/dist/maplibre-gl.css');
     if (destroyed) return;
     ML = mod;
+    // MapLibre v6 locates its worker relative to the (bundled, hashed) main module → point it at the
+    // vendored copy served from public/ (see scripts/dev/vendor-maplibre.mjs).
+    mod.setWorkerUrl(`/vendor/maplibre-gl/${mod.getVersion()}/maplibre-gl-worker.mjs`);
     const start = initialPos ?? { z: 1.4, lat: 20, lon: 10 };
     map = new mod.Map({
       container,
@@ -220,6 +232,8 @@
       fadeDuration: 0,
     });
     lastAppliedPos = `${start.z}/${start.lat}/${start.lon}`;
+    // test hook (e2e reads center/zoom and rendered features); harmless in production
+    (window as unknown as { __wtwMap?: unknown }).__wtwMap = map;
     map.touchZoomRotate.disableRotation();
     map.dragRotate.disable();
     map.keyboard.enable();
@@ -285,6 +299,28 @@
       const feats = map!.queryRenderedFeatures(e.point, { layers: layersAdded ? [LYR_FILL] : [] });
       if (!feats.length) onselect(null);
     });
+    map.on('click', LYR_IDU, (e) => {
+      const f = e.features?.[0];
+      if (!f) return;
+      const p = f.properties as {
+        text?: string;
+        figure?: number;
+        type?: string;
+        date?: string;
+        iso3?: string;
+      };
+      iduPopup = {
+        x: e.point.x,
+        y: e.point.y,
+        text: String(p.text ?? ''),
+        figure: Number(p.figure ?? 0),
+        type: String(p.type ?? ''),
+        date: String(p.date ?? ''),
+        iso3: String(p.iso3 ?? ''),
+      };
+    });
+    map.on('mouseenter', LYR_IDU, () => (map!.getCanvas().style.cursor = 'pointer'));
+    map.on('mouseleave', LYR_IDU, () => (map!.getCanvas().style.cursor = ''));
     map.on('moveend', () => {
       if (suppressMove) return;
       const p = currentPos();
@@ -315,6 +351,7 @@
   $effect(() => {
     void idu;
     void showIdu;
+    if (!showIdu) iduPopup = null;
     applyIdu();
   });
   // fit to selected country when selection changes (not on first paint if pos came from URL)
@@ -367,6 +404,29 @@
   role="region"
   aria-label={tr('a11y.mapDescription')}
 ></div>
+{#if iduPopup}
+  <div
+    class="map-tooltip idu-popup"
+    style="left:{iduPopup.x + 12}px; top:{iduPopup.y + 12}px"
+    role="dialog"
+    aria-label={tr('map.idu.title')}
+  >
+    <div class="row">
+      <strong>{displayName(countryIndex.get(iduPopup.iso3), locale, iduPopup.iso3)}</strong> ·
+      <span class="chip estimate">{tr('source.estimate')}</span><button
+        class="x"
+        type="button"
+        aria-label={tr('common.close')}
+        onclick={() => (iduPopup = null)}>×</button
+      >
+    </div>
+    <div class="val">
+      {fmtValue(iduPopup.figure, 'abs', locale)} · {iduPopup.type} · {iduPopup.date}
+    </div>
+    <div class="muted note">{iduPopup.text}</div>
+    <div class="muted note">IDMC IDU — {tr('map.idu.body')}</div>
+  </div>
+{/if}
 {#if tooltip}
   <div class="map-tooltip" style="left:{tooltip.x + 12}px; top:{tooltip.y + 12}px" role="tooltip">
     {#if tooltip.iso3.startsWith('_')}
@@ -411,6 +471,22 @@
   .map-tooltip .val {
     font-weight: 600;
     font-variant-numeric: tabular-nums;
+  }
+  .idu-popup {
+    pointer-events: auto;
+    max-width: 320px;
+  }
+  .idu-popup .row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .idu-popup .x {
+    margin-left: auto;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-size: var(--fs-md);
   }
   .map-tooltip .note {
     font-size: var(--fs-xs);

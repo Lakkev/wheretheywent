@@ -13,7 +13,7 @@
   --c-border-strong: #9aa7b5;
   --c-text: #16212e;
   --c-text-2: #46556a;
-  --c-text-3: #6b7a8f; /* 4.6:1 on white */
+  --c-text-3: #56677c; /* ≥5.3:1 on white, ≥4.6:1 on surface-2 */
   --c-inverse: #ffffff;
 
   /* Brand / interactive (Blues) */

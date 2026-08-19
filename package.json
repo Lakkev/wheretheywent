@@ -21,7 +21,10 @@
     "etl:validate": "node scripts/etl/validate.ts --in .etl-staging",
     "etl:promote": "node scripts/etl/promote.ts",
     "geo": "node scripts/etl/geo/build-geo.ts",
-    "validate:data": "node scripts/etl/validate.ts --in public/data/v1"
+    "validate:data": "node scripts/etl/validate.ts --in public/data/v1",
+    "predev": "node scripts/dev/vendor-maplibre.mjs",
+    "prebuild": "node scripts/dev/vendor-maplibre.mjs",
+    "postinstall": "node scripts/dev/vendor-maplibre.mjs || true"
   },
   "dependencies": {
     "@astrojs/svelte": "9.0.1",
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "1.62.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "22.20.1",
