@@ -1,0 +1,444 @@
+{
+  "profile": "tabular-data-package",
+  "name": "where-they-went",
+  "title": "Where They Went — forced displacement statistics",
+  "version": "2026-08-19",
+  "created": "2026-08-19T14:21:59Z",
+  "homepage": "https://wheretheywent.pages.dev",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "Creative Commons Attribution 4.0 (UNHCR data)"
+    },
+    {
+      "name": "CC-BY-3.0-IGO",
+      "path": "https://creativecommons.org/licenses/by/3.0/igo/",
+      "title": "CC BY 3.0 IGO (UN WPP, IDMC)"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Natural Earth (via world-atlas): Admin 0 – Countries, 1:50m",
+      "path": "https://www.naturalearthdata.com/",
+      "id": "natural_earth"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — country list",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_countries"
+    },
+    {
+      "title": "United Nations, DESA, Population Division: World Population Prospects 2024 — total population by sex",
+      "path": "https://population.un.org/wpp/",
+      "id": "wpp_population"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — demographics",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_demographics"
+    },
+    {
+      "title": "UNHCR (data: IDMC): IDMC internal displacement figures via UNHCR API",
+      "path": "https://www.internal-displacement.org/database/",
+      "id": "unhcr_idmc"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — solutions",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_solutions"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — asylum applications",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_asylum_applications"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — footnotes",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_footnotes"
+    },
+    {
+      "title": "UNHCR: Refugee Population Statistics Database — population figures",
+      "path": "https://www.unhcr.org/refugee-statistics/",
+      "id": "unhcr_population"
+    }
+  ],
+  "resources": [
+    {
+      "name": "unhcr-population-all-years",
+      "path": "downloads/unhcr-population-all-years.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "header": true,
+        "lineTerminator": "\n"
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "iso3",
+            "type": "string"
+          },
+          {
+            "name": "country_name",
+            "type": "string"
+          },
+          {
+            "name": "view",
+            "type": "string",
+            "description": "asylum | origin"
+          },
+          {
+            "name": "year",
+            "type": "year"
+          },
+          {
+            "name": "metric",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "type": "integer"
+          },
+          {
+            "name": "unit",
+            "type": "string"
+          },
+          {
+            "name": "source_id",
+            "type": "string",
+            "description": "Key into sources.json"
+          },
+          {
+            "name": "source_attribution",
+            "type": "string"
+          },
+          {
+            "name": "data_as_of",
+            "type": "date",
+            "description": "Upstream coverage date"
+          },
+          {
+            "name": "retrieved_at",
+            "type": "datetime",
+            "description": "When the data was fetched"
+          },
+          {
+            "name": "snapshot_id",
+            "type": "string",
+            "description": "Content-addressed snapshot id"
+          }
+        ],
+        "primaryKey": [
+          "iso3",
+          "view",
+          "year",
+          "metric"
+        ]
+      }
+    },
+    {
+      "name": "unhcr-population-by-asylum",
+      "path": "downloads/unhcr-population-by-asylum.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "header": true,
+        "lineTerminator": "\n"
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "iso3",
+            "type": "string"
+          },
+          {
+            "name": "country_name",
+            "type": "string"
+          },
+          {
+            "name": "year",
+            "type": "year"
+          },
+          {
+            "name": "refugees",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "asylum_seekers",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "idps",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "stateless",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "ooc",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "returned_refugees",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "returned_idps",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "oip",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "hst",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "source_id",
+            "type": "string",
+            "description": "Key into sources.json"
+          },
+          {
+            "name": "data_as_of",
+            "type": "date",
+            "description": "Upstream coverage date"
+          },
+          {
+            "name": "retrieved_at",
+            "type": "datetime",
+            "description": "When the data was fetched"
+          },
+          {
+            "name": "snapshot_id",
+            "type": "string",
+            "description": "Content-addressed snapshot id"
+          }
+        ],
+        "primaryKey": [
+          "iso3",
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "unhcr-population-by-origin",
+      "path": "downloads/unhcr-population-by-origin.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "dialect": {
+        "delimiter": ",",
+        "header": true,
+        "lineTerminator": "\n"
+      },
+      "schema": {
+        "fields": [
+          {
+            "name": "iso3",
+            "type": "string"
+          },
+          {
+            "name": "country_name",
+            "type": "string"
+          },
+          {
+            "name": "year",
+            "type": "year"
+          },
+          {
+            "name": "refugees",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "asylum_seekers",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "idps",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "stateless",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "ooc",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "returned_refugees",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "returned_idps",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "oip",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "hst",
+            "type": "integer",
+            "description": "Persons; empty = not reported"
+          },
+          {
+            "name": "source_id",
+            "type": "string",
+            "description": "Key into sources.json"
+          },
+          {
+            "name": "data_as_of",
+            "type": "date",
+            "description": "Upstream coverage date"
+          },
+          {
+            "name": "retrieved_at",
+            "type": "datetime",
+            "description": "When the data was fetched"
+          },
+          {
+            "name": "snapshot_id",
+            "type": "string",
+            "description": "Content-addressed snapshot id"
+          }
+        ],
+        "primaryKey": [
+          "iso3",
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "countries",
+      "path": "downloads/countries.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "iso3",
+            "type": "string"
+          },
+          {
+            "name": "iso2",
+            "type": "string"
+          },
+          {
+            "name": "name_unhcr",
+            "type": "string"
+          },
+          {
+            "name": "display_name",
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "type": "string"
+          },
+          {
+            "name": "in_unhcr",
+            "type": "boolean"
+          },
+          {
+            "name": "in_geo",
+            "type": "boolean"
+          },
+          {
+            "name": "in_wpp",
+            "type": "boolean"
+          },
+          {
+            "name": "centroid_lon",
+            "type": "number"
+          },
+          {
+            "name": "centroid_lat",
+            "type": "number"
+          }
+        ],
+        "primaryKey": [
+          "iso3"
+        ]
+      }
+    },
+    {
+      "name": "wpp-total-population",
+      "path": "downloads/wpp-total-population.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "encoding": "utf-8",
+      "schema": {
+        "fields": [
+          {
+            "name": "iso3",
+            "type": "string"
+          },
+          {
+            "name": "country_name",
+            "type": "string"
+          },
+          {
+            "name": "year",
+            "type": "year"
+          },
+          {
+            "name": "population",
+            "type": "integer",
+            "description": "Mid-year total population, persons"
+          },
+          {
+            "name": "source_id",
+            "type": "string",
+            "description": "Key into sources.json"
+          },
+          {
+            "name": "data_as_of",
+            "type": "date",
+            "description": "Upstream coverage date"
+          },
+          {
+            "name": "retrieved_at",
+            "type": "datetime",
+            "description": "When the data was fetched"
+          },
+          {
+            "name": "snapshot_id",
+            "type": "string",
+            "description": "Content-addressed snapshot id"
+          }
+        ],
+        "primaryKey": [
+          "iso3",
+          "year"
+        ]
+      }
+    }
+  ]
+}

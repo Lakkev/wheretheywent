@@ -1,0 +1,249 @@
+iso3,iso2,name_unhcr,display_name,region,in_unhcr,in_geo,in_wpp,centroid_lon,centroid_lat
+AB9,,Abyei Area,Abyei Area,Other,0,0,0,,
+ABW,AW,Aruba,Aruba,Latin America and the Caribbean,1,1,1,-69.97,12.51
+AFG,AF,Afghanistan,Afghanistan,Asia,1,1,1,66,33.84
+AGO,AO,Angola,Angola,Africa,1,1,1,17.56,-12.33
+AIA,AI,Anguilla,Anguilla,Latin America and the Caribbean,1,1,1,-63.07,18.23
+ALA,,Åland,Åland,Europe,0,1,0,19.93,60.24
+ALB,AL,Albania,Albania,Europe,1,1,1,20.04,41.15
+AND,AD,Andorra,Andorra,Europe,1,1,1,1.53,42.51
+ARE,AE,United Arab Emirates,United Arab Emirates,Asia,1,1,1,54.32,23.91
+ARG,AR,Argentina,Argentina,Latin America and the Caribbean,1,1,1,-65.16,-35.19
+ARM,AM,Armenia,Armenia,Asia,1,1,1,44.93,40.3
+ASM,,American Samoa,American Samoa,Other,0,1,1,-170.76,-14.31
+ATG,AG,Antigua and Barbuda,Antigua and Barbuda,Latin America and the Caribbean,1,1,1,-61.79,17.07
+AUS,AU,Australia,Australia,Oceania,1,1,1,134.35,-25.57
+AUT,AT,Austria,Austria,Europe,1,1,1,14.12,47.58
+AZE,AZ,Azerbaijan,Azerbaijan,Asia,1,1,1,47.66,40.35
+BDI,BI,Burundi,Burundi,Africa,1,1,1,29.88,-3.36
+BEL,BE,Belgium,Belgium,Europe,1,1,1,4.65,50.64
+BEN,BJ,Benin,Benin,Africa,1,1,1,2.33,9.63
+BES,,"Bonaire, Saint Eustatius and Saba","Bonaire, Saint Eustatius and Saba",Latin America and the Caribbean,1,0,1,,
+BFA,BF,Burkina Faso,Burkina Faso,Africa,1,1,1,-1.75,12.27
+BGD,BD,Bangladesh,Bangladesh,Asia,1,1,1,90.23,23.88
+BGR,BG,Bulgaria,Bulgaria,Europe,1,1,1,25.22,42.77
+BHR,BH,Bahrain,Bahrain,Asia,1,1,1,50.53,26.04
+BHS,BS,Bahamas,Bahamas,Latin America and the Caribbean,1,1,1,-78.01,24.68
+BIH,BA,Bosnia and Herzegovina,Bosnia and Herzegovina,Europe,1,1,1,17.75,44.17
+BLM,,St-Barthélemy,St-Barthélemy,Latin America and the Caribbean,0,1,1,-62.82,17.9
+BLR,BY,Belarus,Belarus,Europe,1,1,1,28.03,53.54
+BLZ,BZ,Belize,Belize,Latin America and the Caribbean,1,1,1,-88.72,17.2
+BMU,BM,Bermuda,Bermuda,Northern America,1,1,1,-64.74,32.31
+BOL,BO,Bolivia (Plurinational State of),Bolivia,Latin America and the Caribbean,1,1,1,-64.68,-16.71
+BRA,BR,Brazil,Brazil,Latin America and the Caribbean,1,1,1,-53.12,-10.84
+BRB,BB,Barbados,Barbados,Latin America and the Caribbean,1,1,1,-59.54,13.19
+BRN,BN,Brunei Darussalam,Brunei Darussalam,Asia,1,1,1,114.58,4.48
+BTN,BT,Bhutan,Bhutan,Asia,1,1,1,90.4,27.41
+BVT,BV,Bouvet Island,Bouvet Island,Other,1,0,0,,
+BWA,BW,Botswana,Botswana,Africa,1,1,1,23.8,-22.19
+CAF,CF,Central African Rep.,Central African Rep.,Africa,1,1,1,20.47,6.57
+CAN,CA,Canada,Canada,Northern America,1,1,1,-102.35,57.94
+CHE,CH,Switzerland,Switzerland,Europe,1,1,1,8.22,46.8
+CHL,CL,Chile,Chile,Latin America and the Caribbean,1,1,1,-71.33,-35.9
+CHN,CN,China,China,Asia,1,1,1,103.8,36.62
+CIV,CI,Cote d'Ivoire,Côte d'Ivoire,Africa,1,1,1,-5.57,7.62
+CMR,CM,Cameroon,Cameroon,Africa,1,1,1,12.74,5.68
+COD,CD,Dem. Rep. of the Congo,DR Congo,Africa,1,1,1,23.64,-2.88
+COG,CG,Congo,Congo,Africa,1,1,1,15.21,-0.85
+COK,CK,Cook Islands,Cook Islands,Oceania,1,1,1,-159.8,-21.23
+COL,CO,Colombia,Colombia,Latin America and the Caribbean,1,1,1,-73.08,3.92
+COM,KM,Comoros,Comoros,Africa,1,1,1,43.36,-11.75
+CPV,CV,Cabo Verde,Cabo Verde,Africa,1,1,1,-23.64,15.09
+CRB,,CRB,Caribbean (aggregate),Other,1,0,0,,
+CRI,CR,Costa Rica,Costa Rica,Latin America and the Caribbean,1,1,1,-84.22,9.99
+CUB,CU,Cuba,Cuba,Latin America and the Caribbean,1,1,1,-78.92,21.61
+CUW,CW,Curacao,Curacao,Latin America and the Caribbean,1,1,1,-68.96,12.18
+CYM,KY,Cayman Islands,Cayman Islands,Latin America and the Caribbean,1,1,1,-81.27,19.33
+CYP,CY,Cyprus,Cyprus,Asia,1,1,1,32.99,34.91
+CZE,CZ,Czechia,Czechia,Europe,1,1,1,15.29,49.73
+DEU,DE,Germany,Germany,Europe,1,1,1,10.37,51.09
+DJI,DJ,Djibouti,Djibouti,Africa,1,1,1,42.56,11.76
+DMA,DM,Dominica,Dominica,Latin America and the Caribbean,1,1,1,-61.38,15.42
+DNK,DK,Denmark,Denmark,Europe,1,1,1,9.33,56.24
+DOM,DO,Dominican Rep.,Dominican Rep.,Latin America and the Caribbean,1,1,1,-70.51,18.89
+DZA,DZ,Algeria,Algeria,Africa,1,1,1,2.62,28.15
+ECU,EC,Ecuador,Ecuador,Latin America and the Caribbean,1,1,1,-78.39,-1.45
+EGY,EG,Egypt,Egypt,Africa,1,1,1,29.87,26.49
+ERI,ER,Eritrea,Eritrea,Africa,1,1,1,38.83,15.36
+ESH,EH,Western Sahara,Western Sahara,Africa,1,1,1,-12.22,24.23
+ESP,ES,Spain,Spain,Europe,1,1,1,-3.57,40.4
+EST,EE,Estonia,Estonia,Europe,1,1,1,25.81,58.68
+ETH,ET,Ethiopia,Ethiopia,Africa,1,1,1,39.6,8.62
+FIN,FI,Finland,Finland,Europe,1,1,1,26.29,64.51
+FJI,FJ,Fiji,Fiji,Oceania,1,1,1,177.97,-17.82
+FLK,,Falkland Is.,Falkland Is.,Latin America and the Caribbean,0,1,1,-58.75,-51.74
+FRA,FR,France,France,Europe,1,1,1,2.45,46.61
+FRO,FO,Faeroe Islands,Faeroe Islands,Europe,1,1,1,-6.94,62.2
+FSM,FM,Micronesia (Federated States of),Micronesia,Oceania,1,1,1,158.23,6.88
+GAB,GA,Gabon,Gabon,Africa,1,1,1,11.78,-0.58
+GBR,GB,United Kingdom of Great Britain and Northern Ireland,United Kingdom,Europe,1,1,1,-2.51,53.95
+GEO,GE,Georgia,Georgia,Asia,1,1,1,43.5,42.17
+GGY,,Guernsey,Guernsey,Europe,0,1,1,-2.57,49.47
+GHA,GH,Ghana,Ghana,Africa,1,1,1,-1.21,7.95
+GIB,GI,Gibraltar,Gibraltar,Europe,1,0,1,,
+GIN,GN,Guinea,Guinea,Africa,1,1,1,-10.95,10.43
+GLP,GP,Guadeloupe,Guadeloupe,Latin America and the Caribbean,1,0,1,,
+GMB,GM,Gambia,Gambia,Africa,1,1,1,-15.49,13.44
+GNB,GW,Guinea-Bissau,Guinea-Bissau,Africa,1,1,1,-14.93,12.06
+GNQ,GQ,Equatorial Guinea,Equatorial Guinea,Africa,1,1,1,10.47,1.57
+GRC,GR,Greece,Greece,Europe,1,1,1,22.56,39.48
+GRD,GD,Grenada,Grenada,Latin America and the Caribbean,1,1,1,-61.66,12.12
+GRL,GL,Greenland,Greenland,Northern America,1,1,1,-41.34,74.71
+GTM,GT,Guatemala,Guatemala,Latin America and the Caribbean,1,1,1,-90.37,15.69
+GUF,GF,French Guiana,French Guiana,Latin America and the Caribbean,1,0,1,,
+GUM,GU,Guam,Guam,Oceania,1,1,1,144.73,13.41
+GUY,GY,Guyana,Guyana,Latin America and the Caribbean,1,1,1,-58.98,4.8
+HKG,HK,"China, Hong Kong SAR","Hong Kong SAR, China",Asia,1,1,1,114.17,22.45
+HND,HN,Honduras,Honduras,Latin America and the Caribbean,1,1,1,-86.61,14.82
+HRV,HR,Croatia,Croatia,Europe,1,1,1,16.42,45.16
+HTI,HT,Haiti,Haiti,Latin America and the Caribbean,1,1,1,-72.68,18.92
+HUN,HU,Hungary,Hungary,Europe,1,1,1,19.4,47.16
+IDN,ID,Indonesia,Indonesia,Asia,1,1,1,114.01,-0.19
+IMN,,Isle of Man,Isle of Man,Europe,0,1,1,-4.55,54.23
+IND,IN,India,India,Asia,1,1,1,79.59,22.91
+IOT,,Br. Indian Ocean Ter.,Br. Indian Ocean Ter.,Asia,0,1,0,72.48,-7.31
+IRL,IE,Ireland,Ireland,Europe,1,1,1,-8.12,53.19
+IRN,IR,Iran (Islamic Rep. of),Iran,Asia,1,1,1,54.27,32.58
+IRQ,IQ,Iraq,Iraq,Asia,1,1,1,43.73,33.04
+ISL,IS,Iceland,Iceland,Europe,1,1,1,-18.61,65
+ISR,IL,Israel,Israel,Asia,1,1,1,35.01,31.46
+ITA,IT,Italy,Italy,Europe,1,1,1,12.16,43.52
+JAM,JM,Jamaica,Jamaica,Latin America and the Caribbean,1,1,1,-77.31,18.16
+JEY,,Jersey,Jersey,Europe,0,1,1,-2.16,49.22
+JOR,JO,Jordan,Jordan,Asia,1,1,1,36.77,31.24
+JPN,JP,Japan,Japan,Asia,1,1,1,137.98,36.64
+KAZ,KZ,Kazakhstan,Kazakhstan,Asia,1,1,1,67.29,48.16
+KEN,KE,Kenya,Kenya,Africa,1,1,1,37.79,0.6
+KGZ,KG,Kyrgyzstan,Kyrgyzstan,Asia,1,1,1,74.54,41.46
+KHM,KH,Cambodia,Cambodia,Asia,1,1,1,104.9,12.72
+KIR,KI,Kiribati,Kiribati,Oceania,1,1,1,-157.34,1.79
+KNA,KN,Saint Kitts and Nevis,Saint Kitts and Nevis,Latin America and the Caribbean,1,1,1,-62.74,17.33
+KOR,KR,Rep. of Korea,South Korea,Asia,1,1,1,127.86,36.47
+KWT,KW,Kuwait,Kuwait,Asia,1,1,1,47.56,29.32
+LAO,LA,Lao People's Dem. Rep.,Laos,Asia,1,1,1,103.73,18.52
+LBN,LB,Lebanon,Lebanon,Asia,1,1,1,35.88,33.93
+LBR,LR,Liberia,Liberia,Africa,1,1,1,-9.32,6.45
+LBY,LY,Libya,Libya,Africa,1,1,1,18.02,27.03
+LCA,LC,Saint Lucia,Saint Lucia,Latin America and the Caribbean,1,1,1,-60.95,13.92
+LIE,LI,Liechtenstein,Liechtenstein,Europe,1,1,1,9.53,47.13
+LKA,LK,Sri Lanka,Sri Lanka,Asia,1,1,1,80.7,7.62
+LSO,LS,Lesotho,Lesotho,Africa,1,1,1,28.23,-29.57
+LTU,LT,Lithuania,Lithuania,Europe,1,1,1,23.87,55.33
+LUX,LU,Luxembourg,Luxembourg,Europe,1,1,1,6.09,49.76
+LVA,LV,Latvia,Latvia,Europe,1,1,1,24.93,56.85
+MAC,MO,"China, Macao SAR","Macao SAR, China",Asia,1,1,1,113.49,22.23
+MAF,MF,Saint-Martin (French part),Saint-Martin (French part),Latin America and the Caribbean,1,1,1,-63.07,18.09
+MAR,MA,Morocco,Morocco,Africa,1,1,1,-8.46,29.83
+MCO,MC,Monaco,Monaco,Europe,1,1,1,7.42,43.75
+MDA,MD,Rep. of Moldova,Moldova,Europe,1,1,1,28.44,47.22
+MDG,MG,Madagascar,Madagascar,Africa,1,1,1,46.71,-19.37
+MDV,MV,Maldives,Maldives,Asia,1,1,1,73.5,4.2
+MEX,MX,Mexico,Mexico,Latin America and the Caribbean,1,1,1,-102.51,23.94
+MHL,MH,Marshall Islands,Marshall Islands,Oceania,1,1,1,171.15,7.11
+MKD,MK,North Macedonia,North Macedonia,Europe,1,1,1,21.69,41.59
+MLI,ML,Mali,Mali,Africa,1,1,1,-3.54,17.34
+MLT,MT,Malta,Malta,Europe,1,1,1,14.45,35.88
+MMR,MM,Myanmar,Myanmar,Asia,1,1,1,96.49,21.21
+MNE,ME,Montenegro,Montenegro,Europe,1,1,1,19.23,42.81
+MNG,MN,Mongolia,Mongolia,Asia,1,1,1,103.05,46.83
+MNP,MP,Northern Mariana Islands,Northern Mariana Islands,Oceania,1,1,1,145.73,15.19
+MOZ,MZ,Mozambique,Mozambique,Africa,1,1,1,35.53,-17.27
+MRT,MR,Mauritania,Mauritania,Africa,1,1,1,-10.35,20.26
+MSR,MS,Montserrat,Montserrat,Latin America and the Caribbean,1,1,1,-62.19,16.72
+MTQ,MQ,Martinique,Martinique,Latin America and the Caribbean,1,0,1,,
+MUS,MU,Mauritius,Mauritius,Africa,1,1,1,57.57,-20.27
+MWI,MW,Malawi,Malawi,Africa,1,1,1,34.29,-13.22
+MYS,MY,Malaysia,Malaysia,Asia,1,1,1,114.73,3.62
+NAM,NA,Namibia,Namibia,Africa,1,1,1,17.21,-22.13
+NCL,NC,New Caledonia,New Caledonia,Oceania,1,1,1,165.48,-21.33
+NER,NE,Niger,Niger,Africa,1,1,1,9.39,17.41
+NFK,,Norfolk Island,Norfolk Island,Oceania,0,1,0,167.95,-29.05
+NGA,NG,Nigeria,Nigeria,Africa,1,1,1,8.09,9.59
+NIC,NI,Nicaragua,Nicaragua,Latin America and the Caribbean,1,1,1,-85.02,12.85
+NIU,NU,Niue,Niue,Oceania,1,1,1,-169.88,-19.06
+NLD,NL,Netherlands (Kingdom of the),Netherlands (Kingdom of the),Europe,1,1,1,5.65,52.3
+NOR,NO,Norway,Norway,Europe,1,1,1,13.88,64.26
+NPL,NP,Nepal,Nepal,Asia,1,1,1,83.92,28.25
+NRU,NR,Nauru,Nauru,Oceania,1,1,1,166.94,-0.52
+NZL,NZ,New Zealand,New Zealand,Oceania,1,1,1,170.53,-43.97
+OMN,OM,Oman,Oman,Asia,1,1,1,56.09,20.57
+OTH,,Other / unmatched,Other / unmatched,Other,0,0,0,,
+PAK,PK,Pakistan,Pakistan,Asia,1,1,1,69.34,29.95
+PAN,PA,Panama,Panama,Latin America and the Caribbean,1,1,1,-80.09,8.52
+PCN,,Pitcairn Is.,Pitcairn Is.,Oceania,0,1,0,-128.32,-24.36
+PER,PE,Peru,Peru,Latin America and the Caribbean,1,1,1,-74.38,-9.15
+PHL,PH,Philippines,Philippines,Asia,1,1,1,121.41,15.96
+PLW,PW,Palau,Palau,Oceania,1,1,1,134.58,7.52
+PNG,PG,Papua New Guinea,Papua New Guinea,Oceania,1,1,1,144.24,-6.6
+POL,PL,Poland,Poland,Europe,1,1,1,19.37,52.12
+PRI,PR,Puerto Rico,Puerto Rico,Latin America and the Caribbean,1,1,1,-66.49,18.23
+PRK,KP,Dem. People's Rep. of Korea,North Korea,Asia,1,1,1,127.2,40.15
+PRT,PT,Portugal,Portugal,Europe,1,1,1,-7.99,39.66
+PRY,PY,Paraguay,Paraguay,Latin America and the Caribbean,1,1,1,-58.4,-23.23
+PSE,PS,State of Palestine,Palestine,Asia,1,1,1,35.25,31.95
+PYF,PF,French Polynesia,French Polynesia,Oceania,1,1,1,-149.48,-17.62
+QAT,QA,Qatar,Qatar,Asia,1,1,1,51.19,25.31
+REU,RE,Reunion,Reunion,Africa,1,0,1,,
+ROU,RO,Romania,Romania,Europe,1,1,1,24.98,45.85
+RUS,RU,Russian Federation,Russia,Europe,1,1,1,99.74,61.71
+RWA,RW,Rwanda,Rwanda,Africa,1,1,1,29.92,-1.98
+SAU,SA,Saudi Arabia,Saudi Arabia,Asia,1,1,1,44.54,24.12
+SDN,SD,Sudan,Sudan,Africa,1,1,1,29.94,15.99
+SEN,SN,Senegal,Senegal,Africa,1,1,1,-14.47,14.37
+SGP,SG,Singapore,Singapore,Asia,1,1,1,103.82,1.34
+SGS,,South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands,Other,1,1,0,-36.67,-54.36
+SHN,,Saint Helena,Saint Helena,Other,0,1,1,-5.73,-15.95
+SJM,,Svalbard and Jan Mayen,Svalbard and Jan Mayen,Europe,1,0,0,,
+SLB,SB,Solomon Islands,Solomon Islands,Oceania,1,1,1,160.18,-9.62
+SLE,SL,Sierra Leone,Sierra Leone,Africa,1,1,1,-11.79,8.57
+SLV,SV,El Salvador,El Salvador,Latin America and the Caribbean,1,1,1,-88.88,13.74
+SMR,SM,San Marino,San Marino,Europe,1,1,1,12.45,43.94
+SOM,SO,Somalia,Somalia,Africa,1,1,1,45.71,4.76
+SPM,PM,Saint-Pierre-et-Miquelon,Saint-Pierre-et-Miquelon,Northern America,1,1,1,-56.33,47.01
+SRB,RS,Serbia and Kosovo: S/RES/1244 (1999),Serbia,Europe,1,1,1,20.78,44.22
+SSD,SS,South Sudan,South Sudan,Africa,1,1,1,30.25,7.31
+STP,ST,Sao Tome and Principe,Sao Tome and Principe,Africa,1,1,1,6.62,0.25
+SUR,SR,Suriname,Suriname,Latin America and the Caribbean,1,1,1,-55.92,4.13
+SVK,SK,Slovakia,Slovakia,Europe,1,1,1,19.49,48.71
+SVN,SI,Slovenia,Slovenia,Europe,1,1,1,14.79,46.11
+SWE,SE,Sweden,Sweden,Europe,1,1,1,16.73,62.82
+SWZ,SZ,Eswatini,Eswatini,Africa,1,1,1,31.48,-26.56
+SXM,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch part),Latin America and the Caribbean,1,1,1,-63.04,18.05
+SYC,SC,Seychelles,Seychelles,Africa,1,1,1,55.47,-4.62
+SYR,SY,Syrian Arab Rep.,Syria,Asia,1,1,1,38.5,35.02
+TCA,TC,Turks and Caicos Islands,Turks and Caicos Islands,Latin America and the Caribbean,1,1,1,-71.74,21.81
+TCD,TD,Chad,Chad,Africa,1,1,1,18.65,15.34
+TGO,TG,Togo,Togo,Africa,1,1,1,0.97,8.53
+THA,TH,Thailand,Thailand,Asia,1,1,1,101.01,15.13
+TIB,,Tibetan,Tibetan (origin),Asia,1,0,0,,
+TJK,TJ,Tajikistan,Tajikistan,Asia,1,1,1,71.01,38.53
+TKM,TM,Turkmenistan,Turkmenistan,Asia,1,1,1,59.36,39.12
+TLS,TL,Timor-Leste,Timor-Leste,Asia,1,1,1,125.9,-8.82
+TON,TO,Tonga,Tonga,Oceania,1,1,1,-175.25,-21.17
+TTO,TT,Trinidad and Tobago,Trinidad and Tobago,Latin America and the Caribbean,1,1,1,-61.25,10.44
+TUN,TN,Tunisia,Tunisia,Africa,1,1,1,9.55,34.14
+TUR,TR,Türkiye,Türkiye,Asia,1,1,1,35.43,38.99
+TUV,TV,Tuvalu,Tuvalu,Oceania,1,0,1,,
+TWN,,Taiwan,Taiwan,Asia,0,1,1,120.96,23.75
+TZA,TZ,United Rep. of Tanzania,Tanzania,Africa,1,1,1,34.8,-6.28
+UGA,UG,Uganda,Uganda,Africa,1,1,1,32.37,1.27
+UKR,UA,Ukraine,Ukraine,Europe,1,1,1,31.24,49.16
+UNK,UK,Unknown,Unknown origin,Other,1,0,0,,
+URY,UY,Uruguay,Uruguay,Latin America and the Caribbean,1,1,1,-56.02,-32.8
+USA,US,United States of America,United States,Northern America,1,1,1,-99.14,39.52
+UZB,UZ,Uzbekistan,Uzbekistan,Asia,1,1,1,63.15,41.75
+VAT,VA,Holy See,Holy See,Europe,1,0,1,,
+VCT,VC,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,Latin America and the Caribbean,1,1,1,-61.19,13.25
+VEN,VE,Venezuela (Bolivarian Republic of),Venezuela,Latin America and the Caribbean,1,1,1,-66.18,7.12
+VGB,VG,British Virgin Islands,British Virgin Islands,Latin America and the Caribbean,1,1,1,-64.37,18.5
+VIR,,U.S. Virgin Is.,U.S. Virgin Is.,Other,0,1,1,-64.81,17.74
+VNM,VN,Viet Nam,Viet Nam,Asia,1,1,1,106.3,16.64
+VUT,VU,Vanuatu,Vanuatu,Oceania,1,1,1,166.87,-15.28
+WLF,,Wallis and Futuna Is.,Wallis and Futuna Is.,Other,0,1,1,-178.11,-14.29
+WSM,WS,Samoa,Samoa,Oceania,1,1,1,-172.44,-13.65
+XKX,,Kosovo,Kosovo,Europe,0,1,1,20.87,42.56
+XXA,,Stateless,Stateless (no country of origin),Other,1,0,0,,
+YEM,YE,Yemen,Yemen,Asia,1,1,1,47.54,15.94
+ZAF,ZA,South Africa,South Africa,Africa,1,1,1,25.15,-29.01
+ZMB,ZM,Zambia,Zambia,Africa,1,1,1,27.77,-13.45
+ZWE,ZW,Zimbabwe,Zimbabwe,Africa,1,1,1,29.85,-19

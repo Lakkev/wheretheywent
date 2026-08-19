@@ -1,0 +1,23 @@
+{
+  "_comment": "Natural Earth (world-atlas 50m) features whose M49 id cannot be converted to ISO3, and features to drop. Matched by `properties.name` (spec §11.3). `_`-prefixed keys = draw boundary only, never filled; null = remove from geometry.",
+  "by_name": {
+    "Kosovo": "XKX",
+    "Somaliland": "_SOL",
+    "N. Cyprus": "_NCY",
+    "Siachen Glacier": null,
+    "Indian Ocean Ter.": null
+  },
+  "by_iso3": {
+    "ATF": null,
+    "HMD": null,
+    "BVT": null,
+    "ATA": null
+  },
+  "_notes": {
+    "ATF": "French Southern and Antarctic Lands — no population/data, removed to save bytes.",
+    "ATA": "Antarctica — removed.",
+    "ESH": "Western Sahara is id 732 in NE and converts to ESH; UNHCR has ESH data. Kept as drawn by NE.",
+    "TWN": "Taiwan is id 158 → TWN. Kept as an independent feature (policy (c), pending client confirmation §11.5).",
+    "PSE": "Palestine id 275 → PSE."
+  }
+}

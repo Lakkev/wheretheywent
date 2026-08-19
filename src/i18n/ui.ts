@@ -41,7 +41,11 @@ export function interpolate(template: string, params?: Record<string, string | n
   });
 }
 
-export function t(locale: Locale, key: MessageKey, params?: Record<string, string | number>): string {
+export function t(
+  locale: Locale,
+  key: MessageKey,
+  params?: Record<string, string | number>,
+): string {
   const dict = DICTS[locale] ?? DICTS.en;
   const s = dict[key] ?? DICTS.en[key] ?? key;
   return interpolate(s, params);

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "disclaimer_en": "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the Secretariat of the United Nations concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Where They Went adopts this wording: boundaries are drawn from Natural Earth (public domain) for display only, and country names follow the data source being cited (UNHCR unless noted).",
+  "disclaimer_zh": "本地圖所採用之名稱及資料呈現方式,不代表聯合國秘書處對任何國家、領土、城市或地區或其當局之法律地位,或對其疆界或邊界之劃定,表達任何意見。「他們去了哪裡」沿用此措辭:邊界取自 Natural Earth(公有領域)僅供顯示,國名依被引用之資料來源(未註明者為 UNHCR)。",
+  "notes": [
+    {
+      "id": "western-sahara",
+      "iso3": "ESH",
+      "name": "Western Sahara",
+      "name_zh": "西撒哈拉",
+      "how_shown": "Drawn as a separate Natural Earth feature with its own fill; data is joined on ISO3 ESH.",
+      "how_shown_zh": "以 Natural Earth 獨立 feature 繪製並上色;資料以 ISO3 ESH 連結。",
+      "source_naming": "UNHCR: \"Western Sahara\" (code WSH, iso ESH). UN: Non-Self-Governing Territory.",
+      "source_naming_zh": "UNHCR:「Western Sahara」(code WSH, iso ESH)。聯合國:非自治領土。"
+    },
+    {
+      "id": "kashmir",
+      "iso3": null,
+      "name": "Kashmir (Jammu and Kashmir / Aksai Chin / Siachen)",
+      "name_zh": "喀什米爾(查謨-喀什米爾/阿克賽欽/錫亞琴)",
+      "how_shown": "Natural Earth draws de facto control lines; the \"Siachen Glacier\" feature is removed. No statistics are attached to disputed segments.",
+      "how_shown_zh": "Natural Earth 依實際控制線繪製;「Siachen Glacier」feature 已移除。爭議區段不附任何統計。",
+      "source_naming": "UNHCR reports figures for India and Pakistan as countries; no separate entity for Kashmir.",
+      "source_naming_zh": "UNHCR 以印度與巴基斯坦為國家報告;無喀什米爾獨立條目。"
+    },
+    {
+      "id": "palestine",
+      "iso3": "PSE",
+      "name": "Palestine (West Bank and Gaza)",
+      "name_zh": "巴勒斯坦(西岸與加薩)",
+      "how_shown": "Drawn as a separate feature (NE id 275 → PSE) and filled with UNHCR data. A caveat notes that UNRWA-registered Palestine refugees (~6 million) are excluded from UNHCR figures.",
+      "how_shown_zh": "以獨立 feature(NE id 275 → PSE)繪製並以 UNHCR 資料上色。附註說明 UNRWA 登記之巴勒斯坦難民(約 600 萬)不含於 UNHCR 數字。",
+      "source_naming": "UNHCR: \"State of Palestine\" (code GAZ, iso PSE). World Bank: \"West Bank and Gaza\". UN WPP: \"State of Palestine\".",
+      "source_naming_zh": "UNHCR:「State of Palestine」(code GAZ, iso PSE)。世界銀行:「West Bank and Gaza」。UN WPP:「State of Palestine」。"
+    },
+    {
+      "id": "crimea",
+      "iso3": null,
+      "name": "Crimea",
+      "name_zh": "克里米亞",
+      "how_shown": "Natural Earth 50m (world-atlas 2.0.2) draws Crimea as part of Ukraine. Data is joined to UKR.",
+      "how_shown_zh": "Natural Earth 50m(world-atlas 2.0.2)將克里米亞繪為烏克蘭一部分。資料連結至 UKR。",
+      "source_naming": "UNHCR reports Ukraine (UKR) as a whole.",
+      "source_naming_zh": "UNHCR 以烏克蘭(UKR)整體報告。"
+    },
+    {
+      "id": "kosovo",
+      "iso3": "XKX",
+      "name": "Kosovo",
+      "name_zh": "科索沃",
+      "how_shown": "Drawn as a separate Natural Earth feature (id −99 → XKX). UNHCR has no separate figures (included in \"Serbia and Kosovo: S/RES/1244 (1999)\"), so Kosovo is shown in \"no data\" grey with a note; Serbia's figures include Kosovo.",
+      "how_shown_zh": "以 Natural Earth 獨立 feature(id −99 → XKX)繪製。UNHCR 無單獨數字(併入「Serbia and Kosovo: S/RES/1244 (1999)」),故科索沃以「無資料」灰呈現並附註;塞爾維亞數字含科索沃。",
+      "source_naming": "UNHCR: \"Serbia and Kosovo: S/RES/1244 (1999)\" (iso SRB). UN WPP lists Kosovo separately (XKX).",
+      "source_naming_zh": "UNHCR:「Serbia and Kosovo: S/RES/1244 (1999)」(iso SRB)。UN WPP 單列科索沃(XKX)。"
+    },
+    {
+      "id": "northern-cyprus",
+      "iso3": null,
+      "name": "Northern Cyprus",
+      "name_zh": "北賽普勒斯",
+      "how_shown": "Boundary drawn (Natural Earth feature \"N. Cyprus\") but never filled; data for Cyprus is joined to CYP.",
+      "how_shown_zh": "繪出邊界(Natural Earth feature「N. Cyprus」)但永不上色;賽普勒斯資料連結至 CYP。",
+      "source_naming": "UNHCR reports Cyprus (CYP) only.",
+      "source_naming_zh": "UNHCR 僅報告賽普勒斯(CYP)。"
+    },
+    {
+      "id": "somaliland",
+      "iso3": null,
+      "name": "Somaliland",
+      "name_zh": "索馬利蘭",
+      "how_shown": "Boundary drawn (Natural Earth feature \"Somaliland\") but never filled; data for Somalia is joined to SOM.",
+      "how_shown_zh": "繪出邊界(Natural Earth feature「Somaliland」)但永不上色;索馬利亞資料連結至 SOM。",
+      "source_naming": "UNHCR reports Somalia (SOM) only.",
+      "source_naming_zh": "UNHCR 僅報告索馬利亞(SOM)。"
+    },
+    {
+      "id": "taiwan",
+      "iso3": "TWN",
+      "name": "Taiwan",
+      "name_zh": "台灣",
+      "how_shown": "Drawn as a separate Natural Earth feature (id 158 → TWN) and labelled \"Taiwan\". UNHCR statistics do not list Taiwan at all (no figures and no merge note), so it is shown in \"no data\" grey with the tooltip \"Not separately reported by UNHCR\". Population comes from UN WPP, which lists it as \"China, Taiwan Province of China\".",
+      "how_shown_zh": "以 Natural Earth 獨立 feature(id 158 → TWN)繪製並標示「台灣」。UNHCR 統計完全未列台灣(無數字亦無併入註記),故以「無資料」灰呈現,tooltip 顯示「UNHCR 未單獨統計」。人口取自 UN WPP,該處名稱為「China, Taiwan Province of China」。",
+      "source_naming": "UNHCR: absent. World Bank: absent. UN WPP: \"China, Taiwan Province of China\" (id 158, iso3 TWN). Natural Earth: \"Taiwan\".",
+      "source_naming_zh": "UNHCR:不存在。世界銀行:不存在。UN WPP:「China, Taiwan Province of China」(id 158, iso3 TWN)。Natural Earth:「Taiwan」。"
+    }
+  ]
+}

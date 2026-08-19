@@ -1,0 +1,340 @@
+{
+  "unhcr_countries": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — country list",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2026-08-19",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 0,
+      "year_max": 0
+    },
+    "content_hash": "sha256:b35e7661d4d86c2bb890caa82eb4635985501de944eb5c6dc9de5ef4eb84b3df",
+    "status": "ok",
+    "caveats": [
+      "Country names follow UNHCR usage. Kosovo is reported under \"Serbia and Kosovo: S/RES/1244 (1999)\". Taiwan is not listed."
+    ],
+    "caveats_zh": [
+      "國名沿用 UNHCR 用法。科索沃併入「Serbia and Kosovo: S/RES/1244 (1999)」。台灣未列入。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/countries/?limit=500"
+    ]
+  },
+  "unhcr_population": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — population figures",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "year-end",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 1951,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:88406d263e32f8e2634a5a50a6043d490b4ca80d92c71db0b6696d4856f7f3a3",
+    "status": "ok",
+    "caveats": [
+      "Excludes Palestine refugees registered with UNRWA (about 6 million), which publishes separate statistics.",
+      "\"-\" in the source means not reported; it is stored as null and is different from 0 (reported zero).",
+      "Figures are year-end stocks (31 December) unless stated otherwise.",
+      "IDP figures are sourced by UNHCR from IDMC.",
+      "Refugees include people in refugee-like situations."
+    ],
+    "caveats_zh": [
+      "不含 UNRWA 登記之巴勒斯坦難民(約 600 萬),UNRWA 另有獨立統計。",
+      "來源中的 \"-\" 表示未報告,儲存為 null,與 0(確實為零)意義不同。",
+      "除另有說明外,數字為年末(12 月 31 日)存量。",
+      "IDP 數字由 UNHCR 轉引自 IDMC。",
+      "難民數含「類難民處境」人口。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coo_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_demographics": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — demographics",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "year-end",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2010,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:ba1d08558bc79975e7804d7fc4f32a4686e9b11815cef649c4d63095d8a299e8",
+    "status": "ok",
+    "caveats": [
+      "Age/sex breakdown is available for a subset of the population; rows with zero breakdown but a non-zero total mean no demographic data was reported.",
+      "Age groups: 0–4, 5–11, 12–17, 18–59, 60+, other/unknown."
+    ],
+    "caveats_zh": [
+      "年齡/性別細分僅涵蓋部分人口;細分皆為 0 但總數非 0 表示未報告人口結構。",
+      "年齡組:0–4、5–11、12–17、18–59、60+、其他/未知。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/demographics/?year=2010&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2011&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2012&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2013&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2014&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2015&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2016&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2017&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2018&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2019&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2020&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2021&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2022&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2023&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2024&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/demographics/?year=2025&coa_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_idmc": {
+    "publisher": "UNHCR (data: IDMC)",
+    "title": "IDMC internal displacement figures via UNHCR API",
+    "landing_page": "https://www.internal-displacement.org/database/",
+    "license": {
+      "id": "CC-BY-IGO",
+      "url": "https://creativecommons.org/licenses/by/3.0/igo/"
+    },
+    "attribution": "Internal Displacement Monitoring Centre (IDMC), via UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "year-end",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2009,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:a43f3bef8a72fee0ef73f5348728f11c9f1ef86fb8485adfe7ddb6b8e64e71fd",
+    "status": "ok",
+    "caveats": [
+      "Conflict and violence IDP stock figures as reported by IDMC; disaster displacement is not included."
+    ],
+    "caveats_zh": [
+      "IDMC 報告之衝突與暴力所致 IDP 存量;不含災害流離失所。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/idmc/?yearFrom=2009&yearTo=2025&coo_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_solutions": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — solutions",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2000,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:8a60fc9685dd6b3bae8d44d036277990aafb3c4419636bfee5de57ea546657b0",
+    "status": "ok",
+    "caveats": [
+      "Flows during the year (returns, resettlement departures, naturalisations), not stocks."
+    ],
+    "caveats_zh": [
+      "年度流量(返回、重新安置、歸化),非存量。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/solutions/?yearFrom=2000&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_asylum_applications": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — asylum applications",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2015,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:0571396d18d6dc7b59e4d265e7ba2d40475d542fb3ce7662d5ff26148ed6b2f8",
+    "status": "ok",
+    "caveats": [
+      "Only rows measured in persons (app_pc = P) are kept; case-based rows (C) are excluded to avoid double counting."
+    ],
+    "caveats_zh": [
+      "僅保留以人數計(app_pc = P)之列;以案件計(C)之列排除以避免重複計數。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/asylum-applications/?yearFrom=2015&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_footnotes": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — footnotes",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2025-12-31",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 1951,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:6c5a27e4656768e888a9189a89082f58d77ba1ac7a9274c503a1f58b74943880",
+    "status": "ok",
+    "caveats": [],
+    "caveats_zh": [],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2025&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2025&coo_all=true&cf_type=ISO"
+    ]
+  },
+  "unhcr_nowcasting": {
+    "publisher": "UNHCR",
+    "title": "Refugee Population Statistics Database — nowcasting (estimates)",
+    "landing_page": "https://www.unhcr.org/refugee-statistics/",
+    "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "attribution": "UNHCR Refugee Population Statistics Database",
+    "data_as_of": "2026-06-01",
+    "period_type": "monthly",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2026,
+      "year_max": 2026
+    },
+    "content_hash": "sha256:bcda15cf2bf2d1c2cdf0a1c3e70ffd2823c801dd253aba9bf97f3e7669bb110c",
+    "status": "ok",
+    "caveats": [
+      "Statistical estimates produced by UNHCR to predict current figures; not reported counts. Only refugees and asylum-seekers by country of asylum.",
+      "No confidence intervals are published."
+    ],
+    "caveats_zh": [
+      "UNHCR 以統計方法推估之當前數字,非正式報告值。僅含收容國面向之難民與庇護申請者。",
+      "未公布信賴區間。"
+    ],
+    "endpoints": [
+      "https://api.unhcr.org/population/v1/nowcasting/?coa_all=true&cf_type=ISO"
+    ]
+  },
+  "wpp_population": {
+    "publisher": "United Nations, DESA, Population Division",
+    "title": "World Population Prospects 2024 — total population by sex",
+    "landing_page": "https://population.un.org/wpp/",
+    "license": {
+      "id": "CC-BY-3.0-IGO",
+      "url": "https://creativecommons.org/licenses/by/3.0/igo/"
+    },
+    "attribution": "United Nations, Department of Economic and Social Affairs, Population Division (2024). World Population Prospects 2024",
+    "data_as_of": "2023-07-01",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 1950,
+      "year_max": 2025
+    },
+    "content_hash": "sha256:66b84489fd7875b62de9b40d960b803b8c8439367c98deab89c2f770970925b9",
+    "status": "ok",
+    "caveats": [
+      "Mid-year (1 July) population; used as the denominator for per-1,000 rates against year-end displacement stocks.",
+      "Values for years after the estimate base year are medium-variant projections."
+    ],
+    "caveats_zh": [
+      "年中(7 月 1 日)人口;作為每千人比率的分母(分子為年末存量)。",
+      "估計基準年之後的年份為中推計情境之預測值。"
+    ],
+    "endpoints": [
+      "https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_TotalPopulationBySex.csv.gz"
+    ]
+  },
+  "idmc_idu": {
+    "publisher": "IDMC",
+    "title": "Internal Displacement Updates (IDU) — last 180 days",
+    "landing_page": "https://www.internal-displacement.org/database/displacement-data/",
+    "license": {
+      "id": "CC-BY-IGO",
+      "url": "https://creativecommons.org/licenses/by/3.0/igo/"
+    },
+    "attribution": "Internal Displacement Monitoring Centre (IDMC), Internal Displacement Updates",
+    "data_as_of": "2026-08-19",
+    "period_type": "rolling",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 2026,
+      "year_max": 2026
+    },
+    "content_hash": "sha256:c11620a29c0193f9f0988018d8e285d9aad1553c607ce88c933a1b8c5001c850",
+    "status": "ok",
+    "caveats": [
+      "Preliminary event-level estimates compiled from media and partner reports; revised figures are published in the GIDD.",
+      "Figures are displacement events (flows) and may double count the same people displaced more than once."
+    ],
+    "caveats_zh": [
+      "自媒體與夥伴報告彙整之初步事件層級估計;校正版於 GIDD 發布。",
+      "數字為流離失所事件(流量),同一人多次流離可能重複計算。"
+    ],
+    "endpoints": [
+      "https://helix-tools-api.idmcdb.org/external-api/idus/last-180-days/?client_id=IDMCWSHSOLO009"
+    ]
+  },
+  "natural_earth": {
+    "publisher": "Natural Earth (via world-atlas)",
+    "title": "Admin 0 – Countries, 1:50m",
+    "landing_page": "https://www.naturalearthdata.com/",
+    "license": {
+      "id": "Public Domain",
+      "url": "https://www.naturalearthdata.com/about/terms-of-use/"
+    },
+    "attribution": "Made with Natural Earth",
+    "data_as_of": "2022-05-01",
+    "period_type": "annual",
+    "retrieved_at": "2026-08-19T14:21:59Z",
+    "coverage": {
+      "year_min": 0,
+      "year_max": 0
+    },
+    "content_hash": "sha256:05cca7cfe478051cd50ad0f21cf3c0a00ee855afb767342f95667cdbd9ac33fe",
+    "status": "ok",
+    "caveats": [
+      "Boundaries are simplified for display and do not imply any opinion concerning the legal status of any territory."
+    ],
+    "caveats_zh": [
+      "邊界經簡化以利顯示,不代表對任何領土法律地位之意見。"
+    ],
+    "endpoints": [
+      "node_modules/world-atlas/countries-50m.json"
+    ]
+  }
+}

@@ -25,13 +25,16 @@ export type AnyMetricId = MetricId | DerivedMetricId;
 export type ViewId = 'asylum' | 'origin';
 export type SourceStatus = 'ok' | 'stale' | 'unstable';
 
-/** Packed series: ints, null = not reported ("-"), ["z", n] = run of n zeros. */
-export type PackedCell = number | null | ['z', number];
+/** Packed series: ints, null = not reported ("-"), ["z", n] = run of n zeros, ["n", n] = run of n nulls. */
+export type PackedCell = number | null | ['z' | 'n', number];
 export type PackedSeries = PackedCell[];
 
 export interface Manifest {
   schema: 1;
-  snapshot_id: string; // git short hash or "local"
+  /** Content-addressed snapshot id: first 8 hex of sha256 over all file hashes (stable across re-runs). */
+  snapshot_id: string;
+  /** Git commit that produced/contains this data, when known (set by CI), else null. */
+  git_commit: string | null;
   generated_at: string; // ISO timestamp of the ETL run that last changed any file
   year_min: number;
   year_max: number;
@@ -54,7 +57,6 @@ export interface SourceEntry {
   status: SourceStatus;
   stale_since?: string;
   last_error?: string;
-  last_success?: string;
   caveats: string[];
   caveats_zh?: string[];
   /** Endpoint(s) or URL(s) actually fetched. */
@@ -145,13 +147,19 @@ export interface SolutionsRow {
   returned_idps: number | null;
 }
 
+export interface AsylumAppRow {
+  year: number;
+  applied: number | null;
+}
+
 export interface IdmcRow {
   year: number;
   total: number | null; // total displacement (stock)
 }
 
 export interface Footnote {
-  year: number;
+  /** null = applies to all years */
+  year: number | null;
   population_type: string;
   text: string;
   view: ViewId;
@@ -171,7 +179,12 @@ export interface CountryFile {
   /** Top partner countries by year (keyed by year as string). */
   top_origins: Record<string, FlowRow[]>; // people hosted here, by origin
   top_hosts: Record<string, FlowRow[]>; // people from here, by host
+  /** Solutions for people FROM this country (origin perspective). */
   solutions: SolutionsRow[];
+  /** Solutions happening IN this country (host perspective: naturalisation, resettlement arrivals…). */
+  solutions_host: SolutionsRow[];
+  /** Asylum applications (persons) lodged in this country / by nationals of this country, 2015+. */
+  asylum_applications: { host: AsylumAppRow[]; origin: AsylumAppRow[] };
   idmc: IdmcRow[];
   footnotes: Footnote[];
   sources: string[];

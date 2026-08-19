@@ -3,7 +3,15 @@ import { listCountryIso3 } from '../lib/data-server';
 import { SITE_URL } from '../lib/site';
 import { LOCALES, localizePath } from '../i18n/ui';
 
-const STATIC = ['/', '/compare', '/data', '/methodology', '/about', '/about/boundaries', '/stories'];
+const STATIC = [
+  '/',
+  '/compare',
+  '/data',
+  '/methodology',
+  '/about',
+  '/about/boundaries',
+  '/stories',
+];
 
 export const GET: APIRoute = () => {
   const paths = [...STATIC, ...listCountryIso3().map((c) => `/country/${c}`)];
@@ -11,7 +19,8 @@ export const GET: APIRoute = () => {
     LOCALES.map((l) => {
       const loc = `${SITE_URL}${localizePath(p, l)}`;
       const alts = LOCALES.map(
-        (a) => `<xhtml:link rel="alternate" hreflang="${a}" href="${SITE_URL}${localizePath(p, a)}"/>`,
+        (a) =>
+          `<xhtml:link rel="alternate" hreflang="${a}" href="${SITE_URL}${localizePath(p, a)}"/>`,
       ).join('');
       return `<url><loc>${loc}</loc>${alts}</url>`;
     }),

@@ -1,0 +1,92 @@
+{
+  "_comment": "Display-name and note overrides applied on top of UNHCR/WPP names (spec §11.3, §11.5). Keys are canonical ISO3 / pseudo codes. `name_source` records whose naming the raw `name` follows.",
+  "SRB": {
+    "display_name": "Serbia",
+    "display_name_zh": "塞爾維亞",
+    "note": "UNHCR reports Serbia and Kosovo together under \"Serbia and Kosovo: S/RES/1244 (1999)\"; figures shown here for Serbia include Kosovo.",
+    "note_zh": "UNHCR 將塞爾維亞與科索沃合併報告為「Serbia and Kosovo: S/RES/1244 (1999)」;此處塞爾維亞數字含科索沃。"
+  },
+  "XKX": {
+    "display_name": "Kosovo",
+    "display_name_zh": "科索沃",
+    "note": "Not reported separately by UNHCR (included in Serbia). Boundary from Natural Earth; population from UN WPP.",
+    "note_zh": "UNHCR 未單獨報告(併入塞爾維亞)。邊界取自 Natural Earth;人口取自 UN WPP。"
+  },
+  "TWN": {
+    "display_name": "Taiwan",
+    "display_name_zh": "台灣",
+    "note": "Not listed in UNHCR statistics (no figures, not merged into any other entry). Boundary from Natural Earth; population from UN WPP (listed there as \"China, Taiwan Province of China\"). See /about/boundaries.",
+    "note_zh": "UNHCR 統計中不存在(無數字,亦未併入其他條目)。邊界取自 Natural Earth;人口取自 UN WPP(該處名稱為「China, Taiwan Province of China」)。詳見 /about/boundaries。",
+    "_pending": "Display policy (c) implemented by default; awaiting client confirmation (spec §11.5 / Appendix C)."
+  },
+  "PSE": {
+    "display_name": "Palestine",
+    "display_name_zh": "巴勒斯坦",
+    "note": "UNHCR figures exclude Palestine refugees registered with UNRWA (~6 million), who are counted by UNRWA separately.",
+    "note_zh": "UNHCR 數字不含 UNRWA 登記之巴勒斯坦難民(約 600 萬),UNRWA 另行統計。"
+  },
+  "ESH": {
+    "display_name": "Western Sahara",
+    "display_name_zh": "西撒哈拉",
+    "note": "Non-self-governing territory; shown as in Natural Earth. UNHCR reports figures under \"Western Sahara\".",
+    "note_zh": "非自治領土;依 Natural Earth 呈現。UNHCR 以「Western Sahara」報告。"
+  },
+  "CHN": { "display_name": "China", "display_name_zh": "中國" },
+  "HKG": { "display_name": "Hong Kong SAR, China", "display_name_zh": "香港" },
+  "MAC": { "display_name": "Macao SAR, China", "display_name_zh": "澳門" },
+  "SYR": { "display_name": "Syria", "display_name_zh": "敘利亞" },
+  "IRN": { "display_name": "Iran", "display_name_zh": "伊朗" },
+  "VEN": { "display_name": "Venezuela", "display_name_zh": "委內瑞拉" },
+  "BOL": { "display_name": "Bolivia", "display_name_zh": "玻利維亞" },
+  "TZA": { "display_name": "Tanzania", "display_name_zh": "坦尚尼亞" },
+  "COD": { "display_name": "DR Congo", "display_name_zh": "剛果民主共和國" },
+  "COG": { "display_name": "Congo", "display_name_zh": "剛果共和國" },
+  "PRK": { "display_name": "North Korea", "display_name_zh": "北韓" },
+  "KOR": { "display_name": "South Korea", "display_name_zh": "南韓" },
+  "LAO": { "display_name": "Laos", "display_name_zh": "寮國" },
+  "MDA": { "display_name": "Moldova", "display_name_zh": "摩爾多瓦" },
+  "RUS": { "display_name": "Russia", "display_name_zh": "俄羅斯" },
+  "GBR": { "display_name": "United Kingdom", "display_name_zh": "英國" },
+  "USA": { "display_name": "United States", "display_name_zh": "美國" },
+  "TUR": { "display_name": "Türkiye", "display_name_zh": "土耳其" },
+  "VNM": { "display_name": "Viet Nam", "display_name_zh": "越南" },
+  "CIV": { "display_name": "Côte d'Ivoire", "display_name_zh": "象牙海岸" },
+  "MMR": { "display_name": "Myanmar", "display_name_zh": "緬甸" },
+  "FSM": { "display_name": "Micronesia", "display_name_zh": "密克羅尼西亞" },
+  "XXA": {
+    "display_name": "Stateless (no country of origin)",
+    "display_name_zh": "無國籍(無來源國)",
+    "note": "UNHCR pseudo-entity used as country of origin for stateless persons.",
+    "note_zh": "UNHCR 用於無國籍者來源國之虛擬條目。"
+  },
+  "UNK": {
+    "display_name": "Unknown origin",
+    "display_name_zh": "來源不明",
+    "note": "UNHCR pseudo-entity for unknown or unspecified origin.",
+    "note_zh": "UNHCR 用於來源不明或未指明之虛擬條目。"
+  },
+  "TIB": {
+    "display_name": "Tibetan (origin)",
+    "display_name_zh": "藏人(來源)",
+    "note": "UNHCR origin entity \"Tibetan\"; not a country and not drawn on the map.",
+    "note_zh": "UNHCR 來源條目「Tibetan」;非國家,不繪於地圖。"
+  },
+  "CRB": {
+    "display_name": "Caribbean (aggregate)",
+    "display_name_zh": "加勒比海(彙總)",
+    "note": "UNHCR aggregate entity; not drawn on the map.",
+    "note_zh": "UNHCR 彙總條目;不繪於地圖。"
+  },
+  "AB9": {
+    "display_name": "Abyei Area",
+    "display_name_zh": "阿卜耶伊地區",
+    "note": "IDMC reports Abyei Area separately; not drawn on the map.",
+    "note_zh": "IDMC 單獨報告阿卜耶伊地區;不繪於地圖。"
+  },
+  "OTH": {
+    "display_name": "Other / unmatched",
+    "display_name_zh": "其他/未匹配",
+    "note": "Small entities whose code could not be matched to a country; see unmatched-report.json.",
+    "note_zh": "無法匹配國家代碼之小型條目;見 unmatched-report.json。"
+  }
+}
