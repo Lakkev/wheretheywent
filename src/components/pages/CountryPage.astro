@@ -25,11 +25,19 @@ const metrics = getMetrics() ?? { schema: 1, metrics: {} as never };
 const manifest = getManifest();
 const countries = getCountries();
 const names: Record<string, string> = {};
-for (const c of countries?.countries ?? []) names[c.iso3] = locale === 'zh-Hant' && c.display_name_zh ? c.display_name_zh : c.display_name;
-const name = locale === 'zh-Hant' && data.meta.display_name_zh ? data.meta.display_name_zh : data.meta.display_name;
+for (const c of countries?.countries ?? [])
+  names[c.iso3] = locale === 'zh-Hant' && c.display_name_zh ? c.display_name_zh : c.display_name;
+const name =
+  locale === 'zh-Hant' && data.meta.display_name_zh
+    ? data.meta.display_name_zh
+    : data.meta.display_name;
 const yearMax = data.years[data.years.length - 1]!;
 const yi = data.years.length - 1;
-const latest = METRIC_IDS.map((m, mi) => ({ m, a: unpack(data.asylum.v[mi]!)[yi] ?? null, o: unpack(data.origin.v[mi]!)[yi] ?? null })).filter((r) => r.a !== null || r.o !== null);
+const latest = METRIC_IDS.map((m, mi) => ({
+  m,
+  a: unpack(data.asylum.v[mi]!)[yi] ?? null,
+  o: unpack(data.origin.v[mi]!)[yi] ?? null,
+})).filter((r) => r.a !== null || r.o !== null);
 const src = sources['unhcr_population'];
 const note = locale === 'zh-Hant' && data.meta.note_zh ? data.meta.note_zh : data.meta.note;
 const pageUrl = `${SITE_URL}${localizePath(`/country/${iso3}`, locale)}`;
@@ -46,25 +54,58 @@ const jsonLd = {
   isAccessibleForFree: true,
   creator: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
   publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
-  isBasedOn: Object.values(sources).filter((s) => data.sources.includes(Object.keys(sources).find((k) => sources[k] === s) ?? '')).map((s) => ({ '@type': 'Dataset', name: s.title, creator: { '@type': 'Organization', name: s.publisher }, url: s.landing_page, license: s.license.url })),
+  isBasedOn: Object.values(sources)
+    .filter((s) => data.sources.includes(Object.keys(sources).find((k) => sources[k] === s) ?? ''))
+    .map((s) => ({
+      '@type': 'Dataset',
+      name: s.title,
+      creator: { '@type': 'Organization', name: s.publisher },
+      url: s.landing_page,
+      license: s.license.url,
+    })),
   temporalCoverage: `${data.years[0]}/${yearMax}`,
   spatialCoverage: { '@type': 'Place', name },
   dateModified: src?.retrieved_at ?? manifest?.generated_at,
   version: manifest?.snapshot_id,
-  variableMeasured: METRIC_IDS.map((m) => ({ '@type': 'PropertyValue', name: metrics.metrics?.[m]?.label ?? m, description: metrics.metrics?.[m]?.definition ?? '' })),
+  variableMeasured: METRIC_IDS.map((m) => ({
+    '@type': 'PropertyValue',
+    name: metrics.metrics?.[m]?.label ?? m,
+    description: metrics.metrics?.[m]?.definition ?? '',
+  })),
   distribution: [
-    { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE_URL}/data/v1/country/${iso3}.json` },
-    { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${SITE_URL}/data/v1/downloads/unhcr-population-all-years.csv` },
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE_URL}/data/v1/country/${iso3}.json`,
+    },
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'text/csv',
+      contentUrl: `${SITE_URL}/data/v1/downloads/unhcr-population-all-years.csv`,
+    },
   ],
 };
 ---
 
-<BaseLayout title={tr('country.title', { name })} description={description} locale={locale} jsonLd={jsonLd}>
+<BaseLayout
+  title={tr('country.title', { name })}
+  description={description}
+  locale={locale}
+  jsonLd={jsonLd}
+>
   <article class="doc wide">
     <header class="doc-header">
-      <p class="muted small"><a href={localizePath('/', locale)}>{tr('nav.map')}</a> › {data.meta.region} › {iso3}</p>
+      <p class="muted small">
+        <a href={localizePath('/', locale)}>{tr('nav.map')}</a> › {data.meta.region} › {iso3}
+      </p>
       <h1>{name}</h1>
-      {data.meta.name !== data.meta.display_name && <p class="muted small">{tr('detail.nameNote', { source: 'UNHCR' })}: {data.meta.name}</p>}
+      {
+        data.meta.name !== data.meta.display_name && (
+          <p class="muted small">
+            {tr('detail.nameNote', { source: 'UNHCR' })}: {data.meta.name}
+          </p>
+        )
+      }
       {note && <p class="callout small">{note}</p>}
       <p class="lede">{tr('country.title', { name })} — {data.years[0]}–{yearMax}.</p>
     </header>
@@ -72,15 +113,54 @@ const jsonLd = {
     {/* Static (no-JS) summary for the latest year — crawlers, print, and citation fidelity */}
     <noscript>
       <h2>{tr('country.asOf', { year: yearMax })}</h2>
-      {latest.length ? (
-        <table>
-          <thead><tr><th>{tr('common.value')}</th><th class="num">{tr('detail.hosting')}</th><th class="num">{tr('detail.origin')}</th></tr></thead>
-          <tbody>{latest.map((r) => (<tr><td>{tr(`metric.${r.m}` as MessageKey)}</td><td class="num">{fmtInt(r.a, locale)}</td><td class="num">{fmtInt(r.o, locale)}</td></tr>))}</tbody>
-        </table>
-      ) : (<p class="muted">{tr('detail.noData')}</p>)}
-      {src && <p class="small muted">{tr('source.note', { attribution: src.attribution, asOf: fmtDateLong(src.data_as_of, locale), retrieved: fmtDateLong(src.retrieved_at, locale) })}</p>}
+      {
+        latest.length ? (
+          <table>
+            <thead>
+              <tr>
+                <>
+                  <th>{tr('common.value')}</th>
+                  <th class="num">{tr('detail.hosting')}</th>
+                  <th class="num">{tr('detail.origin')}</th>
+                </>
+              </tr>
+            </thead>
+            <tbody>
+              {latest.map((r) => (
+                <tr>
+                  <td>{tr(`metric.${r.m}` as MessageKey)}</td>
+                  <td class="num">{fmtInt(r.a, locale)}</td>
+                  <td class="num">{fmtInt(r.o, locale)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p class="muted">{tr('detail.noData')}</p>
+        )
+      }
+      {
+        src && (
+          <p class="small muted">
+            {tr('source.note', {
+              attribution: src.attribution,
+              asOf: fmtDateLong(src.data_as_of, locale),
+              retrieved: fmtDateLong(src.retrieved_at, locale),
+            })}
+          </p>
+        )
+      }
     </noscript>
 
-    <CountryApp client:load file={data} sources={sources} metrics={metrics} locale={locale} names={names} siteUrl={SITE_URL} snapshotId={manifest?.snapshot_id ?? 'local'} />
+    <CountryApp
+      client:load
+      file={data}
+      sources={sources}
+      metrics={metrics}
+      locale={locale}
+      names={names}
+      siteUrl={SITE_URL}
+      snapshotId={manifest?.snapshot_id ?? 'local'}
+    />
   </article>
 </BaseLayout>

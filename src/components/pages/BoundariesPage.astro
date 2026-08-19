@@ -12,40 +12,104 @@ const notes = getDisputedNotes();
 const zh = locale === 'zh-Hant';
 ---
 
-<DocPage locale={locale} title={tr('page.boundaries.title')} lede="Where the lines come from, why, how contested places are shown, and how names are chosen.">
+<DocPage
+  locale={locale}
+  title={tr('page.boundaries.title')}
+  lede="Where the lines come from, why, how contested places are shown, and how names are chosen."
+>
   <h2>Disclaimer</h2>
   <blockquote class="callout">{zh ? notes?.disclaimer_zh : notes?.disclaimer_en}</blockquote>
 
   <h2>Where the boundaries come from</h2>
-  <p><strong>Natural Earth, 1:50 million scale</strong> (via the <code>world-atlas</code> package). Natural Earth is public domain and is the de-facto standard for small-scale thematic world maps. The geometry is simplified (Visvalingam, 20 % of vertices kept, islands under 5 km² dropped) to about 165 KB so the map loads fast; it is a display layer, not a legal instrument. Statistics are joined to polygons on ISO 3166-1 alpha-3 codes, never on names.</p>
+  <p>
+    <strong>Natural Earth, 1:50 million scale</strong> (via the <code>world-atlas</code> package). Natural
+    Earth is public domain and is the de-facto standard for small-scale thematic world maps. The geometry
+    is simplified (Visvalingam, 20 % of vertices kept, islands under 5 km² dropped) to about 165 KB so
+    the map loads fast; it is a display layer, not a legal instrument. Statistics are joined to polygons
+    on ISO 3166-1 alpha-3 codes, never on names.
+  </p>
   <h3>Alternatives considered</h3>
   <table class="small">
     <thead><tr><th>Option</th><th>Decision</th></tr></thead>
     <tbody>
-      <tr><td>OCHA/HDX "COD-AB global"</td><td>Rejected: it contains administrative levels 1–4 only (no country outlines), covers 111 countries, and is a 1 GB geodatabase.</td></tr>
-      <tr><td>UN Geospatial "UNmap" feature service</td><td>Candidate for a future "boundary set" switch. Licence restricted to the UN Secretariat; data frozen in 2019; colours Taiwan with China by rule.</td></tr>
-      <tr><td>FieldMaps / USGS international boundaries (UN Clear Map style)</td><td>Candidate for a future switch (public domain), requires a 357 MB GIS conversion.</td></tr>
-      <tr><td>UN Clear Map raster tiles</td><td>Possible alternative basemap later (free, CORS-enabled).</td></tr>
+      <tr
+        ><td>OCHA/HDX "COD-AB global"</td><td
+          >Rejected: it contains administrative levels 1–4 only (no country outlines), covers 111
+          countries, and is a 1 GB geodatabase.</td
+        ></tr
+      >
+      <tr
+        ><td>UN Geospatial "UNmap" feature service</td><td
+          >Candidate for a future "boundary set" switch. Licence restricted to the UN Secretariat;
+          data frozen in 2019; colours Taiwan with China by rule.</td
+        ></tr
+      >
+      <tr
+        ><td>FieldMaps / USGS international boundaries (UN Clear Map style)</td><td
+          >Candidate for a future switch (public domain), requires a 357 MB GIS conversion.</td
+        ></tr
+      >
+      <tr
+        ><td>UN Clear Map raster tiles</td><td
+          >Possible alternative basemap later (free, CORS-enabled).</td
+        ></tr
+      >
     </tbody>
   </table>
 
   <h2>How names are chosen</h2>
-  <p>Names follow <strong>the data source being cited</strong> — UNHCR's country list — so that a citation from this site matches the upstream record. A short override table improves readability (e.g. "Syrian Arab Rep." is shown as "Syria"; "Serbia and Kosovo: S/RES/1244 (1999)" is shown as "Serbia"); wherever an override applies, the original name is displayed next to it ("Name as used by UNHCR: …"). The UNHCR name is always kept in the <code>name</code> field of every download.</p>
+  <p>
+    Names follow <strong>the data source being cited</strong> — UNHCR's country list — so that a citation
+    from this site matches the upstream record. A short override table improves readability (e.g. "Syrian
+    Arab Rep." is shown as "Syria"; "Serbia and Kosovo: S/RES/1244 (1999)" is shown as "Serbia"); wherever
+    an override applies, the original name is displayed next to it ("Name as used by UNHCR: …"). The UNHCR
+    name is always kept in the <code>name</code> field of every download.
+  </p>
 
   <h2>Contested places, one by one</h2>
-  <p>For each area below we state how it is drawn, what statistics (if any) attach to it, and how each source names it.</p>
-  {notes?.notes.map((n) => (
-    <section class="card" id={n.id}>
-      <h3>{zh ? n.name_zh : n.name}{n.iso3 ? <code class="muted"> {n.iso3}</code> : null}</h3>
-      <p><strong>How it is shown:</strong> {zh ? n.how_shown_zh : n.how_shown}</p>
-      <p class="small muted"><strong>Source naming:</strong> {zh ? n.source_naming_zh : n.source_naming}</p>
-    </section>
-  ))}
+  <p>
+    For each area below we state how it is drawn, what statistics (if any) attach to it, and how
+    each source names it.
+  </p>
+  {
+    notes?.notes.map((n) => (
+      <section class="card" id={n.id}>
+        <h3>
+          {zh ? n.name_zh : n.name}
+          {n.iso3 ? <code class="muted"> {n.iso3}</code> : null}
+        </h3>
+        <p>
+          <strong>How it is shown:</strong> {zh ? n.how_shown_zh : n.how_shown}
+        </p>
+        <p class="small muted">
+          <strong>Source naming:</strong> {zh ? n.source_naming_zh : n.source_naming}
+        </p>
+      </section>
+    ))
+  }
 
   <h2>What "no data" means</h2>
-  <p>Grey on the map means <em>not reported</em> for that year and metric — not zero, and not "no displaced people". Some drawn territories are not UNHCR reporting entities at all (Taiwan, Kosovo, Greenland, several dependencies): they show a tooltip "Not separately reported by UNHCR". Conversely, a few UNHCR entities have no polygon here (Martinique, Gibraltar, Tuvalu, the pseudo-entities "Stateless" and "Unknown"): they are listed in the legend's "cannot be shown on the map" chip and included in every total, table and download. The validation step guarantees <em>mapped total + unmappable total = global total</em> every day.</p>
+  <p>
+    Grey on the map means <em>not reported</em> for that year and metric — not zero, and not "no displaced
+    people". Some drawn territories are not UNHCR reporting entities at all (Taiwan, Kosovo, Greenland,
+    several dependencies): they show a tooltip "Not separately reported by UNHCR". Conversely, a few UNHCR
+    entities have no polygon here (Martinique, Gibraltar, Tuvalu, the pseudo-entities "Stateless" and
+    "Unknown"): they are listed in the legend's "cannot be shown on the map" chip and included in every
+    total, table and download. The validation step guarantees <em
+      >mapped total + unmappable total = global total</em
+    > every day.
+  </p>
 
   <h2>Report an issue with a boundary or name</h2>
-  <p>Write to <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Boundary / name issue')}`}>{CONTACT_EMAIL}</a> with the area, what you see, and (if relevant) the source naming you think should apply. Changes are recorded in the repository history.</p>
-  <p class="small"><a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> · <a href={localizePath('/about', locale)}>{tr('nav.about')}</a></p>
+  <p>
+    Write to <a
+      href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Boundary / name issue')}`}
+      >{CONTACT_EMAIL}</a
+    > with the area, what you see, and (if relevant) the source naming you think should apply. Changes
+    are recorded in the repository history.
+  </p>
+  <p class="small">
+    <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> · <a
+      href={localizePath('/about', locale)}>{tr('nav.about')}</a>
+  </p>
 </DocPage>

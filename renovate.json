@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":disableDependencyDashboard"],
+  "schedule": ["before 6am on the first day of the month"],
+  "timezone": "Asia/Taipei",
+  "rangeStrategy": "pin",
+  "lockFileMaintenance": { "enabled": true, "schedule": ["before 6am on the first day of the month"] },
+  "packageRules": [
+    {
+      "description": "One monthly PR for everything (spec risk #5/#12): small blast radius, CI gate decides.",
+      "matchPackageNames": ["*"],
+      "groupName": "monthly dependency update",
+      "automerge": false
+    },
+    {
+      "description": "Major versions of the runtime stack are reviewed separately (framework-agnostic lib makes this safe but not automatic).",
+      "matchPackageNames": ["astro", "svelte", "@astrojs/svelte", "maplibre-gl", "@observablehq/plot", "zod", "typescript"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "major runtime updates",
+      "labels": ["major"]
+    }
+  ],
+  "github-actions": { "enabled": true, "pinDigests": true }
+}

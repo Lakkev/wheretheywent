@@ -2,6 +2,22 @@
   "printWidth": 100,
   "singleQuote": true,
   "semi": true,
-  "plugins": ["prettier-plugin-svelte"],
-  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+  "plugins": [
+    "prettier-plugin-svelte",
+    "prettier-plugin-astro"
+  ],
+  "overrides": [
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
+    },
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    }
+  ]
 }

@@ -14,70 +14,235 @@ const metrics = getMetrics();
 const pop = sources['unhcr_population'];
 ---
 
-<DocPage locale={locale} title={tr('page.methodology.title')} lede="How the numbers get from UNHCR, IDMC and the UN Population Division onto this map — and what they do and do not mean.">
+<DocPage
+  locale={locale}
+  title={tr('page.methodology.title')}
+  lede="How the numbers get from UNHCR, IDMC and the UN Population Division onto this map — and what they do and do not mean."
+>
   <nav class="small muted" aria-label="Contents">
-    <a href="#sources">Sources</a> · <a href="#pipeline">Pipeline</a> · <a href="#definitions">Definitions</a> · <a href="#null-vs-zero">Null vs zero</a> · <a href="#views">Two views</a> · <a href="#per1k">Per 1,000</a> · <a href="#colours">Colour scales</a> · <a href="#boundaries">Boundaries</a> · <a href="#freshness">Freshness & failure</a> · <a href="#cite">Citing</a> · <a href="#limits">Limitations</a>
+    <a href="#sources">Sources</a> · <a href="#pipeline">Pipeline</a> · <a href="#definitions"
+      >Definitions</a
+    > · <a href="#null-vs-zero">Null vs zero</a> · <a href="#views">Two views</a> · <a href="#per1k"
+      >Per 1,000</a
+    > · <a href="#colours">Colour scales</a> · <a href="#boundaries">Boundaries</a> · <a
+      href="#freshness">Freshness & failure</a
+    > · <a href="#cite">Citing</a> · <a href="#limits">Limitations</a>
   </nav>
 
   <h2 id="sources">1. Sources</h2>
-  <p>Everything shown is <strong>group-level statistics</strong> published by international organisations. This site never handles person-level data.</p>
+  <p>
+    Everything shown is <strong>group-level statistics</strong> published by international organisations.
+    This site never handles person-level data.
+  </p>
   <table class="small">
-    <thead><tr><th>Use</th><th>Source</th><th>Endpoint / file</th><th>License</th><th>As of</th></tr></thead>
+    <thead
+      ><tr><th>Use</th><th>Source</th><th>Endpoint / file</th><th>License</th><th>As of</th></tr
+      ></thead
+    >
     <tbody>
-      <tr><td>Stocks by country & year (refugees, asylum-seekers, IDPs, stateless, others of concern, returnees, OIP)</td><td>UNHCR Refugee Population Statistics Database</td><td><code>api.unhcr.org/population/v1/population/</code> (country of asylum, country of origin, and the bilateral matrix), <code>/footnotes/</code></td><td>{pop?.license.id}</td><td>{fmtDateIso(pop?.data_as_of)}</td></tr>
-      <tr><td>Age & sex</td><td>UNHCR</td><td><code>/demographics/</code> (2010+, country of asylum)</td><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_demographics']?.data_as_of)}</td></tr>
-      <tr><td>Solutions, asylum applications</td><td>UNHCR</td><td><code>/solutions/</code> (2000+), <code>/asylum-applications/</code> (2015+, persons only)</td><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_solutions']?.data_as_of)}</td></tr>
-      <tr><td>Internal displacement (annual stock)</td><td>IDMC via UNHCR</td><td><code>/idmc/</code> (2009+)</td><td>CC BY-IGO</td><td>{fmtDateIso(sources['unhcr_idmc']?.data_as_of)}</td></tr>
-      <tr><td>Recent displacement events (≤ 24 h latency)</td><td>IDMC Internal Displacement Updates</td><td>Helix API, last 180 days</td><td>CC BY-IGO</td><td>{fmtDateIso(sources['idmc_idu']?.data_as_of)}</td></tr>
-      <tr><td>Latest estimate card</td><td>UNHCR nowcasting</td><td><code>/nowcasting/</code> — statistical <em>estimates</em>, labelled as such</td><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_nowcasting']?.data_as_of)}</td></tr>
-      <tr><td>Resident population (per-1,000 denominator)</td><td>UN DESA World Population Prospects 2024</td><td><code>WPP2024_TotalPopulationBySex.csv</code>, medium variant</td><td>CC BY 3.0 IGO</td><td>{fmtDateIso(sources['wpp_population']?.data_as_of)}</td></tr>
-      <tr><td>Boundaries</td><td>Natural Earth 1:50m (via world-atlas)</td><td>simplified TopoJSON</td><td>Public domain</td><td>—</td></tr>
+      <tr
+        ><td
+          >Stocks by country & year (refugees, asylum-seekers, IDPs, stateless, others of concern,
+          returnees, OIP)</td
+        ><td>UNHCR Refugee Population Statistics Database</td><td
+          ><code>api.unhcr.org/population/v1/population/</code> (country of asylum, country of origin,
+          and the bilateral matrix), <code>/footnotes/</code></td
+        ><td>{pop?.license.id}</td><td>{fmtDateIso(pop?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Age & sex</td><td>UNHCR</td><td
+          ><code>/demographics/</code> (2010+, country of asylum)</td
+        ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_demographics']?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Solutions, asylum applications</td><td>UNHCR</td><td
+          ><code>/solutions/</code> (2000+), <code>/asylum-applications/</code> (2015+, persons only)</td
+        ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_solutions']?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Internal displacement (annual stock)</td><td>IDMC via UNHCR</td><td
+          ><code>/idmc/</code> (2009+)</td
+        ><td>CC BY-IGO</td><td>{fmtDateIso(sources['unhcr_idmc']?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Recent displacement events (≤ 24 h latency)</td><td
+          >IDMC Internal Displacement Updates</td
+        ><td>Helix API, last 180 days</td><td>CC BY-IGO</td><td
+          >{fmtDateIso(sources['idmc_idu']?.data_as_of)}</td
+        ></tr
+      >
+      <tr
+        ><td>Latest estimate card</td><td>UNHCR nowcasting</td><td
+          ><code>/nowcasting/</code> — statistical <em>estimates</em>, labelled as such</td
+        ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_nowcasting']?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Resident population (per-1,000 denominator)</td><td
+          >UN DESA World Population Prospects 2024</td
+        ><td><code>WPP2024_TotalPopulationBySex.csv</code>, medium variant</td><td>CC BY 3.0 IGO</td
+        ><td>{fmtDateIso(sources['wpp_population']?.data_as_of)}</td></tr
+      >
+      <tr
+        ><td>Boundaries</td><td>Natural Earth 1:50m (via world-atlas)</td><td
+          >simplified TopoJSON</td
+        ><td>Public domain</td><td>—</td></tr
+      >
     </tbody>
   </table>
-  <p class="small">Full provenance per source (endpoints, content hashes, retrieval times, caveats) is machine-readable in <a href="/data/v1/sources.json"><code>sources.json</code></a>. Not used: ACLED (licence forbids dashboard republication), IOM DTM (licence not yet confirmed), UNHCR Operational Data Portal and microdata (non-commercial terms).</p>
+  <p class="small">
+    Full provenance per source (endpoints, content hashes, retrieval times, caveats) is
+    machine-readable in <a href="/data/v1/sources.json"><code>sources.json</code></a>. Not used:
+    ACLED (licence forbids dashboard republication), IOM DTM (licence not yet confirmed), UNHCR
+    Operational Data Portal and microdata (non-commercial terms).
+  </p>
 
   <h2 id="pipeline">2. Pipeline: daily, static, audited</h2>
   <ol>
-    <li><strong>Fetch</strong> — a scheduled job calls the UNHCR API (throttled: 2 concurrent requests, ≥ 300 ms apart, retries with back-off) and downloads the WPP CSV and the IDMC IDU dump. The latest year with published data is detected automatically (currently {manifest?.year_max}).</li>
-    <li><strong>Normalise</strong> — every row is keyed by <strong>ISO 3166-1 alpha-3</strong> read from UNHCR's <code>coo_iso</code>/<code>coa_iso</code> fields. UNHCR's internal codes (<code>coo</code>/<code>coa</code>) are never used: they collide with real ISO3 codes (UNHCR "AUS" is Austria, "ARE" is Egypt, "MAR" is Martinique). Numeric fields arrive as <code>"-"</code> (not reported), <code>"0"</code> or numbers; they are converted to <code>null</code> / <code>0</code> / integer.</li>
-    <li><strong>Validate</strong> — 15 invariants must hold before anything is published, including: the three collision cases are keyed correctly; no negative or non-finite values; <em>mapped total + unmappable total = global total</em> for every year; year-over-year totals do not drift more than 20 % against the previous snapshot; and three <strong>golden numbers</strong> (Türkiye refugees 2024, Syria IDPs 2016, world refugees 2024) match within 1 %.</li>
-    <li><strong>Promote</strong> — each source is promoted independently. If a source fails or fails validation, its previous snapshot stays online and the site shows a "partial data update delayed" chip with the date; after three consecutive days the maintainer is e-mailed.</li>
-    <li><strong>Publish</strong> — the data files are committed to the repository (a permanent audit trail: <code>git log -- public/data/v1/country/SYR.json</code> answers "what did this number say on day X") and deployed as static files. No server runs at request time; the browser never calls UNHCR.</li>
+    <li>
+      <strong>Fetch</strong> — a scheduled job calls the UNHCR API (throttled: 2 concurrent requests,
+      ≥ 300 ms apart, retries with back-off) and downloads the WPP CSV and the IDMC IDU dump. The latest
+      year with published data is detected automatically (currently {manifest?.year_max}).
+    </li>
+    <li>
+      <strong>Normalise</strong> — every row is keyed by <strong>ISO 3166-1 alpha-3</strong> read from
+      UNHCR's <code>coo_iso</code>/<code>coa_iso</code> fields. UNHCR's internal codes (<code
+        >coo</code
+      >/<code>coa</code>) are never used: they collide with real ISO3 codes (UNHCR "AUS" is Austria,
+      "ARE" is Egypt, "MAR" is Martinique). Numeric fields arrive as <code>"-"</code> (not reported),
+      <code>"0"</code> or numbers; they are converted to <code>null</code> / <code>0</code> / integer.
+    </li>
+    <li>
+      <strong>Validate</strong> — 15 invariants must hold before anything is published, including: the
+      three collision cases are keyed correctly; no negative or non-finite values; <em
+        >mapped total + unmappable total = global total</em
+      > for every year; year-over-year totals do not drift more than 20 % against the previous snapshot;
+      and three <strong>golden numbers</strong> (Türkiye refugees 2024, Syria IDPs 2016, world refugees
+      2024) match within 1 %.
+    </li>
+    <li>
+      <strong>Promote</strong> — each source is promoted independently. If a source fails or fails validation,
+      its previous snapshot stays online and the site shows a "partial data update delayed" chip with
+      the date; after three consecutive days the maintainer is e-mailed.
+    </li>
+    <li>
+      <strong>Publish</strong> — the data files are committed to the repository (a permanent audit trail:
+      <code>git log -- public/data/v1/country/SYR.json</code> answers "what did this number say on day
+      X") and deployed as static files. No server runs at request time; the browser never calls UNHCR.
+    </li>
   </ol>
 
   <h2 id="definitions">3. Definitions</h2>
   <dl>
-    {Object.values(metrics?.metrics ?? {}).map((m) => (<><dt><strong>{m.label}</strong></dt><dd>{m.definition}{m.caveats.length ? <ul class="small">{m.caveats.map((c) => <li>{c}</li>)}</ul> : null}</dd></>))}
+    {
+      Object.values(metrics?.metrics ?? {}).map((m) => (
+        <>
+          <>
+            <dt>
+              <strong>{m.label}</strong>
+            </dt>
+            <dd>
+              {m.definition}
+              {m.caveats.length ? (
+                <ul class="small">
+                  {m.caveats.map((c) => (
+                    <li>{c}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </dd>
+          </>
+        </>
+      ))
+    }
   </dl>
-  <p>All stock figures are <strong>year-end (31 December)</strong>. "Returned" figures are flows during the year. The UNHCR population figures exclude Palestine refugees under UNRWA's mandate (about 6 million); see the Palestine page note.</p>
+  <p>
+    All stock figures are <strong>year-end (31 December)</strong>. "Returned" figures are flows
+    during the year. The UNHCR population figures exclude Palestine refugees under UNRWA's mandate
+    (about 6 million); see the Palestine page note.
+  </p>
 
   <h2 id="null-vs-zero">4. Null is not zero</h2>
-  <p>UNHCR distinguishes <em>not reported</em> (<code>"-"</code>) from <em>reported zero</em>. We keep that distinction everywhere: on the map (grey vs the lightest blue), in charts (a gap in the line vs a point at 0), in CSV (empty field vs <code>0</code>) and in JSON (<code>null</code> vs <code>0</code>). A country in grey may host many refugees that simply were not reported for that year.</p>
+  <p>
+    UNHCR distinguishes <em>not reported</em> (<code>"-"</code>) from <em>reported zero</em>. We
+    keep that distinction everywhere: on the map (grey vs the lightest blue), in charts (a gap in
+    the line vs a point at 0), in CSV (empty field vs <code>0</code>) and in JSON (<code>null</code> vs
+    <code>0</code>). A country in grey may host many refugees that simply were not reported for that
+    year.
+  </p>
 
   <h2 id="views">5. Two views: who hosts, who fled</h2>
-  <p>Every figure has two geographies. <strong>Country of asylum</strong> ("who hosts them") counts people where they are now. <strong>Country of origin</strong> ("who fled") counts the same people by the country they left. Internally displaced persons are counted in their own country in both views. The "Flows" tab and the <code>flows/</code> files give the bilateral matrix.</p>
+  <p>
+    Every figure has two geographies. <strong>Country of asylum</strong> ("who hosts them") counts people
+    where they are now. <strong>Country of origin</strong> ("who fled") counts the same people by the
+    country they left. Internally displaced persons are counted in their own country in both views. The
+    "Flows" tab and the <code>flows/</code> files give the bilateral matrix.
+  </p>
 
   <h2 id="per1k">6. Per 1,000 residents</h2>
-  <p>Rate = persons ÷ UN WPP mid-year total population × 1,000. Two caveats: the numerator is a 31 December stock while the denominator is 1 July; and WPP values after the estimate base year are medium-variant projections. Rates are not shown where population is missing.</p>
+  <p>
+    Rate = persons ÷ UN WPP mid-year total population × 1,000. Two caveats: the numerator is a 31
+    December stock while the denominator is 1 July; and WPP values after the estimate base year are
+    medium-variant projections. Rates are not shown where population is missing.
+  </p>
 
   <h2 id="colours">7. Colour scales</h2>
-  <p>A single-hue blue ramp (ColorBrewer Blues) is used throughout — no red/orange scales, which would visually frame displaced people as a threat. Seven classes. Default breaks are <strong>quantiles</strong> of the countries currently shown (so the map always has contrast); log and linear breaks are available and rounded to "nice" numbers. Zero has its own lightest colour; not-reported is grey.</p>
+  <p>
+    A single-hue blue ramp (ColorBrewer Blues) is used throughout — no red/orange scales, which
+    would visually frame displaced people as a threat. Seven classes. Default breaks are <strong
+      >quantiles</strong
+    > of the countries currently shown (so the map always has contrast); log and linear breaks are available
+    and rounded to "nice" numbers. Zero has its own lightest colour; not-reported is grey.
+  </p>
 
   <h2 id="boundaries">8. Boundaries and names</h2>
-  <p>Boundaries come from Natural Earth, simplified for display. Country names follow the data source being cited (UNHCR), with a small override table for readability (e.g. "Syrian Arab Rep." → "Syria"); the original name is always shown alongside. Disputed territories, Kosovo and Taiwan are handled explicitly — see <a href={localizePath('/about/boundaries', locale)}>Boundaries, names and disputed territories</a>.</p>
+  <p>
+    Boundaries come from Natural Earth, simplified for display. Country names follow the data source
+    being cited (UNHCR), with a small override table for readability (e.g. "Syrian Arab Rep." →
+    "Syria"); the original name is always shown alongside. Disputed territories, Kosovo and Taiwan
+    are handled explicitly — see <a href={localizePath('/about/boundaries', locale)}
+      >Boundaries, names and disputed territories</a
+    >.
+  </p>
 
   <h2 id="freshness">9. Freshness and failure</h2>
-  <p>UNHCR publishes annual figures around June (previous year) and mid-year figures around October/November. The pipeline runs daily but only commits when content changes. Three timestamps are kept apart: <code>data_as_of</code> (what the data covers), <code>retrieved_at</code> (when we fetched it — only advances when content changed) and the <code>snapshot_id</code> (content hash of the whole dataset, currently <code>{manifest?.snapshot_id}</code>).</p>
+  <p>
+    UNHCR publishes annual figures around June (previous year) and mid-year figures around
+    October/November. The pipeline runs daily but only commits when content changes. Three
+    timestamps are kept apart: <code>data_as_of</code> (what the data covers), <code
+      >retrieved_at</code
+    > (when we fetched it — only advances when content changed) and the <code>snapshot_id</code> (content
+    hash of the whole dataset, currently <code>{manifest?.snapshot_id}</code>).
+  </p>
 
   <h2 id="cite">10. Citing</h2>
-  <p>Every view has a permanent link that reproduces year, metric, view, filters, selection and map position. The "Cite" button gives APA 7, Chicago author-date, BibTeX and a plain "cite this page" string that names the upstream source, its as-of date and our retrieval date. Please cite the upstream source as well as this site.</p>
+  <p>
+    Every view has a permanent link that reproduces year, metric, view, filters, selection and map
+    position. The "Cite" button gives APA 7, Chicago author-date, BibTeX and a plain "cite this
+    page" string that names the upstream source, its as-of date and our retrieval date. Please cite
+    the upstream source as well as this site.
+  </p>
 
   <h2 id="limits">11. Limitations</h2>
   <ul>
-    <li>Statistics depend on what governments and UNHCR operations report; coverage and definitions vary by country and year.</li>
-    <li>IDP figures cover conflict and violence only (IDMC); disaster displacement is not included in the annual stocks.</li>
-    <li>Nowcast and IDU figures are estimates / preliminary and are labelled as such; they are never mixed into the annual series.</li>
-    <li>Mapping requires a polygon: a few reporting entities (e.g. Martinique, Gibraltar, Tuvalu, "Stateless", "Unknown") have no drawable boundary here; they are listed in the legend and included in all totals, tables and downloads.</li>
+    <li>
+      Statistics depend on what governments and UNHCR operations report; coverage and definitions
+      vary by country and year.
+    </li>
+    <li>
+      IDP figures cover conflict and violence only (IDMC); disaster displacement is not included in
+      the annual stocks.
+    </li>
+    <li>
+      Nowcast and IDU figures are estimates / preliminary and are labelled as such; they are never
+      mixed into the annual series.
+    </li>
+    <li>
+      Mapping requires a polygon: a few reporting entities (e.g. Martinique, Gibraltar, Tuvalu,
+      "Stateless", "Unknown") have no drawable boundary here; they are listed in the legend and
+      included in all totals, tables and downloads.
+    </li>
   </ul>
-  <p class="small muted">Questions or corrections: see <a href={localizePath('/about', locale)}>About</a>.</p>
+  <p class="small muted">
+    Questions or corrections: see <a href={localizePath('/about', locale)}>About</a>.
+  </p>
 </DocPage>

@@ -1,0 +1,129 @@
+# Daily ETL: fetch → validate → promote per source → commit only when content changed (spec §4, §7.8, D16).
+# Failure → comment on the pinned issue #1 (subscribe to it to get e-mail alerts). See docs/RUNBOOK.md.
+name: etl-daily
+
+on:
+  schedule:
+    - cron: '17 3 * * *' # 03:17 UTC daily
+  workflow_dispatch:
+    inputs:
+      skip_live:
+        description: 'Skip live sources (nowcast, IDMC IDU)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: etl
+  cancel-in-progress: false
+
+env:
+  ALERT_ISSUE_NUMBER: '1' # pinned issue that receives failure comments (create it once; see RUNBOOK)
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Fetch + transform (staging)
+        id: etl
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.skip_live }}" = "true" ]; then ARGS="--skip-live"; fi
+          node scripts/etl/run.ts --out .etl-staging $ARGS
+
+      - name: Validate candidate
+        run: node scripts/etl/validate.ts --in .etl-staging
+
+      - name: Keep raw candidate for forensics (90 days)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: etl-staging-${{ github.run_id }}
+          path: |
+            .etl-staging/_status.json
+            .etl-staging/_validation.json
+            .etl-staging/sources.json
+            .etl-staging/manifest.json
+            .etl-staging/unmatched-report.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Promote (per source group; fails when a source has been stale ≥ 3 days)
+        id: promote
+        run: node scripts/etl/promote.ts --fail-if-stale-days 3
+
+      - name: Self-check published tree
+        run: node scripts/etl/validate.ts --in public/data/v1
+
+      - name: Commit & push if the data changed
+        id: commit
+        run: |
+          git config user.name "wtw-etl[bot]"
+          git config user.email "wtw-etl[bot]@users.noreply.github.com"
+          git add -A public/data/v1
+          if git diff --cached --quiet; then
+            echo "no data change — nothing to commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            SNAP=$(node -e "console.log(require('./public/data/v1/manifest.json').snapshot_id)")
+            git commit -m "data: snapshot ${SNAP} ($(date -u +%F))" -m "Automated ETL run ${{ github.run_id }}."
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## ETL run"
+            echo ""
+            echo "- changed: ${{ steps.commit.outputs.changed || 'n/a' }}"
+            if [ -f .etl-staging/_status.json ]; then
+              echo '```json'; cat .etl-staging/_status.json; echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Alert on failure (comment on pinned issue → e-mail to subscribers)
+        if: failure()
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const issue_number = Number(process.env.ALERT_ISSUE_NUMBER);
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const fs = require('fs');
+            let detail = '';
+            try { detail = fs.readFileSync('.etl-staging/_status.json', 'utf8').slice(0, 3000); } catch {}
+            const body = [
+              `### ⚠️ Daily ETL failed — ${new Date().toISOString().slice(0, 10)}`,
+              '',
+              `Run: ${run}`,
+              '',
+              'The website keeps serving the previous snapshot; nothing is broken for visitors.',
+              'What to do: see **docs/RUNBOOK.md → "I received an ETL alert"**.',
+              '',
+              detail ? '```json\n' + detail + '\n```' : '(no status file — the run failed before fetching)',
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ ...context.repo, issue_number, body });
+            } catch (e) {
+              core.warning(`Could not comment on issue #${issue_number}: ${e.message}. Create the pinned alert issue (see RUNBOOK).`);
+              await github.rest.issues.create({ ...context.repo, title: 'ETL alerts (pin me, subscribe to get e-mails)', body });
+            }

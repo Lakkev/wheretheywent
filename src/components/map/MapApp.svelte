@@ -233,8 +233,10 @@
         if (webgl) await loadGeo();
         ready = true;
         lastState = snapshot();
-        document.getElementById('map-skeleton')?.setAttribute('hidden', '');
-        document.getElementById('map-canvas-skeleton')?.setAttribute('hidden', '');
+        // the pure-HTML skeleton has done its job (paint before JS) — remove it so it never
+        // competes with the live UI for selectors, focus order or screen readers
+        document.getElementById('map-skeleton')?.remove();
+        document.getElementById('map-canvas-skeleton')?.remove();
         session.presentation = false;
         onIdle(() => void loadHistory());
         onIdle(() => void loadLive(), 4000);

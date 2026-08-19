@@ -1,0 +1,42 @@
+# Where They Went · 他們去了哪裡
+
+Global forced-displacement data platform for journalists, researchers and NGOs: an interactive
+world map of refugees, asylum-seekers, internally displaced and stateless people by country and
+year (1951–latest), with sources, as-of dates, permanent links, citations and downloads for every
+number. Data: UNHCR, IDMC, UN WPP. No server, no tracking, zero hosting cost.
+
+**Status**: MVP complete (batches ①–⑥ of `SPEC.md`). Ready for first-time setup — see
+`docs/RUNBOOK.md` §8.
+
+## Quick start
+
+```bash
+npm ci                                   # installs deps, vendors the MapLibre worker
+ETL_CACHE=1 npm run etl                  # fetch upstream → .etl-staging (≈3 min cold)
+npm run etl:validate && npm run etl:promote
+npm run dev                              # http://localhost:4321
+```
+
+Quality gates: `npm run check` · `npm test` (60 unit tests) · `npm run build && npm run test:e2e`
+(19 Playwright specs incl. axe, share-link reproduction, WebGL/basemap fallbacks).
+
+## Documents
+
+| | |
+|---|---|
+| `SPEC.md` | The frozen specification (requirements, data traps, architecture, delivery plan) |
+| `docs/ARCHITECTURE.md` | Every decision and *why*; budgets; how to change things |
+| `docs/RUNBOOK.md` | Non-engineering operations guide ("I received an alert") |
+| `docs/DATA-DICTIONARY.md` | Every field, unit, caveat |
+| `docs/data-verification.md` | Manual reconciliation log and golden numbers |
+| `DATA-LICENSE.md` | Upstream licences and required attribution |
+
+## Licence
+
+Code: all rights reserved (see `LICENSE`) — public for transparency and audit. Data: original
+open licences (CC BY 4.0 UNHCR, CC BY-IGO IDMC, CC BY 3.0 IGO UN WPP, public domain Natural Earth).
+
+## Pending decisions (Appendix C of the spec)
+
+- Taiwan display policy: option **(c)** implemented by default (independent feature, "no data", explained on `/about/boundaries`); awaiting confirmation.
+- Project e-mail, GitHub organisation, Cloudflare account, custom domain.

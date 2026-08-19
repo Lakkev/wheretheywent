@@ -1,0 +1,54 @@
+# Daily upstream reachability probe. Opens/updates an issue only after 3 consecutive failing days
+# (transient outages are normal and the ETL already degrades gracefully). Spec §6.
+name: upstream-health
+
+on:
+  schedule:
+    - cron: '45 2 * * *' # 02:45 UTC, before the ETL
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Probe endpoints
+        id: probe
+        run: |
+          set +e
+          fail=0
+          probe() { # name url
+            code=$(curl -sS -o /dev/null -m 60 -w '%{http_code}' -A 'WhereTheyWent-health/1.0' "$2")
+            echo "$1: HTTP $code"
+            case "$code" in 200|301|302) ;; *) fail=1; echo "::warning::$1 returned $code";; esac
+          }
+          probe unhcr-years   'https://api.unhcr.org/population/v1/years/?limit=1'
+          probe unhcr-pop     'https://api.unhcr.org/population/v1/population/?year=2024&coa=DEU&cf_type=ISO&limit=1'
+          probe unhcr-nowcast 'https://api.unhcr.org/population/v1/nowcasting/?coa_all=true&limit=1'
+          probe wpp-csv       'https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_TotalPopulationBySex.csv.gz'
+          probe idmc-idu      'https://helix-tools-api.idmcdb.org/external-api/idus/last-180-days/?client_id=IDMCWSHSOLO009'
+          probe openfreemap   'https://tiles.openfreemap.org/styles/positron'
+          echo "fail=$fail" >> "$GITHUB_OUTPUT"
+          exit $fail
+
+      - name: Escalate after 3 consecutive failures
+        if: failure()
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            // Look at the last 3 completed runs of this workflow (excluding this one)
+            const runs = await github.rest.actions.listWorkflowRuns({ ...context.repo, workflow_id: 'upstream-health.yml', per_page: 5, status: 'completed' });
+            const prev = runs.data.workflow_runs.filter((r) => r.id !== context.runId).slice(0, 2);
+            const consecutive = prev.length === 2 && prev.every((r) => r.conclusion === 'failure');
+            if (!consecutive) { core.info('Not yet 3 consecutive failures — no issue.'); return; }
+            const title = 'Upstream health: 3 consecutive failing days';
+            const open = await github.rest.issues.listForRepo({ ...context.repo, state: 'open', labels: 'upstream' });
+            const body = `At least one upstream endpoint has failed the health probe for 3 days in a row.\n\nLatest run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nThe site keeps serving the last good snapshot. See docs/RUNBOOK.md → "Upstream health issue".`;
+            const existing = open.data.find((i) => i.title === title);
+            if (existing) await github.rest.issues.createComment({ ...context.repo, issue_number: existing.number, body });
+            else await github.rest.issues.create({ ...context.repo, title, body, labels: ['upstream'] });

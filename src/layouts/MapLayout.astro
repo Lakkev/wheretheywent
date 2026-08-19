@@ -15,7 +15,14 @@ interface Props {
 const { title, description, locale, jsonLd } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} locale={locale} jsonLd={jsonLd} bare bodyClass="map-page">
+<BaseLayout
+  title={title}
+  description={description}
+  locale={locale}
+  jsonLd={jsonLd}
+  bare
+  bodyClass="map-page"
+>
   <Fragment slot="head">
     <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
     <link rel="preload" href="/data/v1/manifest.json" as="fetch" crossorigin />

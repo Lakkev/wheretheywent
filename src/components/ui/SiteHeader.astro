@@ -23,7 +23,10 @@ const isCurrent = (href: string) => (href === '/' ? here === '/' : here.startsWi
     <nav class="site-nav" aria-label="Primary">
       {
         items.map((it) => (
-          <a href={localizePath(it.href, locale)} aria-current={isCurrent(it.href) ? 'page' : undefined}>
+          <a
+            href={localizePath(it.href, locale)}
+            aria-current={isCurrent(it.href) ? 'page' : undefined}
+          >
             {tr(it.key)}
           </a>
         ))
