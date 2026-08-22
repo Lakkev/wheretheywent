@@ -3,6 +3,6 @@
 # Build output:    dist
 # Node version:    22 (set NODE_VERSION=22.22.2 in the Pages environment variables)
 # Env vars:        PUBLIC_SITE_URL, PUBLIC_CONTACT_EMAIL, PUBLIC_MAP_STYLE_URL (optional)
-name = "where-they-went"
+name = "wheretheywent"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-01"

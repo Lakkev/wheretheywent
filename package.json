@@ -56,5 +56,10 @@
     "esbuild@0.28.2": true,
     "better-sqlite3@12.11.1": true,
     "msgpackr-extract@3.0.4": true
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lakkev/wheretheywent.git"
+  },
+  "homepage": "https://lakkev.com"
 }

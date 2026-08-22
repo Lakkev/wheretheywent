@@ -398,7 +398,7 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
     title: 'Where They Went — forced displacement statistics',
     version: snapshotId,
     created: inp.now,
-    homepage: process.env.PUBLIC_SITE_URL ?? 'https://wheretheywent.pages.dev',
+    homepage: process.env.PUBLIC_SITE_URL ?? 'https://lakkev.com',
     licenses: [
       {
         name: 'CC-BY-4.0',

@@ -11,7 +11,7 @@ export const HTTP = {
   timeoutMs: 60_000, // measured: a 10,000-row page takes ~7.5 s
   retries: 5, // exponential backoff 1→2→4→8→16 s + jitter
   retryOn: [429, 500, 502, 503, 504],
-  userAgent: `WhereTheyWent/1.0 (+${process.env.PUBLIC_SITE_URL ?? 'https://wheretheywent.pages.dev'}; ${process.env.PUBLIC_CONTACT_EMAIL ?? 'contact@example.org'})`,
+  userAgent: `WhereTheyWent/1.0 (+${process.env.PUBLIC_SITE_URL ?? 'https://lakkev.com'}; ${process.env.PUBLIC_CONTACT_EMAIL ?? 'contact@example.org'})`,
 } as const;
 
 export const PAGE_LIMIT = 10_000; // measured OK (no 100 cap)
