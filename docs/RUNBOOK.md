@@ -114,24 +114,47 @@ suite on it.
 
 ---
 
-## 8. First-time setup checklist (done once)
+## 8. First-time setup — current state (2026-08-22)
 
-1. Create the GitHub repository (public), push this code, set **Settings → Actions → Workflow
-   permissions → Read and write**.
-2. Create an issue titled **"ETL alerts"**, pin it, subscribe to it. Its number must be `1` (or
-   change `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`).
-3. Repository **Settings → Secrets and variables → Actions → Variables**: `PUBLIC_SITE_URL`
-   (e.g. `https://wheretheywent.lakkev.com`) and `PUBLIC_CONTACT_EMAIL` (the project mailbox).
-4. Cloudflare → Workers & Pages → Create → Pages → Connect to Git → this repo.
-   Build command `npm run build`, output `dist`, environment variable `NODE_VERSION=22.22.2`,
-   plus the two `PUBLIC_*` variables. Save & deploy.
-5. Actions → **etl-daily** → Run workflow. Wait ~5 minutes; a data commit appears; Cloudflare rebuilds.
-6. Open the site. Check: map renders; clicking a country shows numbers; *Cite* works; `/data` lists
-   downloads.
-7. (Optional) custom domain in Cloudflare Pages → Custom domains; update `PUBLIC_SITE_URL`.
-8. Enable Renovate (GitHub app) for monthly updates.
+**Already done** (by the AI session on 2026-08-22):
 
----
+- [x] Cloudflare Pages project `wheretheywent` created and deployed (direct upload).
+      Live at <https://wheretheywent.pages.dev>.
+- [x] Custom domain `wheretheywent.lakkev.com` registered on the Pages project (status: *pending*
+      until the DNS record below exists).
+- [x] GitHub repository <https://github.com/Lakkev/wheretheywent> created (public).
+- [x] Site URL baked in as `https://wheretheywent.lakkev.com` (canonical, JSON-LD, citations, sitemap).
+
+**Still to do — needs you** (each is one or two clicks/commands):
+
+1. **DNS record** (makes the custom domain live). Cloudflare dashboard → **lakkev.com** → **DNS** →
+   **Add record**: type `CNAME`, name `wheretheywent`, target `wheretheywent.pages.dev`,
+   proxy **on** (orange cloud) → Save. The certificate provisions within a few minutes.
+   *(The CLI token used by the AI has no DNS-write permission, which is why this is manual.)*
+2. **Push the code** (the repo exists but is still empty — the CLI token lacks the `workflow`
+   scope needed to upload `.github/workflows/`). In a terminal:
+   ```
+   gh auth refresh -h github.com -s workflow
+   ```
+   Follow the browser prompt, then tell the AI assistant "done" and it will push.
+3. **Project mailbox**. `PUBLIC_CONTACT_EMAIL` is currently `contact@lakkev.com`, which does not
+   exist yet. Easiest: Cloudflare → lakkev.com → **Email** → Email Routing → forward
+   `contact@lakkev.com` to your real inbox. (Until then the "report a problem" links point at a
+   dead address.)
+4. **After the push**: repo → Settings → Actions → Workflow permissions → **Read and write**;
+   create an issue titled **"ETL alerts"**, pin it, subscribe (it must be issue #1, or change
+   `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`); Settings → Secrets and variables →
+   Actions → Variables: `PUBLIC_SITE_URL=https://wheretheywent.lakkev.com`,
+   `PUBLIC_CONTACT_EMAIL=contact@lakkev.com`.
+5. **Automatic redeploys**. Right now deployments are manual
+   (`npx wrangler pages deploy dist --project-name wheretheywent`). To make the daily ETL publish
+   by itself, pick one:
+   - *Git integration* (spec default): Cloudflare → Workers & Pages → wheretheywent → Settings →
+     Builds → Connect to Git → this repo; build command `npm run build`, output `dist`,
+     env `NODE_VERSION=22.22.2` + the two `PUBLIC_*` variables.
+   - *Deploy from Actions*: create a Cloudflare API token (Pages:Edit) and add it as the repo
+     secret `CLOUDFLARE_API_TOKEN`; the AI can then add a deploy step to `etl-daily.yml`.
+6. Enable Renovate (GitHub app) for the monthly dependency PR.
 
 ## 9. Things that are deliberately **not** possible
 

@@ -5,8 +5,9 @@ world map of refugees, asylum-seekers, internally displaced and stateless people
 year (1951–latest), with sources, as-of dates, permanent links, citations and downloads for every
 number. Data: UNHCR, IDMC, UN WPP. No server, no tracking, zero hosting cost.
 
-**Status**: MVP complete (batches ①–⑥ of `SPEC.md`). Ready for first-time setup — see
-`docs/RUNBOOK.md` §8.
+**Status**: MVP complete (batches ①–⑥ of `SPEC.md`) and **deployed**:
+<https://wheretheywent.pages.dev> → <https://wheretheywent.lakkev.com> (pending one DNS record).
+Remaining setup steps: `docs/RUNBOOK.md` §8.
 
 ## Quick start
 
