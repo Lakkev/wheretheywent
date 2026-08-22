@@ -121,7 +121,7 @@ suite on it.
 2. Create an issue titled **"ETL alerts"**, pin it, subscribe to it. Its number must be `1` (or
    change `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`).
 3. Repository **Settings → Secrets and variables → Actions → Variables**: `PUBLIC_SITE_URL`
-   (e.g. `https://lakkev.com`) and `PUBLIC_CONTACT_EMAIL` (the project mailbox).
+   (e.g. `https://wheretheywent.lakkev.com`) and `PUBLIC_CONTACT_EMAIL` (the project mailbox).
 4. Cloudflare → Workers & Pages → Create → Pages → Connect to Git → this repo.
    Build command `npm run build`, output `dist`, environment variable `NODE_VERSION=22.22.2`,
    plus the two `PUBLIC_*` variables. Save & deploy.

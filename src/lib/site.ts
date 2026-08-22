@@ -1,6 +1,6 @@
 /** Site-wide constants. All environment-configurable values live here. */
 export const SITE_URL = (
-  import.meta.env.PUBLIC_SITE_URL || 'https://lakkev.com'
+  import.meta.env.PUBLIC_SITE_URL || 'https://wheretheywent.lakkev.com'
 ).replace(/\/$/, '');
 export const CONTACT_EMAIL = import.meta.env.PUBLIC_CONTACT_EMAIL || 'contact@example.org';
 export const MAP_STYLE_URL =
