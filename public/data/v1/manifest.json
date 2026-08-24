@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "dd3c6875",
+  "snapshot_id": "b0f6d319",
   "git_commit": null,
-  "generated_at": "2026-08-19T14:24:29Z",
+  "generated_at": "2026-08-24T11:54:43Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1007,28 +1007,28 @@
       "bytes": 33567
     },
     "datapackage.json": {
-      "sha256": "11a57832bc3073a52f8338ffe0ab45f7420c097e4312266e15e3546fc0a337fc",
-      "bytes": 11675
+      "sha256": "df872d041b456066be47dde27f3f648ddc751daf1b755cfb2de891393ca76a80",
+      "bytes": 11674
     },
     "downloads/countries.csv": {
       "sha256": "355cb8580619d06e438e93256dd6c277eac66f7ba64b63f9990f9460a1d945a3",
       "bytes": 14647
     },
     "downloads/unhcr-population-all-years.csv": {
-      "sha256": "4fb6d29be8d76de14fad83108804ba5382c775107a9c1721390f5d1b666f8464",
-      "bytes": 18811389
+      "sha256": "16b86a3018523a59c10661c8119d7657bb735ad98b4f036d71de90ce75c1f0b5",
+      "bytes": 18563459
     },
     "downloads/unhcr-population-by-asylum.csv": {
-      "sha256": "1e698b398633da14010b20ad97f9f8b239913680ba9ed81724db98fb5363ee02",
-      "bytes": 810687
+      "sha256": "74d7ab6b84ee0d1c35cd57b23547bc9d8d2af27f0c604cd1e80686a54c7a289a",
+      "bytes": 795083
     },
     "downloads/unhcr-population-by-origin.csv": {
-      "sha256": "a90612f488761a30a71cfc19c0b397e1b5cb6cd0bc696ca0bd126ca36a21eb4d",
-      "bytes": 786871
+      "sha256": "235292bc7e0764a77dd5ade48f43a82cd37fb960a41a2bc6cdd82243acfb2d65",
+      "bytes": 771525
     },
     "downloads/wpp-total-population.csv": {
-      "sha256": "130a23a202b0cec3d94c4086b799b64bb90c546acb5656d38b8cd4a3caff2009",
-      "bytes": 1519692
+      "sha256": "84d915e33d06b0aa9596b75cb4678a42d8332bf4fa210b34443c0a75b429d093",
+      "bytes": 1484442
     },
     "flows/2015.json": {
       "sha256": "720834ad5bcf9a69b1acd529023728b8dddbd0c87f47676bd3a9bc65544c35b6",
@@ -1087,8 +1087,8 @@
       "bytes": 169416
     },
     "live/idu-latest.json": {
-      "sha256": "fdb6f3f2b2aa1a32d7de72c223b6a3b3de8c181c8df39883a414d25a62a5fa64",
-      "bytes": 1498085
+      "sha256": "099b0936927293e79fff7d6d101e5232a60639e0aee7b2023b90868d83a12f10",
+      "bytes": 1499548
     },
     "live/nowcast.json": {
       "sha256": "49e413a1c3b501148ea8d27fbbd43921869d1921398d25d21a0d3c8be258facc",
@@ -1099,7 +1099,7 @@
       "bytes": 5111
     },
     "sources.json": {
-      "sha256": "ef0c362e98ae3c07a3b18dc02850005859b16934db0b41df002785ae89eeb965",
+      "sha256": "527dfb11a2d1a75f46de22d135a57cca140c54ecf988dc5f58c7e7a4b1ab0ee3",
       "bytes": 14498
     },
     "stock/1951-2014.json": {

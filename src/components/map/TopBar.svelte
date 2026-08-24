@@ -3,6 +3,7 @@
   import { URL_METRICS } from '../../lib/url';
   import { useT, localizePath, LOCALES, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
+  import { CONTACT_EMAIL } from '../../lib/site';
 
   let {
     locale,
@@ -22,6 +23,20 @@
   const metricLabel = (m: string) => tr(`metric.${m}` as MessageKey);
   const pathWithQuery = () => (typeof location !== 'undefined' ? location.search : '');
   let menuOpen = $state(false);
+  /** D17: contextual problem report — the mailto body carries the exact share URL of this view. */
+  function report() {
+    const subject = encodeURIComponent('[Where They Went] Problem report');
+    const body = encodeURIComponent(
+      `Page: ${location.href}
+
+What looks wrong:
+
+What you expected (with a source if possible):
+`,
+    );
+    menuOpen = false;
+    location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  }
   function closeMenuOnOutside(e: MouseEvent) {
     if (!(e.target as HTMLElement).closest('.menu')) menuOpen = false;
   }
@@ -121,6 +136,7 @@
           <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
           <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
           <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
+          <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
         </nav>
         <nav class="lang-switch" aria-label={tr('nav.language')}>
           {#each LOCALES as l (l)}
@@ -168,6 +184,19 @@
     border-radius: var(--radius-sm);
   }
   .menu-nav a:hover {
+    background: var(--c-surface-2);
+  }
+  .report-item {
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--c-text);
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    cursor: pointer;
+  }
+  .report-item:hover {
     background: var(--c-surface-2);
   }
   @media (max-width: 1100px) {

@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { THRESHOLDS, GOLDEN, GOLDEN_TOLERANCE_OVERRIDE, GEO, PATHS, SOURCE_IDS } from './config.ts';
 import { readJsonIfExists, listFiles, sha256File, writeJsonAtomic } from './lib/atomic.ts';
 import { KNOWN_COLLISIONS, NON_GEO_ENTITIES } from './lib/codes.ts';
-import { unpack } from '../../src/lib/columnar.ts';
+import { pack, unpack } from '../../src/lib/columnar.ts';
 import {
   METRIC_IDS,
   type Manifest,
@@ -347,26 +347,71 @@ function main() {
           }
         }
       }
-      return `${n} values`;
+      // country files: packed series + demographics + flows spot-checked with the same rules
+      const cdir = join(IN, 'country');
+      let cn = 0;
+      if (existsSync(cdir)) {
+        for (const fname of readdirSync(cdir).filter((f) => f.endsWith('.json'))) {
+          const cf = readJsonIfExists<CountryFile>(join(cdir, fname));
+          if (!cf) continue;
+          for (const packed of [...cf.asylum.v, ...cf.origin.v, cf.population]) {
+            for (const val of unpack(packed)) {
+              if (val === null) continue;
+              assert(
+                Number.isFinite(val) && val >= 0 && Number.isInteger(val),
+                `${fname}: bad value ${val}`,
+              );
+              cn++;
+            }
+          }
+          for (const d of cf.demographics)
+            for (const val of [...d.f, ...d.m, d.total]) {
+              if (val === null) continue;
+              assert(Number.isFinite(val) && val >= 0, `${fname}: bad demographics value ${val}`);
+            }
+        }
+      }
+      const fdir = join(IN, 'flows');
+      if (existsSync(fdir)) {
+        for (const fname of readdirSync(fdir).filter((f) => f.endsWith('.json'))) {
+          const fl = readJsonIfExists<{ rows: [string, string, number | null, number | null][] }>(
+            join(fdir, fname),
+          );
+          for (const row of fl?.rows ?? [])
+            for (const val of [row[2], row[3]]) {
+              if (val === null) continue;
+              assert(Number.isFinite(val) && val >= 0, `flows/${fname}: bad value ${val}`);
+            }
+        }
+      }
+      return `${n} stock + ${cn} country values`;
     });
     guard('#7 null vs 0 distinguishable after codec round-trip (stock)', 'core', () => {
       let nulls = 0,
-        zeros = 0;
+        zeros = 0,
+        series = 0;
       for (const s of stockFiles) {
-        for (const e of Object.values(s.asylum)) {
-          for (const series of e.v) {
-            // re-pack check: unpack then count
-            for (const v of unpack(series)) {
-              if (v === null) nulls++;
-              else if (v === 0) zeros++;
+        for (const view of ['asylum', 'origin'] as const) {
+          for (const e of Object.values(s[view])) {
+            for (const p of e.v) {
+              Packed.parse(p); // structural: number | null | ['z'|'n', n]
+              const u = unpack(p);
+              // the published form must be the canonical packing — a byte-identical round trip
+              assert(
+                JSON.stringify(pack(u)) === JSON.stringify(p),
+                `${view}: pack(unpack(x)) !== x — codec drift`,
+              );
+              series++;
+              for (const v of u) {
+                if (v === null) nulls++;
+                else if (v === 0) zeros++;
+              }
             }
           }
         }
-        // structural: packed cells must be number|null|['z'|'n',n]
-        for (const e of Object.values(s.asylum)) for (const series of e.v) Packed.parse(series);
       }
       assert(nulls > 0 && zeros > 0, `expected both nulls (${nulls}) and zeros (${zeros}) in data`);
-      return `${nulls} nulls, ${zeros} zeros coexist`;
+      return `${series} series round-tripped; ${nulls} nulls and ${zeros} zeros coexist`;
     });
     guard('#3 max year ≥ previous snapshot', 'core', () => {
       assert(manifest, 'manifest missing');
@@ -413,33 +458,36 @@ function main() {
           .map(([k]) => k),
       );
       const inGeoMeta = new Map(countries.countries.map((c) => [c.iso3, c.in_geo]));
+      let checked = 0;
       for (const s of stockFiles) {
-        const mi = METRIC_IDS.indexOf('refugees');
-        for (let yi = 0; yi < s.years.length; yi++) {
-          let mapped: number | null = null,
-            unmappable: number | null = null;
-          for (const [k, e] of Object.entries(s.asylum)) {
-            const v = unpack(e.v[mi]!)[yi] ?? null;
-            if (v === null) continue;
-            const drawable = fillable.has(k) && inGeoMeta.get(k);
-            if (drawable) mapped = (mapped ?? 0) + v;
-            else {
-              unmappable = (unmappable ?? 0) + v;
-              assert(
-                s.unmappable.includes(k),
-                `${k} has data but is not listed in unmappable (year ${s.years[yi]})`,
-              );
+        for (let mi = 0; mi < METRIC_IDS.length; mi++) {
+          for (let yi = 0; yi < s.years.length; yi++) {
+            let mapped: number | null = null,
+              unmappable: number | null = null;
+            for (const [k, e] of Object.entries(s.asylum)) {
+              const v = unpack(e.v[mi]!)[yi] ?? null;
+              if (v === null) continue;
+              const drawable = fillable.has(k) && inGeoMeta.get(k);
+              if (drawable) mapped = (mapped ?? 0) + v;
+              else {
+                unmappable = (unmappable ?? 0) + v;
+                assert(
+                  s.unmappable.includes(k),
+                  `${k} has data but is not listed in unmappable (${METRIC_IDS[mi]} ${s.years[yi]})`,
+                );
+              }
             }
+            const total = unpack(s.totals.asylum[mi]!)[yi] ?? null;
+            const lhs = (mapped ?? 0) + (unmappable ?? 0);
+            assert(
+              total === (mapped === null && unmappable === null ? null : lhs),
+              `${METRIC_IDS[mi]} ${s.years[yi]}: mapped ${mapped} + unmappable ${unmappable} != total ${total}`,
+            );
+            checked++;
           }
-          const total = unpack(s.totals.asylum[mi]!)[yi] ?? null;
-          const lhs = (mapped ?? 0) + (unmappable ?? 0);
-          assert(
-            total === (mapped === null && unmappable === null ? null : lhs),
-            `${s.years[yi]}: mapped ${mapped} + unmappable ${unmappable} != total ${total}`,
-          );
         }
       }
-      return 'holds for refugees in every year';
+      return `holds for all ${METRIC_IDS.length} metrics × ${checked / METRIC_IDS.length} years`;
     });
     guard(
       '#10 every country JSON iso3 exists in countries.json and (geometry or pseudo whitelist)',

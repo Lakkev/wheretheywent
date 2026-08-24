@@ -16,6 +16,7 @@
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtInt, fmtRate, fmtCompact, fmtDateIso } from '../../lib/format';
   import { URL_METRICS } from '../../lib/url';
+  import { footnoteMatchesMetric } from '../../lib/data';
   import { buildCitations } from '../../lib/citation';
   import {
     viewRowsToCsv,
@@ -119,7 +120,12 @@
       (r) => r.a !== null || r.o !== null,
     ),
   );
-  const footnotes = $derived(file.footnotes.filter((f) => f.year === null || f.year === year));
+  const footnotes = $derived(
+    file.footnotes
+      .filter((f) => f.year === null || f.year === year)
+      .map((f) => ({ ...f, match: footnoteMatchesMetric(f.population_type, metric) }))
+      .sort((a, b) => Number(b.match) - Number(a.match)),
+  );
   const srcId = $derived(metric === 'idps' ? 'unhcr_idmc' : 'unhcr_population');
   const src = $derived(sources[srcId]);
   const permalink = $derived(

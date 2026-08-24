@@ -14,7 +14,10 @@
 </script>
 
 <div class="legend" role="group" aria-label={tr('legend.title')}>
-  <div class="title">{tr(`metric.${ui.m}` as MessageKey)} · {ui.y}</div>
+  <div class="title">
+    {tr(`metric.${ui.m}` as MessageKey)} · {ui.y}
+    <span class="chip" title={tr('source.confirmed')}>{tr('source.confirmed')}</span>
+  </div>
   <div class="muted">
     {ui.v === 'asylum' ? tr('view.asylum') : tr('view.origin')}{ui.n === 'per1k'
       ? ` · ${tr('scale.per1k')}`

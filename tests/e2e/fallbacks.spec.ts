@@ -9,7 +9,11 @@ test('no WebGL2 → table mode, and the maplibre chunk is never downloaded', asy
     // @ts-expect-error — override for test
     HTMLCanvasElement.prototype.getContext = function (type: string, ...rest: unknown[]) {
       if (type === 'webgl2' || type === 'webgl') return null;
-      return (orig as (this: HTMLCanvasElement, t: string, ...r: unknown[]) => unknown).call(this, type, ...rest);
+      return (orig as (this: HTMLCanvasElement, t: string, ...r: unknown[]) => unknown).call(
+        this,
+        type,
+        ...rest,
+      );
     };
   });
   await page.goto('/?y=2024');
@@ -31,11 +35,20 @@ test('basemap unavailable → choropleth still renders, notice shown', async ({ 
   await waitForApp(page);
   await waitForMap(page);
   await expect(page.locator('.nobasemap')).toBeVisible();
-  const feats = await page.evaluate(() => (window as unknown as { __wtwMap: { queryRenderedFeatures: (a?: unknown, o?: unknown) => unknown[] } }).__wtwMap.queryRenderedFeatures(undefined, { layers: ['wtw-fill'] }).length);
+  const feats = await page.evaluate(
+    () =>
+      (
+        window as unknown as {
+          __wtwMap: { queryRenderedFeatures: (a?: unknown, o?: unknown) => unknown[] };
+        }
+      ).__wtwMap.queryRenderedFeatures(undefined, { layers: ['wtw-fill'] }).length,
+  );
   expect(feats).toBeGreaterThan(100);
 });
 
-test('keyboard: / focuses search, T toggles table, arrows change year, Esc = presentation mode', async ({ page }) => {
+test('keyboard: / focuses search, T toggles table, arrows change year, Esc = presentation mode', async ({
+  page,
+}) => {
   await page.goto('/');
   await waitForApp(page);
   await page.keyboard.press('/');

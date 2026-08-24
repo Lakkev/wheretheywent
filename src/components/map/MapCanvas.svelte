@@ -42,8 +42,11 @@
     countryIndex,
     idu,
     showIdu = false,
+    highlight = null,
     onselect,
     onhover,
+    onprefetch,
+    footnoteCount,
     onmove,
     onbasemap,
     onready,
@@ -63,8 +66,14 @@
     countryIndex: Map<string, CountryMeta>;
     idu: IduFile | null;
     showIdu?: boolean;
+    /** externally requested hover highlight (rank list / table rows) — same visual as map hover */
+    highlight?: string | null;
     onselect: (iso3: string | null) => void;
     onhover: (iso3: string | null) => void;
+    /** hover-intent prefetch of country/{ISO3}.json after 500 ms (§8.5) */
+    onprefetch?: (iso3: string) => void;
+    /** number of UNHCR footnotes applying to this country for the current year+metric (§10.5) */
+    footnoteCount?: (iso3: string) => number;
     onmove: (p: MapPos) => void;
     onbasemap: (ok: boolean) => void;
     onready: () => void;
@@ -80,6 +89,7 @@
   let basemapTimer: ReturnType<typeof setTimeout> | null = null;
   let usingFallback = false;
   let hoverId: string | null = null;
+  let prefetchTimer: ReturnType<typeof setTimeout> | null = null;
   let tooltip = $state<{ x: number; y: number; iso3: string } | null>(null);
   let iduPopup = $state<{
     x: number;
@@ -95,6 +105,7 @@
   let suppressMove = false;
 
   const BASEMAP_TIMEOUT_MS = 4000;
+  const HOVER_PREFETCH_MS = 500;
 
   function geojson(): FeatureCollection {
     const fc = topoFeature(
@@ -272,6 +283,10 @@
         if (iso3) map!.setFeatureState({ source: SRC_COUNTRIES, id: iso3 }, { hover: true });
         hoverId = iso3;
         onhover(iso3);
+        // §8.5: prefetch the country file only after 500 ms of hover intent
+        if (prefetchTimer) clearTimeout(prefetchTimer);
+        if (iso3 && onprefetch)
+          prefetchTimer = setTimeout(() => onprefetch(iso3), HOVER_PREFETCH_MS);
       }
       if (iso3) tooltip = { x: e.point.x, y: e.point.y, iso3 };
       map!.getCanvas().style.cursor = 'pointer';
@@ -279,6 +294,7 @@
     map.on('mouseleave', LYR_FILL, () => {
       if (hoverId) map!.setFeatureState({ source: SRC_COUNTRIES, id: hoverId }, { hover: false });
       hoverId = null;
+      if (prefetchTimer) clearTimeout(prefetchTimer);
       tooltip = null;
       onhover(null);
       map!.getCanvas().style.cursor = '';
@@ -354,6 +370,16 @@
     if (!showIdu) iduPopup = null;
     applyIdu();
   });
+  // external hover (rank list / data table rows) drives the same hover outline on the map
+  let prevExtHover: string | null = null;
+  $effect(() => {
+    const h = highlight;
+    if (!map || !layersAdded) return;
+    if (prevExtHover && prevExtHover !== h && prevExtHover !== hoverId)
+      map.setFeatureState({ source: SRC_COUNTRIES, id: prevExtHover }, { hover: false });
+    if (h) map.setFeatureState({ source: SRC_COUNTRIES, id: h }, { hover: true });
+    prevExtHover = h;
+  });
   // fit to selected country when selection changes (not on first paint if pos came from URL)
   let firstFit = true;
   $effect(() => {
@@ -396,6 +422,7 @@
 
   const tipRow = $derived(tooltip ? view.byIso.get(tooltip.iso3) : undefined);
   const tipMeta = $derived(tooltip ? countryIndex.get(tooltip.iso3) : undefined);
+  const tipFootnotes = $derived(tooltip && footnoteCount ? footnoteCount(tooltip.iso3) : 0);
 </script>
 
 <div
@@ -447,6 +474,9 @@
       {:else}
         <div class="muted">{tr('map.tooltip.nodata')}</div>
       {/if}
+      {#if tipFootnotes > 0}<div class="muted">
+          ※ {tipFootnotes} · {tr('country.footnotes')}
+        </div>{/if}
       {#if tipMeta?.note}<div class="muted note">
           {locale === 'zh-Hant' && tipMeta.note_zh ? tipMeta.note_zh : tipMeta.note}
         </div>{/if}

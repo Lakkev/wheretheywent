@@ -279,3 +279,28 @@ export function onIdle(fn: () => void, timeout = 2000) {
   if (typeof w.requestIdleCallback === 'function') w.requestIdleCallback(fn, { timeout });
   else setTimeout(fn, 300);
 }
+
+/**
+ * UNHCR /footnotes/ population_type codes mapped to our metrics (§10.5). Empty list = matches all
+ * (used for the derived total). Codes observed/documented: REF, ROC (refugee-like), ASY, IDP,
+ * IOC (IDP-like), STA, OOC, RET, RDP, OIP, HST.
+ */
+export const FOOTNOTE_TYPES: Record<string, string[]> = {
+  refugees: ['REF', 'ROC'],
+  asylum_seekers: ['ASY'],
+  idps: ['IDP', 'IOC', 'IDS'],
+  stateless: ['STA'],
+  ooc: ['OOC'],
+  returned_refugees: ['RET'],
+  returned_idps: ['RDP'],
+  oip: ['OIP', 'VDA'],
+  hst: ['HST'],
+  total_poc: [],
+};
+
+/** Does a footnote's population_type apply to the metric currently shown? */
+export function footnoteMatchesMetric(populationType: string, metric: string): boolean {
+  const list = FOOTNOTE_TYPES[metric];
+  if (!list || list.length === 0) return true;
+  return list.includes(populationType.trim().toUpperCase());
+}

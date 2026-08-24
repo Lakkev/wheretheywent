@@ -52,6 +52,11 @@ export class HttpError extends Error {
   }
 }
 
+/** 429 and every 5xx (incl. Cloudflare 52x) are retriable; 4xx are not (spec §7.1). */
+function isRetriableStatus(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -94,7 +99,7 @@ export async function fetchRaw(url: string, opts: FetchOpts = {}): Promise<strin
         redirect: 'follow',
       });
       if (!res.ok) {
-        if ((HTTP.retryOn as readonly number[]).includes(res.status) && attempt < HTTP.retries) {
+        if (isRetriableStatus(res.status) && attempt < HTTP.retries) {
           throw new HttpError(res.status, url);
         }
         throw new HttpError(res.status, url);
@@ -107,8 +112,7 @@ export async function fetchRaw(url: string, opts: FetchOpts = {}): Promise<strin
       return body;
     } catch (e) {
       lastErr = e;
-      const retriable =
-        e instanceof HttpError ? (HTTP.retryOn as readonly number[]).includes(e.status) : true; // network errors / aborts are retriable
+      const retriable = e instanceof HttpError ? isRetriableStatus(e.status) : true; // network errors / aborts are retriable
       if (!retriable || attempt >= HTTP.retries) break;
       const backoff = 1000 * 2 ** attempt + Math.floor(Math.random() * 500);
       log.warn(`retry ${attempt + 1}/${HTTP.retries} in ${backoff}ms: ${String(e)} — ${url}`);

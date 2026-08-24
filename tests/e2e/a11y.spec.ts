@@ -2,7 +2,16 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 /** WCAG 2.2 AA gate: zero critical/serious violations on three pages (spec §13.4). */
-const PAGES = ['/', '/country/SYR', '/methodology', '/data', '/compare?cmp=TUR,DEU'];
+const PAGES = [
+  '/',
+  '/country/SYR',
+  '/methodology',
+  '/data',
+  '/compare?cmp=TUR,DEU',
+  '/about',
+  '/about/boundaries',
+  '/zh-Hant/',
+];
 
 for (const path of PAGES) {
   test(`axe: ${path}`, async ({ page }) => {

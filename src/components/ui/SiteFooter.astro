@@ -23,7 +23,21 @@ const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where
       <span class="num">{tr('page.updated', { id: snap, date: built })}</span> ·
       <a href={localizePath('/data', locale)}>{tr('nav.data')}</a> ·
       <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
-      <a href={reportHref}>{tr('page.report')}</a>
+      <a href={reportHref} data-report-email={CONTACT_EMAIL}>{tr('page.report')}</a>
     </div>
   </div>
 </footer>
+<script is:inline>
+  // D17: pre-fill the report with the URL the reader is actually on (incl. query string).
+  for (const a of document.querySelectorAll('a[data-report-email]')) {
+    a.addEventListener('click', function () {
+      const subject = encodeURIComponent('[Where They Went] Problem report');
+      const body = encodeURIComponent(
+        'Page: ' +
+          location.href +
+          '\n\nWhat looks wrong:\n\nWhat you expected (with a source if possible):\n',
+      );
+      this.href = 'mailto:' + this.dataset.reportEmail + '?subject=' + subject + '&body=' + body;
+    });
+  }
+</script>

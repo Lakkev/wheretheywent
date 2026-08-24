@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ui, data, session, raw, toggleCompare, selectCountry } from '../../lib/state.svelte';
   import type { ViewResult } from '../../lib/view';
-  import { displayName } from '../../lib/data';
+  import { displayName, footnoteMatchesMetric } from '../../lib/data';
   import { fmtInt, fmtRate, fmtCompact } from '../../lib/format';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { TABS, type Tab } from '../../lib/url';
@@ -70,9 +70,14 @@
       o: unpack(file.origin.v[mi]!)[yi] ?? null,
     })).filter((r) => r.a !== null || r.o !== null);
   });
-  const footnotes = $derived(
-    file ? file.footnotes.filter((f) => f.year === null || f.year === ui.y) : [],
-  );
+  const footnotes = $derived.by(() => {
+    if (!file) return [];
+    // §10.5: keyed by (country, year, population_type) — current-metric footnotes first
+    return file.footnotes
+      .filter((f) => f.year === null || f.year === ui.y)
+      .map((f) => ({ ...f, match: footnoteMatchesMetric(f.population_type, ui.m) }))
+      .sort((a, b) => Number(b.match) - Number(a.match));
+  });
 </script>
 
 {#if iso3}
@@ -148,7 +153,7 @@
           <details class="small">
             <summary>{tr('country.footnotes')} ({footnotes.length})</summary>
             <ul>
-              {#each footnotes as f, i (i)}<li>
+              {#each footnotes as f, i (i)}<li class:fn-match={f.match}>
                   <span class="muted">{f.year ?? tr('common.all')} · {f.population_type}</span>
                   {f.text}
                 </li>{/each}
@@ -233,6 +238,9 @@
   }
   details ul {
     padding-left: 1rem;
+  }
+  li.fn-match {
+    font-weight: 600;
   }
   .src {
     margin-bottom: var(--sp-3);

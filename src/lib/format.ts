@@ -54,7 +54,8 @@ export function fmtDateLong(iso: string | null | undefined, locale: Locale = 'en
   if (!iso) return '—';
   const d = parseDate(iso);
   if (!d) return iso;
-  return new Intl.DateTimeFormat(INTL_TAG[locale], {
+  // en-GB gives "31 December 2025" — the exact form used in the spec's citation template
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : INTL_TAG[locale], {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

@@ -27,7 +27,7 @@ describe('citations', () => {
   });
   it('cite-this-page matches the spec template', () => {
     expect(c.page).toBe(
-      'Where They Went. "Syria — internally displaced persons, 1951–2025." Data: UNHCR Refugee Population Statistics Database (data as of December 31, 2025; retrieved August 19, 2026). https://example.org/country/SYR?y=2016&m=idps [accessed August 19, 2026].',
+      'Where They Went. "Syria — internally displaced persons, 1951–2025." Data: UNHCR Refugee Population Statistics Database (data as of 31 December 2025; retrieved 19 August 2026). https://example.org/country/SYR?y=2016&m=idps [accessed 19 August 2026].',
     );
   });
   it('all four formats contain UNHCR, the as-of date and the permalink', () => {

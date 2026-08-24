@@ -43,11 +43,6 @@ export const IDMC = {
   iduMaxEvents: 3000,
 } as const;
 
-export const HDX = {
-  packageShow: 'https://data.humdata.org/api/3/action/package_show?id=',
-  idmcGiddSlug: 'idmc-internal-displacements-new-displacements-idps',
-} as const;
-
 export const GEO = {
   /** world-atlas file: 50m (110m distorts Lebanon/Jordan etc.). */
   input: 'node_modules/world-atlas/countries-50m.json',

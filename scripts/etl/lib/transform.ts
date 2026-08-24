@@ -148,13 +148,11 @@ function topFlows(
           (b.asylum_seekers ?? 0) -
           ((a.refugees ?? 0) + (a.asylum_seekers ?? 0)),
       );
-      rec[String(y)] = rows
-        .slice(0, TOP_N)
-        .map((r) => ({
-          p: r[partnerField],
-          refugees: r.refugees,
-          asylum_seekers: r.asylum_seekers,
-        }));
+      rec[String(y)] = rows.slice(0, TOP_N).map((r) => ({
+        p: r[partnerField],
+        refugees: r.refugees,
+        asylum_seekers: r.asylum_seekers,
+      }));
     }
     out.set(k, rec);
   }

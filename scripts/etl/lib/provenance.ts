@@ -233,12 +233,18 @@ export function buildSourceEntry(a: BuildSourceArgs): SourceEntry {
   };
 }
 
-/** Mark an existing entry stale (keeps previous data, records error). */
+/**
+ * Mark an existing entry not-ok (keeps previous data, records error).
+ * status 'stale' = fetch/validation failure; 'unstable' = upstream was publishing mid-run (§7.2) —
+ * expected to clear on the next daily run, but stale_since still accrues so a persistent
+ * condition escalates the same way.
+ */
 export function markStale(
   previous: SourceEntry | null,
   id: SourceId,
   error: string,
   now: string,
+  status: 'stale' | 'unstable' = 'stale',
 ): SourceEntry {
   const s = SOURCE_STATIC[id];
   const base: SourceEntry =
@@ -260,8 +266,8 @@ export function markStale(
     } satisfies SourceEntry);
   return {
     ...base,
-    status: 'stale',
-    stale_since: base.status === 'stale' && base.stale_since ? base.stale_since : now,
+    status,
+    stale_since: base.status !== 'ok' && base.stale_since ? base.stale_since : now,
     last_error: error.slice(0, 500),
   };
 }

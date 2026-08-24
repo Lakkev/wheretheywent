@@ -149,6 +149,12 @@
         : tr('view.origin')}</span
     >
     <span class="muted small">{tr('table.rows', { n: rows.length })}</span>
+    {#if data.sources?.['unhcr_population']}
+      <span class="muted small src-line"
+        >· {data.sources['unhcr_population'].attribution} ({tr('cite.dataAsOf')}
+        {data.sources['unhcr_population'].data_as_of})</span
+      >
+    {/if}
     <span class="spacer"></span>
     <button
       class="btn ghost"

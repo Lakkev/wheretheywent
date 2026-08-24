@@ -5,7 +5,7 @@ name: ci
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, master]
     paths-ignore:
       - 'public/data/v1/**' # data-only commits from the ETL bot are validated by the ETL job itself
       - 'docs/**'

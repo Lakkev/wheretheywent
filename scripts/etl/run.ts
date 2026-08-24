@@ -12,7 +12,7 @@
  */
 import { join } from 'node:path';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { PATHS, SOURCE_IDS, YEARS, type SourceId } from './config.ts';
+import { PATHS, SOURCE_IDS, THRESHOLDS, YEARS, type SourceId } from './config.ts';
 import { log } from './lib/log.ts';
 import {
   rmrf,
@@ -30,6 +30,7 @@ import {
   fetchPopulation,
   type PopulationResult,
   type StockMap,
+  type UnmatchedEntry,
 } from './sources/unhcr-population.ts';
 import {
   fetchDemographics,
@@ -96,10 +97,10 @@ function ok(id: SourceId, entry: SourceEntry, rows?: number) {
   sources[id] = entry;
   statuses.push({ id, status: 'ok', rows });
 }
-function stale(id: SourceId, err: unknown) {
+function stale(id: SourceId, err: unknown, status: 'stale' | 'unstable' = 'stale') {
   const msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-  log.error(`${id} FAILED → stale: ${msg}`);
-  sources[id] = markStale(prevSources[id] ?? null, id, msg, now);
+  log.error(`${id} FAILED → ${status}: ${msg}`);
+  sources[id] = markStale(prevSources[id] ?? null, id, msg, now, status);
   statuses.push({ id, status: 'stale', error: msg });
 }
 /** Test hook: ETL_FAIL="unhcr_demographics,idmc_idu" forces those sources to fail (for resilience checks). */
@@ -114,9 +115,35 @@ async function attempt<T>(id: SourceId, fn: () => Promise<T>): Promise<T | null>
     if (FORCED_FAIL.has(id)) throw new Error(`forced failure via ETL_FAIL`);
     return await fn();
   } catch (e) {
-    stale(id, e);
+    // Upstream publishing mid-run is a distinct condition (§7.2): expected to clear tomorrow.
+    const unstable = e instanceof Error && e.name === 'UnstableSourceError';
+    stale(id, e, unstable ? 'unstable' : 'stale');
     return null;
   }
+}
+
+/**
+ * §7.7 step 4 for non-core sources: any unmatched code above the threshold fails the whole source
+ * (no silent data loss). Small unmatched entries are kept for the merged unmatched-report.
+ */
+function guardUnmatched<T extends { unmatched: UnmatchedEntry[] }>(
+  id: SourceId,
+  res: T | null,
+): T | null {
+  if (!res) return null;
+  const big = res.unmatched.filter((u) => u.max_value > THRESHOLDS.unmatchedFailAbove);
+  if (big.length) {
+    stale(
+      id,
+      new Error(
+        `unmatched codes with >${THRESHOLDS.unmatchedFailAbove} persons: ${big
+          .map((b) => `${b.raw}(${b.max_value})`)
+          .join(', ')}`,
+      ),
+    );
+    return null;
+  }
+  return res;
 }
 
 /** Previous country files, loaded lazily for component fallback. */
@@ -303,13 +330,17 @@ async function main() {
 
   // secondary sources (run regardless, they feed country files)
   log.group('secondary');
-  const [demo, idmc, sol, apps, fn] = await Promise.all([
+  const [demoRaw, idmcRaw, solRaw, appsRaw, fn] = await Promise.all([
     attempt('unhcr_demographics', () => fetchDemographics(maxYear, codes)),
     attempt('unhcr_idmc', () => fetchIdmc(maxYear, codes)),
     attempt('unhcr_solutions', () => fetchSolutions(maxYear, codes)),
     attempt('unhcr_asylum_applications', () => fetchAsylumApplications(maxYear, codes)),
     attempt('unhcr_footnotes', () => fetchFootnotes(maxYear, codes)),
   ]);
+  const demo = guardUnmatched('unhcr_demographics', demoRaw);
+  const idmc = guardUnmatched('unhcr_idmc', idmcRaw);
+  const sol = guardUnmatched('unhcr_solutions', solRaw);
+  const apps = guardUnmatched('unhcr_asylum_applications', appsRaw);
   const asOf = `${maxYear}-12-31`;
   const cov = { year_min: yearMin, year_max: maxYear };
   if (demo)
@@ -395,12 +426,12 @@ async function main() {
 
   if (pop) {
     // §7.7 step 4: any unmatched entity above threshold → FAIL the source
-    const big = pop.unmatched.filter((u) => u.max_value > 10_000);
+    const big = pop.unmatched.filter((u) => u.max_value > THRESHOLDS.unmatchedFailAbove);
     if (big.length) {
       stale(
         'unhcr_population',
         new Error(
-          `unmatched codes with >10,000 persons: ${big.map((b) => `${b.raw}(${b.max_value})`).join(', ')}`,
+          `unmatched codes with >${THRESHOLDS.unmatchedFailAbove} persons: ${big.map((b) => `${b.raw}(${b.max_value})`).join(', ')}`,
         ),
       );
     } else {
@@ -420,6 +451,21 @@ async function main() {
       );
       coreOk = true;
       const snapshotStamp = entry.retrieved_at; // stable unless content changed (keeps daily diffs empty)
+      // Merge small unmatched entries from every source into one report (§7.7 step 5).
+      const allUnmatched: UnmatchedEntry[] = [
+        ...pop.unmatched,
+        ...(demo?.unmatched ?? []),
+        ...(idmc?.unmatched ?? []),
+        ...(sol?.unmatched ?? []),
+        ...(apps?.unmatched ?? []),
+      ].sort((a, b) => b.max_value - a.max_value);
+      /**
+       * The id embedded in bulk CSVs / datapackage. The manifest snapshot_id hashes ALL files
+       * (including these CSVs), so it cannot be known before they are written — instead we embed
+       * the first 8 hex of the population source's content hash, which is recorded in
+       * sources.json (content_hash) and therefore resolvable by any citation reader.
+       */
+      const csvSnapshotId = entry.content_hash.replace(/^sha256:/, '').slice(0, 8);
       const inp: TransformInput = {
         out: OUT,
         now: snapshotStamp,
@@ -437,7 +483,7 @@ async function main() {
         appsHost,
         appsOrigin,
         footnotes,
-        unmatched: pop.unmatched,
+        unmatched: allUnmatched,
         sources,
       };
       const used = SOURCE_IDS.filter(
@@ -461,13 +507,9 @@ async function main() {
       // flows (Phase 2 data)
       for (const [y, f] of buildFlows(inp)) writeJsonAtomic(join(OUT, 'flows', `${y}.json`), f);
       // downloads + datapackage (snapshot id is finalised in manifest; CSVs carry the data stamp)
-      writeDownloads(inp, allYears, snapshotStamp.slice(0, 10));
-      writeJsonAtomic(
-        join(OUT, 'datapackage.json'),
-        buildDatapackage(inp, snapshotStamp.slice(0, 10)),
-        true,
-      );
-      writeUnmatched(OUT, pop.unmatched, snapshotStamp);
+      writeDownloads(inp, allYears, csvSnapshotId);
+      writeJsonAtomic(join(OUT, 'datapackage.json'), buildDatapackage(inp, csvSnapshotId), true);
+      writeUnmatched(OUT, allUnmatched, snapshotStamp);
       log.ok(`core: ${countryFiles.size} country files, ${stockFiles.length} stock files`);
     }
   }

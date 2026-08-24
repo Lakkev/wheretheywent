@@ -21,7 +21,12 @@ test('share link reproduces the view in a fresh context', async ({ browser }) =>
   await page.keyboard.press('t');
   await page.waitForSelector('.table-drawer');
   // zoom the map programmatically (user gesture equivalent) and wait for URL debounce
-  await page.evaluate(() => (window as unknown as { __wtwMap: { jumpTo: (o: unknown) => void } }).__wtwMap.jumpTo({ center: [38.5, 35], zoom: 4.25 }));
+  await page.evaluate(() =>
+    (window as unknown as { __wtwMap: { jumpTo: (o: unknown) => void } }).__wtwMap.jumpTo({
+      center: [38.5, 35],
+      zoom: 4.25,
+    }),
+  );
   await page.waitForTimeout(700);
   const url = page.url();
   expect(url).toContain('y=2016');

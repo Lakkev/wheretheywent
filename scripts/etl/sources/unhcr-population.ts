@@ -52,7 +52,7 @@ function metricValues(r: RawRow): (number | null)[] {
   return METRIC_IDS.map((m) => num(r, m));
 }
 
-class UnmatchedTracker {
+export class UnmatchedTracker {
   map = new Map<string, UnmatchedEntry>();
   add(source: string, field: string, raw: string, y: number, values: (number | null)[]) {
     const k = `${source}|${field}|${raw}`;

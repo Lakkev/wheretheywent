@@ -5,6 +5,7 @@
  */
 import { YEARS } from '../config.ts';
 import { fetchUnhcr, num, iso, year, type RawRow } from './unhcr.ts';
+import { UnmatchedTracker, type UnmatchedEntry } from './unhcr-population.ts';
 import type { CodeRegistry } from '../lib/codes.ts';
 import type {
   DemographicsRow,
@@ -20,6 +21,8 @@ export interface SecondaryResult<T> {
   hash: string;
   urls: string[];
   rows: number;
+  /** Codes that could not be matched to a known entity, with the largest value seen (§7.7). */
+  unmatched: UnmatchedEntry[];
 }
 
 const DEMO_F = ['f_0_4', 'f_5_11', 'f_12_17', 'f_18_59', 'f_60', 'f_other', 'f_total'];
@@ -36,11 +39,16 @@ export async function fetchDemographics(
     years.map((y) => fetchUnhcr('demographics', { year: y, coa_all: true }, `demographics/${y}`)),
   );
   const byKey = new Map<string, DemographicsRow[]>();
+  const tracker = new UnmatchedTracker();
   let rows = 0;
   for (const res of results) {
     for (const r of res.rows) {
       const n = reg.normalize(iso(r, 'coa_iso'));
-      if (!n.key || !n.matched) continue;
+      if (!n.key) continue;
+      if (!n.matched) {
+        tracker.add('demographics', 'coa_iso', n.raw, year(r), [num(r, 'total')]);
+        continue;
+      }
       rows++;
       const row: DemographicsRow = {
         year: year(r),
@@ -60,6 +68,7 @@ export async function fetchDemographics(
     hash: results.map((r) => r.hash).join('+'),
     urls: results.map((r) => r.url),
     rows,
+    unmatched: tracker.list(),
   };
 }
 
@@ -73,9 +82,11 @@ export async function fetchIdmc(
     'idmc',
   );
   const byKey = new Map<string, IdmcRow[]>();
+  const tracker = new UnmatchedTracker();
   for (const r of res.rows) {
     const n = reg.normalize(iso(r, 'coo_iso'));
     if (!n.key) continue;
+    if (!n.matched) tracker.add('idmc', 'coo_iso', n.raw, year(r), [num(r, 'total')]);
     const key = n.matched ? n.key : 'OTH';
     const arr = byKey.get(key) ?? [];
     arr.push({ year: year(r), total: num(r, 'total') });
@@ -83,7 +94,13 @@ export async function fetchIdmc(
   }
   for (const arr of byKey.values()) arr.sort((a, b) => a.year - b.year);
   log.info(`idmc: ${res.rows.length} rows, ${byKey.size} countries`);
-  return { byKey, hash: res.hash, urls: [res.url], rows: res.rows.length };
+  return {
+    byKey,
+    hash: res.hash,
+    urls: [res.url],
+    rows: res.rows.length,
+    unmatched: tracker.list(),
+  };
 }
 
 /** Solutions aggregated per country-of-origin (returns/resettlement/naturalisation of people FROM the country). */
@@ -96,11 +113,19 @@ export async function fetchSolutions(
     { yearFrom: YEARS.solutionsFrom, yearTo: maxYear, coo_all: true, coa_all: true },
     'solutions',
   );
+  const tracker = new UnmatchedTracker();
   const agg = (field: 'coo_iso' | 'coa_iso') => {
     const byKey = new Map<string, Map<number, SolutionsRow>>();
     for (const r of res.rows) {
       const n = reg.normalize(iso(r, field));
       if (!n.key) continue;
+      if (!n.matched && field === 'coo_iso')
+        tracker.add('solutions', field, n.raw, year(r), [
+          num(r, 'returned_refugees'),
+          num(r, 'resettlement'),
+          num(r, 'naturalisation'),
+          num(r, 'returned_idps'),
+        ]);
       const key = n.matched ? n.key : 'OTH';
       const y = year(r);
       let m = byKey.get(key);
@@ -130,7 +155,14 @@ export async function fetchSolutions(
   const byKey = agg('coo_iso');
   const byHost = agg('coa_iso');
   log.info(`solutions: ${res.rows.length} rows`);
-  return { byKey, byHost, hash: res.hash, urls: [res.url], rows: res.rows.length };
+  return {
+    byKey,
+    byHost,
+    hash: res.hash,
+    urls: [res.url],
+    rows: res.rows.length,
+    unmatched: tracker.list(),
+  };
 }
 
 export interface AsylumAppRow {
@@ -145,12 +177,15 @@ export async function fetchAsylumApplications(maxYear: number, reg: CodeRegistry
     'asylum-applications',
   );
   let kept = 0;
+  const tracker = new UnmatchedTracker();
   const agg = (field: 'coo_iso' | 'coa_iso') => {
     const byKey = new Map<string, Map<number, number | null>>();
     for (const r of res.rows) {
       if (String(r.app_pc ?? '').toUpperCase() !== 'P') continue; // §3.7: never mix C and P
       const n = reg.normalize(iso(r, field));
       if (!n.key) continue;
+      if (!n.matched && field === 'coa_iso')
+        tracker.add('asylum-applications', field, n.raw, year(r), [num(r, 'applied')]);
       const key = n.matched ? n.key : 'OTH';
       const y = year(r);
       let m = byKey.get(key);
@@ -173,7 +208,14 @@ export async function fetchAsylumApplications(maxYear: number, reg: CodeRegistry
   const byHost = agg('coa_iso');
   const byOrigin = agg('coo_iso');
   log.info(`asylum-applications: ${res.rows.length} rows, ${kept} person-based kept`);
-  return { byHost, byOrigin, hash: res.hash, urls: [res.url], rows: res.rows.length };
+  return {
+    byHost,
+    byOrigin,
+    hash: res.hash,
+    urls: [res.url],
+    rows: res.rows.length,
+    unmatched: tracker.list(),
+  };
 }
 
 /** Footnotes for the asylum and origin population queries (same params as /population/). */
@@ -222,6 +264,8 @@ export async function fetchFootnotes(
     hash: a.hash + '+' + b.hash,
     urls: [a.url, b.url],
     rows: a.rows.length + b.rows.length,
+    // text-only source: unmatched rows carry no population figures, nothing to threshold
+    unmatched: [],
   };
 }
 
@@ -230,13 +274,22 @@ export async function fetchNowcasting(reg: CodeRegistry): Promise<{
   period: string;
   hash: string;
   url: string;
+  unmatched: UnmatchedEntry[];
 }> {
   const res = await fetchUnhcr('nowcasting', { coa_all: true }, 'nowcasting');
   const rows: NowcastRow[] = [];
+  const tracker = new UnmatchedTracker();
   let period = '';
   for (const r of res.rows) {
     const n = reg.normalize(iso(r, 'coa_iso'));
-    if (!n.key || !n.matched) continue;
+    if (!n.key) continue;
+    if (!n.matched) {
+      tracker.add('nowcasting', 'coa_iso', n.raw, Number(r.year) || 0, [
+        num(r, 'refugees'),
+        num(r, 'asylum_seekers'),
+      ]);
+      continue;
+    }
     rows.push({
       iso3: n.key,
       refugees: num(r, 'refugees'),
@@ -264,5 +317,5 @@ export async function fetchNowcasting(reg: CodeRegistry): Promise<{
     }
   }
   log.info(`nowcasting: ${rows.length} rows, period ${period}`);
-  return { rows, period, hash: res.hash, url: res.url };
+  return { rows, period, hash: res.hash, url: res.url, unmatched: tracker.list() };
 }

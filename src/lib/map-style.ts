@@ -2,7 +2,7 @@
  * MapLibre style helpers (framework-free, typed loosely to avoid importing maplibre-gl here —
  * the heavy module is dynamically imported only after the WebGL2 gate).
  */
-import { NODATA_COLOR, NOFILL_COLOR } from './colors';
+import { NODATA_COLOR } from './colors';
 
 export const SRC_COUNTRIES = 'wtw-countries';
 export const LYR_FILL = 'wtw-fill';
@@ -47,12 +47,14 @@ export function choroplethLayers(
       before: beforeId,
     },
     {
+      // §11.3: Northern Cyprus / Somaliland are drawn as a dashed boundary and NEVER filled —
+      // this must stay a line layer (a fill here would contradict /about/boundaries).
       layer: {
         id: LYR_NOFILL,
-        type: 'fill',
+        type: 'line',
         source: SRC_COUNTRIES,
         filter: ['has', 'nofill'],
-        paint: { 'fill-color': NOFILL_COLOR, 'fill-opacity': 0.6 },
+        paint: { 'line-color': '#8a97a6', 'line-width': 1, 'line-dasharray': [2, 2] },
       },
       before: beforeId,
     },

@@ -1,8 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
+import { loadEnv } from 'vite';
 
-const site = process.env.PUBLIC_SITE_URL || 'https://wheretheywent.pages.dev';
+// Astro does NOT load .env into process.env for this config file; read it explicitly so the
+// `site` used for canonical/sitemap always matches src/lib/site.ts (PUBLIC_SITE_URL).
+const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'PUBLIC_');
+const site =
+  process.env.PUBLIC_SITE_URL || env.PUBLIC_SITE_URL || 'https://wheretheywent.lakkev.com';
 
 // https://astro.build/config
 export default defineConfig({

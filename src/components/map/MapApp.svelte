@@ -33,7 +33,7 @@
   } from '../../lib/url';
   import { computeView, type ViewResult } from '../../lib/view';
   import { hasWebGL2 } from '../../lib/webgl';
-  import { onIdle } from '../../lib/data';
+  import { onIdle, footnoteMatchesMetric } from '../../lib/data';
   import TopBar from './TopBar.svelte';
   import FilterRail from './FilterRail.svelte';
   import Legend from './Legend.svelte';
@@ -268,6 +268,14 @@
   $effect(() => {
     if (ready && !view.yearAvailable && !data.historyLoaded) void loadHistory();
   });
+  /** §10.5: footnotes applying to (country, current year, current metric) — cached files only. */
+  function countryFootnoteCount(iso3: string): number {
+    const f = raw.client.peekCountry(iso3);
+    if (!f) return 0;
+    return f.footnotes.filter(
+      (x) => (x.year === null || x.year === ui.y) && footnoteMatchesMetric(x.population_type, ui.m),
+    ).length;
+  }
   const detailOpen = $derived(!!ui.c);
 </script>
 
@@ -354,8 +362,11 @@
     countryIndex={raw.countryIndex}
     idu={data.idu}
     showIdu={ui.e}
+    highlight={session.hover}
     onselect={(iso3) => selectCountry(iso3)}
     onhover={(iso3) => (session.hover = iso3)}
+    onprefetch={(iso3) => prefetchCountry(iso3)}
+    footnoteCount={countryFootnoteCount}
     onmove={(p) => (ui.map = p)}
     onbasemap={(ok) => (session.basemapOk = ok)}
     onready={() => (session.mapReady = true)}
