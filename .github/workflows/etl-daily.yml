@@ -1,4 +1,4 @@
-# Daily ETL: fetch → validate → promote per source → commit only when content changed (spec §4, §7.8, D16).
+# Daily ETL: fetch → validate → promote per source → commit only when content changed (spec §4, §7.8, D16). (registered 2026-08-24)
 # Failure → comment on the pinned issue #1 (subscribe to it to get e-mail alerts). See docs/RUNBOOK.md.
 name: etl-daily
 

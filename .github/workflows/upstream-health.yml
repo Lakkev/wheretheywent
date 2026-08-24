@@ -1,4 +1,4 @@
-# Daily upstream reachability probe. Opens/updates an issue only after 3 consecutive failing days
+# Daily upstream reachability probe. Opens/updates an issue only after 3 consecutive failing days (registered 2026-08-24)
 # (transient outages are normal and the ETL already degrades gracefully). Spec §6.
 name: upstream-health
 
