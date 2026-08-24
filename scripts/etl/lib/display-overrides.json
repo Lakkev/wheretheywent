@@ -15,8 +15,8 @@
   "TWN": {
     "display_name": "Taiwan",
     "display_name_zh": "台灣",
-    "note": "Not listed in UNHCR statistics (no figures, not merged into any other entry). Boundary from Natural Earth; population from UN WPP (listed there as \"China, Taiwan Province of China\"). See /about/boundaries.",
-    "note_zh": "UNHCR 統計中不存在(無數字,亦未併入其他條目)。邊界取自 Natural Earth;人口取自 UN WPP(該處名稱為「China, Taiwan Province of China」)。詳見 /about/boundaries。",
+    "note": "Not listed in UNHCR statistics (no figures, not merged into any other entry). Boundary from Natural Earth; population from UN WPP (listed there as \"China, Taiwan Province of China\").",
+    "note_zh": "UNHCR 統計中不存在（無數字，亦未併入其他條目）。邊界取自 Natural Earth；人口取自 UN WPP（該處名稱為「China, Taiwan Province of China」）。",
     "_pending": "Display policy (c) implemented by default; awaiting client confirmation (spec §11.5 / Appendix C)."
   },
   "PSE": {

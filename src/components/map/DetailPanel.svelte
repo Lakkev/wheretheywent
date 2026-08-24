@@ -114,7 +114,10 @@
       {#if meta && meta.name !== meta.display_name}
         <p class="muted small">{tr('detail.nameNote', { source: 'UNHCR' })}: {meta.name}</p>
       {/if}
-      {#if note}<p class="callout small">{note}</p>{/if}
+      {#if note}<p class="callout small">
+          {note}
+          <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')} →</a>
+        </p>{/if}
 
       {#if ui.tab === 'overview'}
         <div class="kpis">

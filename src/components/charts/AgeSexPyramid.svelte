@@ -88,14 +88,18 @@
       </p>{/if}
     {#if breakdownAvailable}
       <div bind:this={el} class="plot" role="img" aria-label={tr('detail.tab.demographics')}></div>
+      <figcaption class="small muted">
+        {SEX_F}
+        {fmtInt(fTotal, locale)} ({fmtPct(row.total ? (fTotal ?? 0) / row.total : null, locale)}) ·
+        {SEX_M}
+        {fmtInt(mTotal, locale)} · {tr('common.all')}
+        {fmtInt(row.total, locale)}
+      </figcaption>
+    {:else if row.total}
+      <p class="muted small">{tr('demo.totalOnly', { total: fmtInt(row.total, locale) })}</p>
     {:else}
       <p class="muted small">{tr('detail.noData')}</p>
     {/if}
-    <figcaption class="small muted">
-      {SEX_F} {fmtInt(fTotal, locale)} ({fmtPct(row.total ? (fTotal ?? 0) / row.total : null, locale)}) ·
-      {SEX_M} {fmtInt(mTotal, locale)} · {tr('common.all')}
-      {fmtInt(row.total, locale)}
-    </figcaption>
   {/if}
 </figure>
 

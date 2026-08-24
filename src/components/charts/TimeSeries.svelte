@@ -31,6 +31,9 @@
   let el: HTMLDivElement;
   let svgEl: SVGSVGElement | null = null;
   let hasData = $state(true);
+  /** Definitional breakpoints (see /methodology/definitions) — annotated on the chart so a
+   *  reader never mistakes a structural blank for "the number was zero before". */
+  const BREAKS: Partial<Record<AnyMetricId, number>> = { stateless: 2004, idps: 2009, oip: 2018 };
 
   $effect(() => {
     const pts = countrySeries(file, metric);
@@ -66,6 +69,22 @@
         }),
       );
       if (y) marks.push(Plot.ruleX([y], { stroke: '#0b3a6e', strokeOpacity: 0.5 }));
+      const bk = BREAKS[metric];
+      if (bk && pts.some((p) => p.year < bk)) {
+        marks.push(Plot.ruleX([bk], { stroke: '#8a94a6', strokeDasharray: '2,3' }));
+        marks.push(
+          Plot.text([{ year: bk }], {
+            x: 'year',
+            frameAnchor: 'top',
+            dy: 8,
+            dx: 4,
+            textAnchor: 'start',
+            fill: '#57708c',
+            fontSize: 10,
+            text: () => tr('chart.seriesBegins', { year: bk }),
+          }),
+        );
+      }
       marks.push(
         Plot.tip(
           nonNull,

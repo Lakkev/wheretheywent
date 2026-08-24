@@ -267,5 +267,7 @@
   "source.aged": "データ最終更新 {date} — 自動更新が停止している可能性があります",
   "doc.untranslated": "このページはまだ日本語に対応していません — 以下は英語版です。",
   "doc.untranslatedHant": "このページはまだ簡体字中国語に対応していません — 以下は繁体字中国語版です。",
-  "cite.responsibly": "責任ある引用の手引き"
+  "cite.responsibly": "責任ある引用の手引き",
+  "demo.totalOnly": "この年は合計 {total} が報告されていますが、年齢・性別の内訳はありません — 高所得の受入国では一般的です。",
+  "chart.seriesBegins": "{year}年から集計"
 }

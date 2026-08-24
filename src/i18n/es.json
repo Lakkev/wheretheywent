@@ -267,5 +267,7 @@
   "source.aged": "Datos actualizados el {date} — las actualizaciones automáticas podrían estar interrumpidas",
   "doc.untranslated": "Esta página aún no está disponible en español — a continuación se muestra la versión en inglés.",
   "doc.untranslatedHant": "Esta página aún no está disponible en chino simplificado — se muestra la versión en chino tradicional.",
-  "cite.responsibly": "Cómo citar responsablemente"
+  "cite.responsibly": "Cómo citar responsablemente",
+  "demo.totalOnly": "Se informó un total de {total} para este año, pero sin desglose por edad/sexo — habitual en países de acogida de renta alta.",
+  "chart.seriesBegins": "recopilado desde {year}"
 }

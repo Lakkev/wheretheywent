@@ -267,5 +267,7 @@
   "source.aged": "Données actualisées le {date} — les mises à jour automatiques sont peut-être interrompues",
   "doc.untranslated": "Cette page n'est pas encore disponible en français — la version anglaise est affichée ci-dessous.",
   "doc.untranslatedHant": "Cette page n'est pas encore disponible en chinois simplifié — la version en chinois traditionnel est affichée ci-dessous.",
-  "cite.responsibly": "Bien citer ces données"
+  "cite.responsibly": "Bien citer ces données",
+  "demo.totalOnly": "Un total de {total} a été déclaré pour cette année, mais sans ventilation par âge/sexe — fréquent pour les pays d’accueil à revenu élevé.",
+  "chart.seriesBegins": "recensé depuis {year}"
 }

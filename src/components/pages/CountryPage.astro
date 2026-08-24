@@ -155,7 +155,13 @@ const jsonLd = {
           </p>
         )
       }
-      {note && <p class="callout small">{note}</p>}
+      {
+        note && (
+          <p class="callout small">
+            {note} <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')} →</a>
+          </p>
+        )
+      }
       <p class="lede">{tr('country.title', { name })} — {data.years[0]}–{yearMax}.</p>
     </header>
 

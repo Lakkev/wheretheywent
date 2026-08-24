@@ -267,5 +267,7 @@
   "source.aged": "数据最后更新于 {date} — 自动更新可能已中断",
   "doc.untranslated": "此页面尚未提供简体中文版——以下显示英文版。",
   "doc.untranslatedHant": "此页尚未提供简体中文版——以下为繁体中文版。",
-  "cite.responsibly": "如何负责任地引用"
+  "cite.responsibly": "如何负责任地引用",
+  "demo.totalOnly": "该年已报告总数 {total}，但未报告年龄与性别细分——高收入庇护国多属此类。",
+  "chart.seriesBegins": "{year} 年起开始统计"
 }

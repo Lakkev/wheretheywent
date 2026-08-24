@@ -267,5 +267,7 @@
   "source.aged": "Data last refreshed {date} — automatic updates may be interrupted",
   "doc.untranslated": "This page is not yet available in this language — the English version is shown below.",
   "doc.untranslatedHant": "This page is not yet available in Simplified Chinese — the Traditional Chinese version is shown below.",
-  "cite.responsibly": "How to cite responsibly"
+  "cite.responsibly": "How to cite responsibly",
+  "demo.totalOnly": "A total of {total} was reported for this year, but no age/sex breakdown — common for high-income host countries.",
+  "chart.seriesBegins": "collected from {year}"
 }

@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "faf5b577",
-  "git_commit": "4a2d24a",
-  "generated_at": "2026-08-24T22:47:01Z",
+  "snapshot_id": "21506b7d",
+  "git_commit": null,
+  "generated_at": "2026-08-24T23:00:25Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -11,8 +11,8 @@
   ],
   "files": {
     "countries.json": {
-      "sha256": "e68e109c40aa01928f35f401826ae64be049951222e7fad4c9c637276f19eda9",
-      "bytes": 65127
+      "sha256": "2a5d8d40a44b0e7ff4c38a8f03ab99805397feb687a1449a3e816e2a4c14e872",
+      "bytes": 65089
     },
     "country/AB9.json": {
       "sha256": "0dd029456a6f36aa2d30701446b67805dd98d293e946dd555682d5261c9b5ccc",
@@ -915,8 +915,8 @@
       "bytes": 2804
     },
     "country/TWN.json": {
-      "sha256": "e45637ca6954986a8bc76d93c1e5b4b5a345025309af3c884cece8452066a026",
-      "bytes": 2494
+      "sha256": "84b6283aa489ddc0905099c06de1976f6f924234e8abcfb1c453c171167ff6cc",
+      "bytes": 2456
     },
     "country/TZA.json": {
       "sha256": "6f3d0611220a8b81eddc4e27b4985aa7035a47db945270f933324f6d08d5ba61",
@@ -1091,15 +1091,15 @@
       "bytes": 1495598
     },
     "live/nowcast.json": {
-      "sha256": "ce89dbd00517c848b7e1c65c5a0f2a03cff02aaf3f288596cdb049264772f1b1",
-      "bytes": 15586
+      "sha256": "49750d4e95d2fbafe4e8b134f5721cd593f5a3045b14bb783b6d3408d2f9ee1d",
+      "bytes": 15529
     },
     "metrics.json": {
       "sha256": "34a80ae1dd143db67ae65535ddd6c51c9470367cf007b5afc31c9f4ccf964fd7",
       "bytes": 24542
     },
     "sources.json": {
-      "sha256": "4a0fca76a917aee199c5ac9a59409c36c79529afc99303e7cc1f79e8811176c1",
+      "sha256": "88d7d0e29f70b91eea94d9251d64992f81555eb99db07d9f0015683a62e8ba37",
       "bytes": 29976
     },
     "stock/1951-2014.json": {

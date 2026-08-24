@@ -64,6 +64,12 @@
   let metric = $state<AnyMetricId>('refugees');
   let dialog = $state<null | 'cite' | 'download'>(null);
   let withComments = $state(true); // #12: provenance comments on by default
+  // OWID-style per-chart affordance: download the series chart as standalone SVG
+  let seriesRef = $state<{ svg: () => string | null } | null>(null);
+  function dlSeriesSvg() {
+    const s = seriesRef?.svg();
+    if (s) saveFile(`wtw-${file.iso3}-${metric}-series.svg`, s, 'image/svg+xml');
+  }
   const name = $derived(displayName(file.meta, locale));
   const countryIndex = $derived(
     new Map<string, CountryMeta>(
@@ -396,7 +402,10 @@
   {/if}
 
   <h2>{tr('country.series', { year: yearMax })}</h2>
-  <TimeSeries {file} {locale} {metric} {year} height={280} />
+  <TimeSeries bind:this={seriesRef} {file} {locale} {metric} {year} height={280} />
+  <p class="small">
+    <button class="btn ghost" type="button" onclick={dlSeriesSvg}>⬇ {tr('download.svg')}</button>
+  </p>
   {#if src}<SourceNote {locale} source={src} sourceId={srcId} compact />{/if}
 
   <div class="grid-2">
