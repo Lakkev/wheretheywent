@@ -10,7 +10,7 @@
 
 <div class="attribution">
   <span
-    >{tr('map.attribution.data')}{#if pop}
+    >{tr('map.attribution.data')}{#if pop}{' '}
       ({tr('cite.dataAsOf')}
       {fmtDateIso(pop.data_as_of)} · {tr('cite.retrieved')}
       {fmtDateIso(pop.retrieved_at)} · {pop.license.id}){/if}</span
