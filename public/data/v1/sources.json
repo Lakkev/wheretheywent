@@ -394,14 +394,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-06-01",
+    "data_as_of": "2026-07-01",
     "period_type": "monthly",
-    "retrieved_at": "2026-08-24T23:00:17Z",
+    "retrieved_at": "2026-08-24T23:39:09Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:bcda15cf2bf2d1c2cdf0a1c3e70ffd2823c801dd253aba9bf97f3e7669bb110c",
+    "content_hash": "sha256:22df080143d03f6cf19c9eb35d1368ad1ce20a7cd2dcc021b5a5d17cd55bfab1",
     "status": "ok",
     "caveats": [
       "Statistical estimates produced by UNHCR to predict current figures; not reported counts. Only refugees and asylum-seekers by country of asylum.",

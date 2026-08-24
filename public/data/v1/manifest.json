@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "21506b7d",
-  "git_commit": null,
-  "generated_at": "2026-08-24T23:00:25Z",
+  "snapshot_id": "d5c5217d",
+  "git_commit": "94c3b35",
+  "generated_at": "2026-08-24T23:40:38Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1091,15 +1091,15 @@
       "bytes": 1495598
     },
     "live/nowcast.json": {
-      "sha256": "49750d4e95d2fbafe4e8b134f5721cd593f5a3045b14bb783b6d3408d2f9ee1d",
-      "bytes": 15529
+      "sha256": "97a82dfbee97c2029233a837755fcddac945e324678f0d877c6237209c670f96",
+      "bytes": 15586
     },
     "metrics.json": {
       "sha256": "34a80ae1dd143db67ae65535ddd6c51c9470367cf007b5afc31c9f4ccf964fd7",
       "bytes": 24542
     },
     "sources.json": {
-      "sha256": "88d7d0e29f70b91eea94d9251d64992f81555eb99db07d9f0015683a62e8ba37",
+      "sha256": "82b602e15d8302a3926cdfe57375f1ed4d498b4091375c1b182d1cb107ee425c",
       "bytes": 29976
     },
     "stock/1951-2014.json": {
