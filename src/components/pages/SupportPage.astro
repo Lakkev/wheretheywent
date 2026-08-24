@@ -77,11 +77,23 @@ const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
   </ul>
 
   <h2>{zh ? '如何贊助' : 'How to sponsor'}</h2>
-  <p class="callout small">
+  <p class="callout">
     {
-      zh
-        ? 'PayPal 贊助即將開放——連結確定後會直接出現在這裡，本頁政策屆時不會有任何其他改動。'
-        : 'PayPal sponsorship is coming soon — the link will appear right here once it is set up, with no other change to the policy on this page.'
+      zh ? (
+        <>
+          <strong>PayPal</strong>：在 PayPal 選擇「轉帳／付款」，收款帳號輸入{' '}
+          <code>{CONTACT_EMAIL}</code>
+          （與本站聯絡信箱相同）。若日後啟用 PayPal.Me
+          一鍵連結，會直接出現在這裡，政策不會有任何其他改動。
+        </>
+      ) : (
+        <>
+          <strong>PayPal</strong>: choose "Send money" in PayPal and enter{' '}
+          <code>{CONTACT_EMAIL}</code> as the recipient (the same address as the site contact). If a
+          one-click PayPal.Me link is set up later, it will appear right here, with no other change
+          to this page's policy.
+        </>
+      )
     }
   </p>
   <p>
