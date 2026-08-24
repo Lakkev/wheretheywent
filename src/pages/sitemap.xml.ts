@@ -8,6 +8,8 @@ const STATIC = [
   '/compare',
   '/data',
   '/methodology',
+  '/methodology/definitions',
+  '/cite',
   '/about',
   '/about/boundaries',
   '/stories',

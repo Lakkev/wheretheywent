@@ -266,5 +266,6 @@
   "legend.breaksNote": "Las clases abarcan todos los años, para los países mostrados",
   "source.aged": "Datos actualizados el {date} — las actualizaciones automáticas podrían estar interrumpidas",
   "doc.untranslated": "Esta página aún no está disponible en español — a continuación se muestra la versión en inglés.",
-  "doc.untranslatedHant": "Esta página aún no está disponible en chino simplificado — se muestra la versión en chino tradicional."
+  "doc.untranslatedHant": "Esta página aún no está disponible en chino simplificado — se muestra la versión en chino tradicional.",
+  "cite.responsibly": "Cómo citar responsablemente"
 }

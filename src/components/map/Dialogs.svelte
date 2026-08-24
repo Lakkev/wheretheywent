@@ -162,6 +162,7 @@
       rows={2}
     />
     <CopyField {locale} label={tr('cite.bibtex')} value={citations.bibtex} rows={8} />
+    <p class="small"><a href={localizePath('/cite', locale)}>{tr('cite.responsibly')} →</a></p>
   </Modal>
 {:else if session.dialog === 'download'}
   <Modal title={tr('download.title')} onclose={close} closeLabel={tr('common.close')}>

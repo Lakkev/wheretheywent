@@ -77,8 +77,16 @@
     /** F6: conflict/disaster sub-toggles — event types the annual stock does not cover */
     iduConflict?: boolean;
     iduDisaster?: boolean;
-    /** Phase 2: precomputed flow arcs for the selected country (origin → asylum). */
-    flows?: { from: [number, number]; to: [number, number]; value: number; width: number }[] | null;
+    /** Phase 2: precomputed flow arcs (origin → asylum); preview=1 marks light hover arcs. */
+    flows?:
+      | {
+          from: [number, number];
+          to: [number, number];
+          value: number;
+          width: number;
+          preview?: 1;
+        }[]
+      | null;
     /** externally requested hover highlight (rank list / table rows) — same visual as map hover */
     highlight?: string | null;
     onselect: (iso3: string | null) => void;
@@ -293,7 +301,7 @@
       features: flows.map((f, i) => ({
         type: 'Feature',
         id: i,
-        properties: { width: f.width, value: f.value },
+        properties: { width: f.width, value: f.value, preview: f.preview ?? 0 },
         geometry: { type: 'LineString', coordinates: arcCoords(f.from, f.to) },
       })),
     };

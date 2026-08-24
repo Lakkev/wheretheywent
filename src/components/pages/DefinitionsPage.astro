@@ -1,0 +1,162 @@
+---
+/** /methodology/definitions — the history of the counting itself: legal instruments,
+ *  statistical breakpoints, and what each did to the numbers on this site. */
+import DocPage from './DocPage.astro';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const EVENTS = [
+  {
+    year: '1951',
+    en: {
+      t: 'The Refugee Convention',
+      what: 'Defines "refugee" — but only for events in Europe before 1951.',
+      stat: 'The first annual count (about 2.1 million) covers post-war Europe. Numbers before the mid-1960s describe a legally narrower world.',
+    },
+    zh: {
+      t: '《難民地位公約》',
+      what: '首次定義「難民」——但僅限 1951 年前發生在歐洲的事件。',
+      stat: '第一份年度統計（約 210 萬）涵蓋的是戰後歐洲。1960 年代中期以前的數字，描述的是一個法律上更狹窄的世界。',
+    },
+  },
+  {
+    year: '1967',
+    en: {
+      t: 'The Protocol',
+      what: 'Removes the geographic and temporal limits — "refugee" becomes universal.',
+      stat: 'From here, counts from different continents become comparable in principle.',
+    },
+    zh: {
+      t: '《1967 年議定書》',
+      what: '移除地理與時間限制——「難民」成為普世定義。',
+      stat: '自此，不同大洲的統計在原則上才可互相比較。',
+    },
+  },
+  {
+    year: '1969',
+    en: {
+      t: 'The OAU Convention (Africa)',
+      what: 'Adds objective grounds: external aggression, occupation, events seriously disturbing public order.',
+      stat: 'African host countries recognise large groups without individual determination — visible as large, round figures in the data.',
+    },
+    zh: {
+      t: '《非洲統一組織公約》',
+      what: '加入客觀情勢標準：外來侵略、佔領、嚴重擾亂公共秩序之事件。',
+      stat: '非洲收容國得以集體認定而非逐一審查——反映在資料中，是大而整的數字。',
+    },
+  },
+  {
+    year: '1984',
+    en: {
+      t: 'The Cartagena Declaration (Latin America)',
+      what: 'Non-binding but widely adopted: generalised violence and massive human-rights violations as grounds.',
+      stat: 'Underpins how Latin American states would later receive Venezuelans — mostly outside the refugee column (see 2018).',
+    },
+    zh: {
+      t: '《卡塔赫納宣言》（拉丁美洲）',
+      what: '不具拘束力但被廣泛採納：普遍暴力與大規模人權侵害成為理由。',
+      stat: '為日後拉美各國接納委內瑞拉人鋪路——但多數不在「難民」欄（見 2018）。',
+    },
+  },
+  {
+    year: '2004',
+    en: {
+      t: 'Statelessness enters the statistics',
+      what: 'UNHCR begins systematic reporting on stateless persons, by country of residence only.',
+      stat: 'On this site the timeline is hatched before 2004 — the blank is structural, not "not reported". Many countries still report nothing.',
+    },
+    zh: {
+      t: '無國籍者進入統計',
+      what: 'UNHCR 開始系統性報告無國籍者，僅按居住國。',
+      stat: '本站時間軸在 2004 年前以灰紋標示——空白是結構性的，不是「未報告」。許多國家至今仍無數字。',
+    },
+  },
+  {
+    year: '2009',
+    en: {
+      t: 'IDPs enter this dataset (via IDMC)',
+      what: 'Conflict- and violence-driven internal displacement, compiled by IDMC, is published through UNHCR.',
+      stat: 'Disaster displacement is NOT included in the annual stock — a bigger number exists elsewhere. Both views count IDPs under their own country.',
+    },
+    zh: {
+      t: 'IDP 進入本資料集（經 IDMC）',
+      what: '衝突與暴力所致的境內流離失所，由 IDMC 彙整、經 UNHCR 發布。',
+      stat: '年度存量「不含」災害流離失所——更大的數字在別處。兩種視角都把 IDP 算在其本國名下。',
+    },
+  },
+  {
+    year: '2018',
+    en: {
+      t: 'OIP is created',
+      what: '"Other people in need of international protection" — invented because millions of Venezuelans fit no existing column.',
+      stat: 'The single largest definitional break in recent data. Comparing "refugees" across 2017/2018 without OIP misreads the Venezuelan exodus as absent.',
+    },
+    zh: {
+      t: 'OIP 類別誕生',
+      what: '「其他需要國際保護者」——因數百萬委內瑞拉人不合任何既有欄位而生。',
+      stat: '近年最大的定義斷點。跨 2017/2018 比較「難民」而不看 OIP，會把委內瑞拉大出走誤讀為不存在。',
+    },
+  },
+];
+---
+
+<DocPage
+  locale={locale}
+  title={zh ? '定義變遷年表' : 'A timeline of the definitions'}
+  lede={zh
+    ? '流離失所統計是法律類別的投影。這一頁記錄類別本身的歷史——每一次擴張如何改變「誰被算進來」，以及讀數字時要在哪裡踩剎車。'
+    : 'Displacement statistics are projections of legal categories. This page records the history of the categories themselves — how each expansion changed who gets counted, and where to brake when reading.'}
+>
+  {
+    EVENTS.map((e) => (
+      <section class="card">
+        <h2>
+          {e.year} · {zh ? e.zh.t : e.en.t}
+        </h2>
+        <p>{zh ? e.zh.what : e.en.what}</p>
+        <p class="small muted">
+          <strong>{zh ? '對統計的影響：' : 'Effect on the statistics: '}</strong>
+          {zh ? e.zh.stat : e.en.stat}
+        </p>
+      </section>
+    ))
+  }
+
+  <h2>{zh ? '本站如何呈現這些斷點' : 'How this site shows the breakpoints'}</h2>
+  {
+    zh ? (
+      <ul>
+        <li>時間軸上，每個指標的「開始統計年份」以灰紋與提示標示（無國籍 2004、OIP 2018）。</li>
+        <li>每個指標附定義與注意事項，並隨每個下載檔內嵌。</li>
+        <li>
+          色階跨全部年份固定，顏色代表量級——但量級的「意義」仍受當年類別限制，本頁就是那個腳註。
+        </li>
+      </ul>
+    ) : (
+      <ul>
+        <li>
+          On the timeline, each metric's first-collected year is hatched and labelled (stateless
+          2004, OIP 2018).
+        </li>
+        <li>Every metric carries its definition and caveats, embedded in every download.</li>
+        <li>
+          Colour classes are fixed across all years, so colour means magnitude — but what a
+          magnitude <em>means</em> is still bounded by that year's categories. This page is that
+          footnote.
+        </li>
+      </ul>
+    )
+  }
+
+  <p class="small">
+    <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
+    <a href={localizePath('/cite', locale)}>{zh ? '如何負責任地引用' : 'How to cite responsibly'}</a
+    > · <a href={localizePath('/stories/world', locale)}
+      >{zh ? '故事：七十五年的計數' : 'Story: seventy-five years of counting'}</a
+    >
+  </p>
+</DocPage>

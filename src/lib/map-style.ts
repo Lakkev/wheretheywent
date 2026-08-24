@@ -156,7 +156,8 @@ export function flowsLayer(): Record<string, unknown> {
     layout: { 'line-cap': 'round' },
     paint: {
       'line-color': '#0b3a6e',
-      'line-opacity': 0.55,
+      // hover previews are lighter than committed selection arcs
+      'line-opacity': ['case', ['==', ['coalesce', ['get', 'preview'], 0], 1], 0.28, 0.55],
       'line-width': ['coalesce', ['get', 'width'], 2],
     },
   };
@@ -169,6 +170,7 @@ export function flowsAnimLayer(): Record<string, unknown> {
     id: LYR_FLOWS_ANIM,
     type: 'line',
     source: SRC_FLOWS,
+    filter: ['!=', ['coalesce', ['get', 'preview'], 0], 1],
     layout: { 'line-cap': 'round' },
     paint: {
       'line-color': '#c6dbef',

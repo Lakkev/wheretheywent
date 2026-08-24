@@ -266,5 +266,6 @@
   "legend.breaksNote": "色階分級跨全部年份計算，依目前顯示的國家",
   "source.aged": "資料最後更新於 {date} — 自動更新可能已中斷",
   "doc.untranslated": "此頁尚未有本語言版本——以下顯示英文版。",
-  "doc.untranslatedHant": "此頁尚未提供簡體中文版——以下為繁體中文版。"
+  "doc.untranslatedHant": "此頁尚未提供簡體中文版——以下為繁體中文版。",
+  "cite.responsibly": "如何負責任地引用"
 }

@@ -70,11 +70,50 @@
   // colour excludes disasters, so mixing them silently would misrepresent the coloured layer.
   let evConflict = $state(true);
   let evDisaster = $state(false);
-  /** Phase 2: flow arcs for the selected country — fetched per year, top-10 partners. */
+  /** Phase 2: flow arcs — full set for the selected country (f=1), light top-5 preview on hover. */
   const FLOWS_FROM = 2015;
-  let flowArcs = $state<
-    { from: [number, number]; to: [number, number]; value: number; width: number }[] | null
-  >(null);
+  type FlowArc = {
+    from: [number, number];
+    to: [number, number];
+    value: number;
+    width: number;
+    preview?: 1;
+  };
+  function buildArcs(
+    ff: import('../../lib/types').FlowsFile,
+    iso3: string,
+    v: 'asylum' | 'origin',
+    topN: number,
+    widthScale: number,
+    preview?: 1,
+  ): FlowArc[] {
+    const sel = raw.countryIndex.get(iso3)?.centroid;
+    if (!sel) return [];
+    const top = ff.rows
+      .filter((r) => (v === 'asylum' ? r[1] === iso3 : r[0] === iso3))
+      .map((r) => ({ partner: v === 'asylum' ? r[0] : r[1], value: (r[2] ?? 0) + (r[3] ?? 0) }))
+      .filter((x) => x.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, topN);
+    const max = top[0]?.value ?? 1;
+    return top.flatMap((x) => {
+      const c = raw.countryIndex.get(x.partner)?.centroid;
+      if (!c) return [];
+      // arcs always run origin → asylum (the direction people moved)
+      const from = v === 'asylum' ? c : sel;
+      const to = v === 'asylum' ? sel : c;
+      return [
+        {
+          from,
+          to,
+          value: x.value,
+          width: (1.5 + 6.5 * Math.sqrt(x.value / max)) * widthScale,
+          ...(preview ? { preview } : {}),
+        },
+      ];
+    });
+  }
+  let flowArcs = $state<FlowArc[] | null>(null);
   $effect(() => {
     const iso3 = ui.c;
     const y = ui.y;
@@ -89,36 +128,41 @@
     raw.client
       .flows(y)
       .then((ff) => {
-        if (cancelled) return;
-        const top = ff.rows
-          .filter((r) => (v === 'asylum' ? r[1] === iso3 : r[0] === iso3))
-          .map((r) => ({
-            partner: v === 'asylum' ? r[0] : r[1],
-            value: (r[2] ?? 0) + (r[3] ?? 0),
-          }))
-          .filter((x) => x.value > 0)
-          .sort((a, b) => b.value - a.value)
-          .slice(0, 10);
-        const sel = raw.countryIndex.get(iso3)?.centroid;
-        if (!sel) {
-          flowArcs = [];
-          return;
-        }
-        const max = top[0]?.value ?? 1;
-        flowArcs = top.flatMap((x) => {
-          const c = raw.countryIndex.get(x.partner)?.centroid;
-          if (!c) return [];
-          // arcs always run origin → asylum (the direction people moved)
-          const from = v === 'asylum' ? c : sel;
-          const to = v === 'asylum' ? sel : c;
-          return [{ from, to, value: x.value, width: 1.5 + 6.5 * Math.sqrt(x.value / max) }];
-        });
+        if (!cancelled) flowArcs = buildArcs(ff, iso3, v, 10, 1);
       })
       .catch(() => (flowArcs = null));
     return () => {
       cancelled = true;
     };
   });
+  /** Hover intent (400 ms): a light top-5 preview for the hovered country — point at a country
+   *  and see where its people went / came from, without selecting. Selection arcs win. */
+  let previewArcs = $state<FlowArc[] | null>(null);
+  let hoverArcTimer: ReturnType<typeof setTimeout> | null = null;
+  $effect(() => {
+    const h = session.hover;
+    const y = ui.y;
+    const v = ui.v;
+    const haveCountries = !!data.countriesFile;
+    if (hoverArcTimer) clearTimeout(hoverArcTimer);
+    if (!h || y < FLOWS_FROM || !haveCountries || h === ui.c || (ui.f && ui.c)) {
+      previewArcs = null;
+      return;
+    }
+    hoverArcTimer = setTimeout(() => {
+      raw.client
+        .flows(y)
+        .then((ff) => {
+          if (session.hover !== h) return;
+          previewArcs = buildArcs(ff, h, v, 5, 0.6, 1);
+        })
+        .catch(() => {});
+    }, 400);
+    return () => {
+      if (hoverArcTimer) clearTimeout(hoverArcTimer);
+    };
+  });
+  const mapFlowArcs = $derived(flowArcs ?? previewArcs);
 
   const ctx = () => ({
     yearMin: data.yearMin,
@@ -463,7 +507,7 @@
     showIdu={ui.e}
     iduConflict={evConflict}
     iduDisaster={evDisaster}
-    flows={flowArcs}
+    flows={mapFlowArcs}
     highlight={session.hover}
     onselect={(iso3) => selectCountry(iso3)}
     onhover={(iso3) => (session.hover = iso3)}

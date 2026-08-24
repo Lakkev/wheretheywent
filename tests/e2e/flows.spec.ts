@@ -38,3 +38,29 @@ test('flow arcs render for a selected country (f=1)', async ({ page }) => {
   );
   expect(errors).toEqual([]);
 });
+
+/** Hover intent: pointing at a country previews its top-5 arcs without any selection. */
+test('hovering a country previews its flow arcs', async ({ page }) => {
+  await page.goto('/?y=2024');
+  await waitForApp(page);
+  await waitForMap(page);
+  await page.locator('.ranklist li').first().hover();
+  await page.waitForFunction(
+    () => {
+      const m = (
+        window as unknown as {
+          __wtwMap?: {
+            getLayer: (id: string) => unknown;
+            queryRenderedFeatures: (a?: unknown, o?: unknown) => unknown[];
+          };
+        }
+      ).__wtwMap;
+      return (
+        !!m &&
+        !!m.getLayer('wtw-flows') &&
+        m.queryRenderedFeatures(undefined, { layers: ['wtw-flows'] }).length > 0
+      );
+    },
+    { timeout: 10_000 },
+  );
+});

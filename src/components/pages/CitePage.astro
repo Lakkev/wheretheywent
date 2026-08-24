@@ -1,0 +1,155 @@
+---
+/** /cite — how to cite responsibly. The site's purpose is to be cited; this page keeps the
+ *  numbers attached to their context when they travel. */
+import DocPage from './DocPage.astro';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { getManifest, getSources } from '../../lib/data-server';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const manifest = getManifest();
+const src = getSources()?.['unhcr_population'];
+const boiler = `Displacement figures are taken from Where They Went (snapshot ${manifest?.snapshot_id ?? '…'}, data as of ${src?.data_as_of ?? '…'}), which republishes UNHCR Refugee Population Statistics Database and IDMC figures verbatim with content-addressed snapshots. "Not reported" values are preserved as missing, not zero. Metric definitions and their coverage start-years follow UNHCR usage (e.g. OIP from 2018, stateless from 2004); see wheretheywent.lakkev.com/methodology.`;
+---
+
+<DocPage
+  locale={locale}
+  title={zh ? '如何負責任地引用' : 'How to cite responsibly'}
+  lede={zh
+    ? '被引用是本站存在的目的。這一頁讓數字離開本站之後，仍然帶著它的脈絡。'
+    : 'Being cited is why this site exists. This page keeps the numbers attached to their context after they leave.'}
+>
+  <h2>{zh ? '快速引用' : 'Citing, quickly'}</h2>
+  {
+    zh ? (
+      <ul>
+        <li>
+          任何檢視按「<strong>引用</strong>」即得 APA
+          7／芝加哥／BibTeX／引用本頁四種格式。出版年份是<strong>資料年份</strong>
+          ，不是您點閱的年份；引用內含資料快照代碼（目前 <code>{manifest?.snapshot_id}</code>
+          ），日後可逐位元組回溯。
+        </li>
+        <li>請同時引用上游來源（UNHCR／IDMC）——本站是可驗證的轉載，不是原始出處。</li>
+        <li>固定連結會重現年份、指標、視角與篩選；請貼分享連結，不要貼截圖網址。</li>
+      </ul>
+    ) : (
+      <ul>
+        <li>
+          Press <strong>Cite</strong> on any view for APA 7 / Chicago / BibTeX / plain formats. The
+          publication year is the <strong>data year</strong>, not the year you clicked; the citation
+          carries the snapshot id (currently <code>{manifest?.snapshot_id}</code>) so the exact
+          bytes remain recoverable.
+        </li>
+        <li>
+          Cite the upstream source (UNHCR / IDMC) alongside this site — we are a verifiable
+          republication, not the origin.
+        </li>
+        <li>
+          Permanent links reproduce year, metric, view and filters; share the link, not a screenshot
+          URL.
+        </li>
+      </ul>
+    )
+  }
+
+  <h2>{zh ? '五條守則' : 'Five rules'}</h2>
+  {
+    zh ? (
+      <ol>
+        <li>
+          <strong>帶著定義走。</strong>每個指標都有法律定義與統計起始年（無國籍 2004、OIP
+          2018……）。引用數字時附上類別與年份——見
+          <a href={localizePath('/methodology/definitions', locale)}>定義變遷年表</a>。
+        </li>
+        <li>
+          <strong>未報告不等於零。</strong>
+          灰色國家是「該年沒有數字」，不是「沒有流離失所者」。寫「未報告」，不要寫「零」或「無」。
+        </li>
+        <li>
+          <strong>數字是人，不是水。</strong>
+          避免「難民潮」「湧入」「氾濫」等流體隱喻——它們把受迫害的人描寫成災害。寫「X 人被迫流離」。
+        </li>
+        <li>
+          <strong>跨年比較先查類別。</strong>七十五年間「誰被算進來」一直在變；把 1951
+          與今天直接相除，得到的是類別的變化，不是世界的變化。
+        </li>
+        <li>
+          <strong>估計不冒充確認。</strong>
+          即時推估與近期事件（IDU）是明確標示的估計，引用時必須保留「估計」二字，且不得與年度確認數據混列。
+        </li>
+      </ol>
+    ) : (
+      <ol>
+        <li>
+          <strong>Carry the definition with the number.</strong> Every metric has a legal definition
+          and a collection start-year (stateless 2004, OIP 2018…). Quote the category and year — see
+          the <a href={localizePath('/methodology/definitions', locale)}>definitions timeline</a>.
+        </li>
+        <li>
+          <strong>Not reported is not zero.</strong> A grey country means "no figure that year", not
+          "no displaced people". Write "not reported", never "zero" or "none".
+        </li>
+        <li>
+          <strong>Numbers are people, not water.</strong> Avoid flood metaphors — "waves", "influx",
+          "swamped" — which cast persecuted people as a natural disaster. Write "X people were
+          forcibly displaced".
+        </li>
+        <li>
+          <strong>Check the category before comparing years.</strong> Who gets counted has kept
+          changing for seventy-five years; dividing today by 1951 measures the change in categories,
+          not the change in the world.
+        </li>
+        <li>
+          <strong>Estimates never impersonate reports.</strong> Nowcasts and recent events (IDU) are
+          labelled estimates; keep the word "estimate" attached, and never mix them into annual
+          reported series.
+        </li>
+      </ol>
+    )
+  }
+
+  <h2>{zh ? '編輯檯檢核表' : 'Desk checklist'}</h2>
+  {
+    zh ? (
+      <ul class="small">
+        <li>☐ 指標名稱與年份都寫出來了（「2024 年年末難民存量」，不是「難民人數」）</li>
+        <li>☐ 有出處與資料截止日（UNHCR，資料截至 {src?.data_as_of ?? '—'}）</li>
+        <li>☐ 灰色／缺值寫成「未報告」</li>
+        <li>☐ 沒有水災隱喻</li>
+        <li>☐ 附了可重現的分享連結或快照代碼</li>
+        <li>☐ 估計值標明「估計」</li>
+      </ul>
+    ) : (
+      <ul class="small">
+        <li>
+          ☐ Metric and year are explicit ("year-end 2024 refugee stock", not "refugee numbers")
+        </li>
+        <li>☐ Source and as-of date given (UNHCR, data as of {src?.data_as_of ?? '—'})</li>
+        <li>☐ Grey / missing written as "not reported"</li>
+        <li>☐ No flood metaphors</li>
+        <li>☐ A reproducible share link or snapshot id is attached</li>
+        <li>☐ Estimates carry the word "estimate"</li>
+      </ul>
+    )
+  }
+
+  <h2>{zh ? '論文方法段範本' : 'Methods-section boilerplate'}</h2>
+  <p class="small muted">
+    {
+      zh
+        ? '可直接貼入論文方法段的英文範本（快照代碼與日期為建置時自動代入）：'
+        : 'Paste-ready for a methods section (snapshot id and date are filled in at build time):'
+    }
+  </p>
+  <blockquote class="callout small"><code>{boiler}</code></blockquote>
+
+  <p class="small">
+    <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
+    <a href={localizePath('/methodology/definitions', locale)}
+      >{zh ? '定義變遷年表' : 'Definitions timeline'}</a
+    > · <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
+  </p>
+</DocPage>

@@ -266,5 +266,6 @@
   "legend.breaksNote": "색 구간은 표시 중인 국가에 대해 전체 연도에 걸쳐 고정",
   "source.aged": "데이터 최종 갱신 {date} — 자동 업데이트가 중단되었을 수 있습니다",
   "doc.untranslated": "이 페이지는 아직 한국어로 제공되지 않습니다 — 아래는 영어판입니다.",
-  "doc.untranslatedHant": "이 페이지는 아직 중국어 간체로 제공되지 않습니다 — 아래는 중국어 번체판입니다."
+  "doc.untranslatedHant": "이 페이지는 아직 중국어 간체로 제공되지 않습니다 — 아래는 중국어 번체판입니다.",
+  "cite.responsibly": "책임 있는 인용 안내"
 }

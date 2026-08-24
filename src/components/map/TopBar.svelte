@@ -148,6 +148,7 @@
           <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
           <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
           <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
+          <a href={localizePath('/cite', locale)}>{tr('cite.responsibly')}</a>
           <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
           <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
         </nav>
