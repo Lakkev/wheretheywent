@@ -10,6 +10,12 @@ const { locale } = Astro.props;
 const tr = useT(locale);
 ---
 
-<DocPage locale={locale} title={tr('compare.title')} lede={tr('compare.max')} wide>
+<DocPage
+  locale={locale}
+  title={tr('compare.title')}
+  lede={tr('compare.max')}
+  description={tr('page.compare.desc')}
+  wide
+>
   <CompareApp client:load locale={locale} siteUrl={SITE_URL} />
 </DocPage>

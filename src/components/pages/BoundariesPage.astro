@@ -15,61 +15,111 @@ const zh = locale === 'zh-Hant';
 <DocPage
   locale={locale}
   title={tr('page.boundaries.title')}
-  lede="Where the lines come from, why, how contested places are shown, and how names are chosen."
+  lede={zh
+    ? '邊界從哪裡來、為什麼這樣畫、爭議地區如何呈現、名稱如何選擇。'
+    : 'Where the lines come from, why, how contested places are shown, and how names are chosen.'}
 >
-  <h2>Disclaimer</h2>
+  <h2>{zh ? '免責聲明' : 'Disclaimer'}</h2>
   <blockquote class="callout">{zh ? notes?.disclaimer_zh : notes?.disclaimer_en}</blockquote>
 
-  <h2>Where the boundaries come from</h2>
+  <h2>{zh ? '邊界從哪裡來' : 'Where the boundaries come from'}</h2>
   <p>
-    <strong>Natural Earth, 1:50 million scale</strong> (via the <code>world-atlas</code> package). Natural
-    Earth is public domain and is the de-facto standard for small-scale thematic world maps. The geometry
-    is simplified (Visvalingam, 20 % of vertices kept, islands under 5 km² dropped) to about 165 KB so
-    the map loads fast; it is a display layer, not a legal instrument. Statistics are joined to polygons
-    on ISO 3166-1 alpha-3 codes, never on names.
+    {
+      zh ? (
+        <>
+          <strong>Natural Earth,1:5,000 萬比例尺</strong>（經 <code>world-atlas</code>{' '}
+          套件）。Natural Earth
+          為公有領域，是小比例尺主題式世界地圖的事實標準。幾何經過簡化（Visvalingam 演算法、保留 20%
+          頂點、移除 5 km² 以下島嶼）至約 165
+          KB，以利快速載入；它是顯示用圖層，不是法律文件。統計數字一律以 ISO 3166-1 alpha-3
+          代碼連結多邊形，絕不以名稱連結。
+        </>
+      ) : (
+        <>
+          <strong>Natural Earth, 1:50 million scale</strong> (via the <code>world-atlas</code>{' '}
+          package). Natural Earth is public domain and is the de-facto standard for small-scale
+          thematic world maps. The geometry is simplified (Visvalingam, 20 % of vertices kept,
+          islands under 5 km² dropped) to about 165 KB so the map loads fast; it is a display layer,
+          not a legal instrument. Statistics are joined to polygons on ISO 3166-1 alpha-3 codes,
+          never on names.
+        </>
+      )
+    }
   </p>
-  <h3>Alternatives considered</h3>
+  <h3>{zh ? '曾評估的替代方案' : 'Alternatives considered'}</h3>
   <table class="small">
-    <thead><tr><th>Option</th><th>Decision</th></tr></thead>
+    <thead><tr><th>{zh ? '選項' : 'Option'}</th><th>{zh ? '決定' : 'Decision'}</th></tr></thead>
     <tbody>
       <tr
         ><td>OCHA/HDX "COD-AB global"</td><td
-          >Rejected: it contains administrative levels 1–4 only (no country outlines), covers 111
-          countries, and is a 1 GB geodatabase.</td
+          >{
+            zh
+              ? '不採用：僅含行政層級 1–4（沒有國家外框），只涵蓋 111 國，且為 1 GB 的 geodatabase。'
+              : 'Rejected: it contains administrative levels 1–4 only (no country outlines), covers 111 countries, and is a 1 GB geodatabase.'
+          }</td
         ></tr
       >
       <tr
         ><td>UN Geospatial "UNmap" feature service</td><td
-          >Candidate for a future "boundary set" switch. Licence restricted to the UN Secretariat;
-          data frozen in 2019; colours Taiwan with China by rule.</td
+          >{
+            zh
+              ? '未來「邊界圖組切換」的候選。授權僅限聯合國秘書處；資料凍結於 2019 年；依其規則將台灣與中國同色。'
+              : 'Candidate for a future "boundary set" switch. Licence restricted to the UN Secretariat; data frozen in 2019; colours Taiwan with China by rule.'
+          }</td
         ></tr
       >
       <tr
         ><td>FieldMaps / USGS international boundaries (UN Clear Map style)</td><td
-          >Candidate for a future switch (public domain), requires a 357 MB GIS conversion.</td
+          >{
+            zh
+              ? '未來切換的候選（公有領域），需先完成 357 MB 的 GIS 轉檔。'
+              : 'Candidate for a future switch (public domain), requires a 357 MB GIS conversion.'
+          }</td
         ></tr
       >
       <tr
         ><td>UN Clear Map raster tiles</td><td
-          >Possible alternative basemap later (free, CORS-enabled).</td
+          >{
+            zh
+              ? '之後可能的替代底圖（免費、支援 CORS）。'
+              : 'Possible alternative basemap later (free, CORS-enabled).'
+          }</td
         ></tr
       >
     </tbody>
   </table>
 
-  <h2>How names are chosen</h2>
+  <h2>{zh ? '名稱如何選擇' : 'How names are chosen'}</h2>
   <p>
-    Names follow <strong>the data source being cited</strong> — UNHCR's country list — so that a citation
-    from this site matches the upstream record. A short override table improves readability (e.g. "Syrian
-    Arab Rep." is shown as "Syria"; "Serbia and Kosovo: S/RES/1244 (1999)" is shown as "Serbia"); wherever
-    an override applies, the original name is displayed next to it ("Name as used by UNHCR: …"). The UNHCR
-    name is always kept in the <code>name</code> field of every download.
+    {
+      zh ? (
+        <>
+          名稱跟隨<strong>被引用的資料來源</strong>——即 UNHCR
+          的國家清單——如此從本站產生的引用才能與上游紀錄對得上。另有小型覆寫表以利閱讀（如「Syrian
+          Arab Rep.」顯示為「敘利亞」；「Serbia and Kosovo: S/RES/1244
+          (1999)」顯示為「塞爾維亞」）；凡有覆寫之處，原始名稱一律並列顯示（「UNHCR
+          使用之名稱：…」）。每個下載檔的 <code>name</code> 欄位永遠保留 UNHCR 原名。
+        </>
+      ) : (
+        <>
+          Names follow <strong>the data source being cited</strong> — UNHCR's country list — so that
+          a citation from this site matches the upstream record. A short override table improves
+          readability (e.g. "Syrian Arab Rep." is shown as "Syria"; "Serbia and Kosovo: S/RES/1244
+          (1999)" is shown as "Serbia"); wherever an override applies, the original name is
+          displayed next to it ("Name as used by UNHCR: …"). The UNHCR name is always kept in the{' '}
+          <code>name</code> field of every download.
+        </>
+      )
+    }
   </p>
 
-  <h2>Contested places, one by one</h2>
+  <h2>{zh ? '爭議地區逐一說明' : 'Contested places, one by one'}</h2>
   <p>
-    For each area below we state how it is drawn, what statistics (if any) attach to it, and how
-    each source names it.
+    {
+      zh
+        ? '以下逐一說明每個地區如何繪製、附有哪些統計（若有）、以及各資料來源如何稱呼它。來源命名一律照錄原文、不予翻譯——改寫會使引用與上游對不上。'
+        : 'For each area below we state how it is drawn, what statistics (if any) attach to it, and how each source names it. Source names are quoted verbatim, untranslated — rewriting them would break the match with the upstream record.'
+    }
   </p>
   {
     notes?.notes.map((n) => (
@@ -79,34 +129,70 @@ const zh = locale === 'zh-Hant';
           {n.iso3 ? <code class="muted"> {n.iso3}</code> : null}
         </h3>
         <p>
-          <strong>How it is shown:</strong> {zh ? n.how_shown_zh : n.how_shown}
+          <strong>{zh ? '如何呈現：' : 'How it is shown:'}</strong>{' '}
+          {zh ? n.how_shown_zh : n.how_shown}
         </p>
         <p class="small muted">
-          <strong>Source naming:</strong> {zh ? n.source_naming_zh : n.source_naming}
+          <strong>{zh ? '來源命名：' : 'Source naming:'}</strong>{' '}
+          {zh ? n.source_naming_zh : n.source_naming}
         </p>
       </section>
     ))
   }
 
-  <h2>What "no data" means</h2>
+  <h2>{zh ? '「無資料」代表什麼' : 'What "no data" means'}</h2>
   <p>
-    Grey on the map means <em>not reported</em> for that year and metric — not zero, and not "no displaced
-    people". Some drawn territories are not UNHCR reporting entities at all (Taiwan, Kosovo, Greenland,
-    several dependencies): they show a tooltip "Not separately reported by UNHCR". Conversely, a few UNHCR
-    entities have no polygon here (Martinique, Gibraltar, Tuvalu, the pseudo-entities "Stateless" and
-    "Unknown"): they are listed in the legend's "cannot be shown on the map" chip and included in every
-    total, table and download. The validation step guarantees <em
-      >mapped total + unmappable total = global total</em
-    > every day.
+    {
+      zh ? (
+        <>
+          地圖上的灰色代表該年份、該指標<em>未報告</em>
+          ——不是零，也不是「沒有流離失所者」。部分繪出的領土根本不是 UNHCR
+          的統計對象（台灣、科索沃、格陵蘭與若干屬地）：它們會顯示「UNHCR
+          未單獨統計」的提示。反之，少數 UNHCR
+          統計對象在此沒有多邊形（馬提尼克、直布羅陀、吐瓦魯，以及「無國籍」「來源不明」兩個虛擬條目）：它們列於圖例的「無法顯示於地圖」清單，並計入每一項總計、表格與下載。驗證步驟每天保證
+          <em>可上色總和 + 無法顯示總和 = 全球總計</em>。
+        </>
+      ) : (
+        <>
+          Grey on the map means <em>not reported</em> for that year and metric — not zero, and not
+          "no displaced people". Some drawn territories are not UNHCR reporting entities at all
+          (Taiwan, Kosovo, Greenland, several dependencies): they show a tooltip "Not separately
+          reported by UNHCR". Conversely, a few UNHCR entities have no polygon here (Martinique,
+          Gibraltar, Tuvalu, the pseudo-entities "Stateless" and "Unknown"): they are listed in the
+          legend's "cannot be shown on the map" chip and included in every total, table and
+          download. The validation step guarantees{' '}
+          <em>mapped total + unmappable total = global total</em> every day.
+        </>
+      )
+    }
   </p>
 
-  <h2>Report an issue with a boundary or name</h2>
+  <h2>{zh ? '回報邊界或名稱問題' : 'Report an issue with a boundary or name'}</h2>
   <p>
-    Write to <a
-      href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Boundary / name issue')}`}
-      >{CONTACT_EMAIL}</a
-    > with the area, what you see, and (if relevant) the source naming you think should apply. Changes
-    are recorded in the repository history.
+    {
+      zh ? (
+        <>
+          請寄信至{' '}
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Boundary / name issue')}`}
+          >
+            {CONTACT_EMAIL}
+          </a>
+          ，說明地區、您看到的內容，以及（若相關）您認為應採用的來源命名。所有變更皆記錄於版本庫歷史。
+        </>
+      ) : (
+        <>
+          Write to{' '}
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Boundary / name issue')}`}
+          >
+            {CONTACT_EMAIL}
+          </a>{' '}
+          with the area, what you see, and (if relevant) the source naming you think should apply.
+          Changes are recorded in the repository history.
+        </>
+      )
+    }
   </p>
   <p class="small">
     <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> · <a

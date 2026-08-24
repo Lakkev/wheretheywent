@@ -46,7 +46,7 @@ const ORGS = [
     name: 'Global Refugee-led Network (GRN)',
     url: 'https://www.globalrefugeelednetwork.org/',
     note: 'A network led by refugees themselves, advocating for refugee participation in the decisions that affect them.',
-    note_zh: '由難民自身領導的全球網絡,倡議讓難民參與影響他們的決策。',
+    note_zh: '由難民自身領導的全球網絡，倡議讓難民參與影響他們的決策。',
   },
 ];
 ---
@@ -55,14 +55,14 @@ const ORGS = [
   locale={locale}
   title={tr('page.about.title')}
   lede={zh
-    ? '「他們去了哪裡」是一個獨立、非商業的資料平台,讓被迫流離失所的公開統計易於查看、檢驗、引用與再利用。'
+    ? '「他們去了哪裡」是一個獨立、非商業的資料平台，讓被迫流離失所的公開統計易於查看、檢驗、引用與再利用。'
     : 'Where They Went is an independent, non-commercial data platform that makes the published statistics on forced displacement easy to see, check, cite and reuse.'}
 >
   <h2>{zh ? '這是給誰用的' : 'Who it is for'}</h2>
   <p>
     {
       zh
-        ? '首要對象是記者、研究者與 NGO 工作者;其次是有興趣的一般讀者。成功的定義是被引用、被使用——而不是流量。這個順序決定了每一項設計:引用正確性優先,其次是方法論的完整、資料品質、連結的穩定,最後才是視覺效果。'
+        ? '首要對象是記者、研究者與 NGO 工作者；其次是有興趣的一般讀者。成功的定義是被引用、被使用——而不是流量。這個順序決定了每一項設計：引用正確性優先，其次是方法論的完整、資料品質、連結的穩定，最後才是視覺效果。'
         : 'Journalists, researchers and NGO staff first; interested readers second. Success means being cited and reused — not page views. That order drives every decision: citation accuracy first, then a complete methodology, then data quality, then stable links, then visuals.'
     }
   </p>
@@ -74,7 +74,7 @@ const ORGS = [
         zh ? (
           <>
             <strong>本站不追蹤任何個人。</strong>
-            流離失所者是受迫害的人群;公開個別位置或身分可能使其家人遭到報復、或使庇護申請被駁回。本站只處理
+            流離失所者是受迫害的人群；公開個別位置或身分可能使其家人遭到報復、或使庇護申請被駁回。本站只處理
             UNHCR、IDMC 與聯合國發布的群體層級統計——這是不可協商的底線。
           </>
         ) : (
@@ -91,7 +91,7 @@ const ORGS = [
       {
         zh ? (
           <>
-            <strong>本站不收捐款。</strong>沒有任何金錢經過本站(見下)。
+            <strong>本站不收捐款。</strong>沒有任何金錢經過本站（見下）。
           </>
         ) : (
           <>
@@ -106,7 +106,7 @@ const ORGS = [
         zh ? (
           <>
             <strong>本站不追蹤你。</strong>沒有分析工具、沒有 Cookie、沒有第三方腳本。底圖瓦片來自
-            OpenFreeMap;資料與程式皆為靜態檔案。
+            OpenFreeMap；資料與程式皆為靜態檔案。
           </>
         ) : (
           <>
@@ -124,8 +124,9 @@ const ORGS = [
     {
       zh ? (
         <>
-          由 <strong>Lakkev</strong>(lakkev.com)獨立維護,無外部經費,營運成本為每月 0 元(靜態架站 +
-          免費層服務)。每一份發布的資料快照都提交至版本庫——即使本站有一天消失,所有數字仍可取回、仍可驗證。聯絡:
+          由 <strong>Lakkev</strong>（lakkev.com）獨立維護，無外部經費，營運成本為每月 0
+          元（靜態架站 +
+          免費層服務）。每一份發布的資料快照都提交至版本庫——即使本站有一天消失，所有數字仍可取回、仍可驗證。聯絡：
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>。
         </>
       ) : (
@@ -145,13 +146,13 @@ const ORGS = [
     {
       zh ? (
         <>
-          <strong>資料是開放的</strong>:依原始開放授權轉載(UNHCR CC BY 4.0、IDMC CC BY-IGO、UN WPP
+          <strong>資料是開放的</strong>：依原始開放授權轉載（UNHCR CC BY 4.0、IDMC CC BY-IGO、UN WPP
           CC BY 3.0 IGO、Natural Earth
-          公有領域),出處標註隨每個下載檔內嵌。本站自身的程式碼保留所有權利(
+          公有領域），出處標註隨每個下載檔內嵌。本站自身的程式碼保留所有權利（
           <a href={REPO_URL} rel="noopener">
             版本庫
           </a>
-          )。目前資料快照:<code>{manifest?.snapshot_id ?? '—'}</code>。
+          ）。目前資料快照：<code>{manifest?.snapshot_id ?? '—'}</code>。
         </>
       ) : (
         <>
@@ -182,10 +183,10 @@ const ORGS = [
     {
       zh ? (
         <>
-          每個頁面都有「回報問題」連結,會自動帶入您當下的檢視網址。或直接寄信至{' '}
+          每個頁面都有「回報問題」連結，會自動帶入您當下的檢視網址。或直接寄信至{' '}
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> —{' '}
           <a href={report}>開啟預填的回報信</a>
-          。請附上「分享」按鈕產生的連結,並盡可能附上您預期的數字與其出處。追溯到上游來源的錯誤會回報給上游;本站管線的錯誤會修正並記錄於{' '}
+          。請附上「分享」按鈕產生的連結，並盡可能附上您預期的數字與其出處。追溯到上游來源的錯誤會回報給上游；本站管線的錯誤會修正並記錄於{' '}
           <code>docs/data-verification.md</code>。
         </>
       ) : (
@@ -206,9 +207,9 @@ const ORGS = [
     {
       zh ? (
         <>
-          本站不收捐款、不經手任何金錢,<strong>也不收取推薦費——並承諾永不收取</strong>
-          ;若此政策有任何改變,本頁會在任何連結變動之前先行說明。以下組織直接與流離失所者工作;每個連結都通往
-          <em>它們自己的</em>頁面,且各自公布經審計的財務報告。請注意:本站的主要資料來源即為
+          本站不收捐款、不經手任何金錢，<strong>也不收取推薦費——並承諾永不收取</strong>
+          ；若此政策有任何改變，本頁會在任何連結變動之前先行說明。以下組織直接與流離失所者工作；每個連結都通往
+          <em>它們自己的</em>頁面，且各自公布經審計的財務報告。請注意：本站的主要資料來源即為
           UNHCR。獨立評鑑可參考{' '}
           <a href="https://www.charitynavigator.org/" rel="noopener">
             Charity Navigator
@@ -217,7 +218,7 @@ const ORGS = [
           <a href="https://www.givewell.org/" rel="noopener">
             GiveWell
           </a>
-          (兩者皆為美國評鑑機構,其方法對全球南方組織相對不利)。
+          （兩者皆為美國評鑑機構，其方法對全球南方組織相對不利）。
         </>
       ) : (
         <>
@@ -254,7 +255,7 @@ const ORGS = [
   <p class="small muted">
     {
       zh
-        ? '列出僅供參考,不代表背書或合作關係。'
+        ? '列出僅供參考，不代表背書或合作關係。'
         : 'Listing here is informational, not an endorsement or a partnership.'
     }
   </p>
@@ -264,17 +265,23 @@ const ORGS = [
     {
       zh ? (
         <>
-          資料管線每日自動執行並具備優雅降級:任一來源故障時,前一份快照持續上線並顯示提示。本專案設計為零營運成本,並可由小團隊在
-          AI 協助下長期維護——詳見版本庫中的 <code>docs/RUNBOOK.md</code> 與{' '}
-          <code>docs/ARCHITECTURE.md</code>。
+          資料管線每日自動執行並具備優雅降級：任一來源故障時，前一份快照持續上線並顯示提示。
+          <strong>關於 AI 的使用</strong>
+          ：資料管線是決定性的程式碼——沒有任何模型生成、推估或修改過任何數字；每個數字都能逐位元組追溯到
+          UNHCR、IDMC 或聯合國的原始發布（見方法論頁與 <code>sources.json</code>
+          ）。AI 只用於協助維護程式碼與文件，其產出一律經過自動驗證（每日 21
+          項不變量檢查）與版本庫審計。
         </>
       ) : (
         <>
           The pipeline runs automatically every day and degrades gracefully: if a source is
-          unavailable, the previous snapshot stays online and a notice appears. The project is
-          designed to run at zero hosting cost and to be maintainable by a small team with AI
-          assistance — see <code>docs/RUNBOOK.md</code> and <code>docs/ARCHITECTURE.md</code> in the
-          repository.
+          unavailable, the previous snapshot stays online and a notice appears.{' '}
+          <strong>On the use of AI</strong>: the data pipeline is deterministic code — no model has
+          generated, estimated or modified any number; every figure is traceable byte-for-byte to
+          the original UNHCR, IDMC or UN release (see the methodology page and{' '}
+          <code>sources.json</code>). AI assists only with maintaining the code and documentation,
+          and its output always passes automated validation (21 daily invariant checks) and the
+          repository's audit trail.
         </>
       )
     }

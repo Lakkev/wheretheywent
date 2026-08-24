@@ -1,6 +1,9 @@
 {
   "site.name": "Where They Went",
   "site.tagline": "Global forced displacement data — citable, downloadable, shareable.",
+  "site.titleTag": "Global refugee & displacement map",
+  "site.ogAlt": "World map coloured by the number of forcibly displaced people per country",
+  "page.compare.desc": "Compare refugee, asylum-seeker, IDP and stateless figures for up to three countries side by side, 1951 to today — same sources, same definitions, downloadable and citable.",
   "site.description": "Interactive world map of refugees, asylum-seekers, internally displaced and stateless people by country and year, with sources, as-of dates and permanent links. Data: UNHCR, IDMC, UN WPP.",
   "nav.map": "Map",
   "nav.compare": "Compare",

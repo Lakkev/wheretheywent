@@ -49,7 +49,7 @@ const note = locale === 'zh-Hant' && data.meta.note_zh ? data.meta.note_zh : dat
 const pageUrl = `${SITE_URL}${localizePath(`/country/${iso3}`, locale)}`;
 const description =
   locale === 'zh-Hant'
-    ? `${name}:收容與來源的難民、庇護申請者、境內流離失所者與無國籍者,${data.years[0]}–${yearMax}。來源:UNHCR(資料截至 ${src?.data_as_of ?? ''})。可下載、可引用。`
+    ? `${name}：收容與來源的難民、庇護申請者、境內流離失所者與無國籍者，${data.years[0]}–${yearMax}。來源：UNHCR（資料截至 ${src?.data_as_of ?? ''}）。可下載、可引用。`
     : `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
 const bulkCsvBytes =
   listDownloads().find((d) => d.name === 'unhcr-population-all-years.csv')?.bytes ?? null;

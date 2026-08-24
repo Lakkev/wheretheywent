@@ -73,31 +73,32 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
         ><td
           >{
             zh
-              ? '各國歷年存量(難民、庇護申請者、IDP、無國籍者、其他受關注者、回返者、OIP)'
+              ? '各國歷年存量（難民、庇護申請者、IDP、無國籍者、其他受關注者、回返者、OIP）'
               : 'Stocks by country & year (refugees, asylum-seekers, IDPs, stateless, others of concern, returnees, OIP)'
           }</td
         ><td>UNHCR Refugee Population Statistics Database</td><td
           ><code>api.unhcr.org/population/v1/population/</code>{' '}
-          {zh ? '(庇護國、來源國、雙邊矩陣)' : '(asylum, origin, bilateral matrix)'}, <code
+          {zh ? '（庇護國、來源國、雙邊矩陣）' : '(asylum, origin, bilateral matrix)'}, <code
             >/footnotes/</code
           ></td
         ><td>{pop?.license.id}</td><td>{fmtDateIso(pop?.data_as_of)}</td></tr
       >
       <tr
         ><td>{zh ? '年齡與性別' : 'Age & sex'}</td><td>UNHCR</td><td
-          ><code>/demographics/</code> {zh ? '(2010 起,庇護國)' : '(2010+, country of asylum)'}</td
+          ><code>/demographics/</code>
+          {zh ? '（2010 起，庇護國）' : '(2010+, country of asylum)'}</td
         ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_demographics']?.data_as_of)}</td></tr
       >
       <tr
         ><td>{zh ? '持久解決方案、庇護申請' : 'Solutions, asylum applications'}</td><td>UNHCR</td
         ><td
           ><code>/solutions/</code> (2000+), <code>/asylum-applications/</code>{' '}
-          {zh ? '(2015 起,僅以人數計)' : '(2015+, persons only)'}</td
+          {zh ? '（2015 起，僅以人數計）' : '(2015+, persons only)'}</td
         ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_solutions']?.data_as_of)}</td></tr
       >
       <tr
-        ><td>{zh ? '境內流離失所(年度存量)' : 'Internal displacement (annual stock)'}</td><td
-          >{zh ? 'IDMC(經 UNHCR)' : 'IDMC via UNHCR'}</td
+        ><td>{zh ? '境內流離失所（年度存量）' : 'Internal displacement (annual stock)'}</td><td
+          >{zh ? 'IDMC（經 UNHCR）' : 'IDMC via UNHCR'}</td
         ><td><code>/idmc/</code> (2009+)</td><td>CC BY-IGO</td><td
           >{fmtDateIso(sources['unhcr_idmc']?.data_as_of)}</td
         ></tr
@@ -105,10 +106,12 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       <tr
         ><td
           >{
-            zh ? '近期流離失所事件(延遲 ≤ 24 小時)' : 'Recent displacement events (≤ 24 h latency)'
+            zh
+              ? '近期流離失所事件（延遲 ≤ 24 小時）'
+              : 'Recent displacement events (≤ 24 h latency)'
           }</td
         ><td>IDMC Internal Displacement Updates</td><td
-          >Helix API{zh ? ',近 180 天' : ', last 180 days'}</td
+          >Helix API{zh ? '，近 180 天' : ', last 180 days'}</td
         ><td>CC BY-IGO</td><td>{fmtDateIso(sources['idmc_idu']?.data_as_of)}</td></tr
       >
       <tr
@@ -117,7 +120,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
         ><td
           ><code>/nowcasting/</code> — {
             zh ? (
-              '統計推估,明確標示為估計'
+              '統計推估，明確標示為估計'
             ) : (
               <>
                 statistical <em>estimates</em>, labelled as such
@@ -127,14 +130,14 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
         ><td>CC BY 4.0</td><td>{fmtDateIso(sources['unhcr_nowcasting']?.data_as_of)}</td></tr
       >
       <tr
-        ><td>{zh ? '居民人口(每千人分母)' : 'Resident population (per-1,000 denominator)'}</td><td
+        ><td>{zh ? '居民人口（每千人分母）' : 'Resident population (per-1,000 denominator)'}</td><td
           >UN DESA World Population Prospects 2024</td
-        ><td><code>WPP2024_TotalPopulationBySex.csv</code>{zh ? ',中推計' : ', medium variant'}</td
+        ><td><code>WPP2024_TotalPopulationBySex.csv</code>{zh ? '，中推計' : ', medium variant'}</td
         ><td>CC BY 3.0 IGO</td><td>{fmtDateIso(sources['wpp_population']?.data_as_of)}</td></tr
       >
       <tr
         ><td>{zh ? '邊界' : 'Boundaries'}</td><td
-          >Natural Earth 1:50m {zh ? '(經 world-atlas)' : '(via world-atlas)'}</td
+          >Natural Earth 1:50m {zh ? '（經 world-atlas）' : '(via world-atlas)'}</td
         ><td>{zh ? '簡化後的 TopoJSON' : 'simplified TopoJSON'}</td><td
           >{zh ? '公有領域' : 'Public domain'}</td
         ><td>—</td></tr
@@ -145,12 +148,12 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          各來源的完整出處(端點、內容雜湊、擷取時間、注意事項)以機器可讀形式存於{' '}
+          各來源的完整出處（端點、內容雜湊、擷取時間、注意事項）以機器可讀形式存於{' '}
           <a href="/data/v1/sources.json">
             <code>sources.json</code>
           </a>
-          。未採用:ACLED(授權禁止儀表板再發布)、IOM DTM(授權未確認)、UNHCR Operational Data Portal
-          與微資料(非商業條款)。
+          。未採用：ACLED（授權禁止儀表板再發布）、IOM DTM（授權未確認）、UNHCR Operational Data
+          Portal 與微資料（非商業條款）。
         </>
       ) : (
         <>
@@ -172,15 +175,17 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       <ul>
         <li>
           <strong>它們是各國政府與 UNHCR 行動「報告」的數字。</strong>
-          國家有高報或低報的誘因——籌款訴求、主權主張、具爭議的法律身分。缺漏不代表沒有流離失所者;灰色不代表零。
+          國家有高報或低報的誘因——籌款訴求、主權主張、具爭議的法律身分。缺漏不代表沒有流離失所者；灰色不代表零。
         </li>
-        <li>各國、各年度的涵蓋範圍與定義並不一致;跨年比較請留意定義變動(如 OIP 自 2018 年起)。</li>
-        <li>IDP 數字僅涵蓋衝突與暴力(IDMC);年度存量不含災害所致的流離失所。</li>
-        <li>即時推估與 IDU 為估計/初步數字,明確標示,永不混入年度序列。</li>
         <li>
-          上色需要多邊形:少數統計對象(如馬提尼克、直布羅陀、「無國籍」「來源不明」)沒有可繪製的邊界,列於圖例並仍計入所有總計、表格與下載。
+          各國、各年度的涵蓋範圍與定義並不一致；跨年比較請留意定義變動（如 OIP 自 2018 年起）。
         </li>
-        <li>UNHCR 數字不含 UNRWA 職權下的巴勒斯坦難民(約 600 萬),UNRWA 另有統計。</li>
+        <li>IDP 數字僅涵蓋衝突與暴力（IDMC）；年度存量不含災害所致的流離失所。</li>
+        <li>即時推估與 IDU 為估計/初步數字，明確標示，永不混入年度序列。</li>
+        <li>
+          上色需要多邊形：少數統計對象（如馬提尼克、直布羅陀、「無國籍」「來源不明」）沒有可繪製的邊界，列於圖例並仍計入所有總計、表格與下載。
+        </li>
+        <li>UNHCR 數字不含 UNRWA 職權下的巴勒斯坦難民（約 600 萬），UNRWA 另有統計。</li>
       </ul>
     ) : (
       <ul>
@@ -215,38 +220,38 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
   }
 
   <h2 id="pipeline">
-    3. {zh ? '資料管線:每日、靜態、可稽核' : 'Pipeline: daily, static, audited'}
+    3. {zh ? '資料管線：每日、靜態、可稽核' : 'Pipeline: daily, static, audited'}
   </h2>
   {
     zh ? (
       <ol>
         <li>
-          <strong>擷取</strong> — 排程作業呼叫 UNHCR API(限流:並發 2、間隔 ≥ 300
-          ms、指數退避重試),並下載 WPP CSV 與 IDMC IDU。最新已發布年份自動偵測(目前為{' '}
-          {manifest?.year_max})。
+          <strong>擷取</strong> — 排程作業呼叫 UNHCR API（限流：並發 2、間隔 ≥ 300
+          ms、指數退避重試），並下載 WPP CSV 與 IDMC IDU。最新已發布年份自動偵測（目前為{' '}
+          {manifest?.year_max}）。
         </li>
         <li>
-          <strong>正規化</strong> — 每一列以 <strong>ISO 3166-1 alpha-3</strong>(讀取 UNHCR 的{' '}
-          <code>coo_iso</code>/<code>coa_iso</code> 欄位)為鍵。絕不使用 UNHCR 內部碼(
-          <code>coo</code>/<code>coa</code>):它們與真實 ISO3 碰撞(UNHCR
-          的「AUS」是奧地利、「ARE」是埃及、「MAR」是馬提尼克)。數值欄位的 <code>"-"</code>
-          (未報告)、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
+          <strong>正規化</strong> — 每一列以 <strong>ISO 3166-1 alpha-3</strong>（讀取 UNHCR 的{' '}
+          <code>coo_iso</code>/<code>coa_iso</code> 欄位）為鍵。絕不使用 UNHCR 內部碼（
+          <code>coo</code>/<code>coa</code>）：它們與真實 ISO3 碰撞（UNHCR
+          的「AUS」是奧地利、「ARE」是埃及、「MAR」是馬提尼克）。數值欄位的 <code>"-"</code>
+          （未報告）、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
         </li>
         <li>
           <strong>驗證</strong> — 發布前須通過 15
-          條不變量,包括:三組碰撞碼正確歸屬;無負值或非有限值;每個指標、每一年皆滿足
-          <em>可上色總和 + 無法顯示總和 = 全球總計</em>;年度總計與前一快照差異不超過 20%;三個
-          <strong>黃金數字</strong>(土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民)誤差須在 1%
+          條不變量，包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
+          <em>可上色總和 + 無法顯示總和 = 全球總計</em>；年度總計與前一快照差異不超過 20%；三個
+          <strong>黃金數字</strong>（土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民）誤差須在 1%
           內。
         </li>
         <li>
           <strong>晉升</strong> —
-          各來源獨立晉升。任一來源失敗即保留其前一份快照,網站顯示「部分資料更新延遲」;連續三天失敗會寄送告警。
+          各來源獨立晉升。任一來源失敗即保留其前一份快照，網站顯示「部分資料更新延遲」；連續三天失敗會寄送告警。
         </li>
         <li>
-          <strong>發布</strong> — 資料檔提交至版本庫(永久稽核軌跡:
+          <strong>發布</strong> — 資料檔提交至版本庫（永久稽核軌跡：
           <code>git log -- public/data/v1/country/SYR.json</code>{' '}
-          能回答「這個數字在某日的快照是多少」),再以靜態檔案部署。瀏覽器永不直接呼叫上游 API。
+          能回答「這個數字在某日的快照是多少」），再以靜態檔案部署。瀏覽器永不直接呼叫上游 API。
         </li>
       </ol>
     ) : (
@@ -313,7 +318,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          所有存量皆為<strong>年末(12 月 31 日)</strong>數字;「回返」為年度流量。
+          所有存量皆為<strong>年末（12 月 31 日）</strong>數字；「回返」為年度流量。
         </>
       ) : (
         <>
@@ -329,10 +334,10 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          UNHCR 區分<em>未報告</em>(<code>"-"</code>)與<em>報告為零</em>
-          。本站全程保留這個區別:地圖上(灰色 vs 最淺的藍)、圖表中(折線中斷 vs 落到零)、CSV(空欄位 vs{' '}
-          <code>0</code>)與 JSON(<code>null</code> vs <code>0</code>
-          )。灰色國家可能收容許多流離失所者,只是該年度未報告。
+          UNHCR 區分<em>未報告</em>（<code>"-"</code>）與<em>報告為零</em>
+          。本站全程保留這個區別：地圖上（灰色 vs 最淺的藍）、圖表中（折線中斷 vs
+          落到零）、CSV（空欄位 vs <code>0</code>）與 JSON（<code>null</code> vs <code>0</code>
+          ）。灰色國家可能收容許多流離失所者，只是該年度未報告。
         </>
       ) : (
         <>
@@ -347,15 +352,15 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
   </p>
 
   <h2 id="views">
-    6. {zh ? '兩種視角:現居地與來源地' : 'Two views: where they are, where they fled from'}
+    6. {zh ? '兩種視角：現居地與來源地' : 'Two views: where they are, where they fled from'}
   </h2>
   <p>
     {
       zh ? (
         <>
           每個數字都有兩種地理歸屬。<strong>庇護國</strong>
-          (「他們現在在哪裡」)按人們目前所在的國家計數;<strong>來源國</strong>
-          (「他們從哪裡逃離」)按人們離開的國家計數。境內流離失所者在兩種視角中都計入其本國。「流向」分頁與{' '}
+          （「他們現在在哪裡」）按人們目前所在的國家計數；<strong>來源國</strong>
+          （「他們從哪裡逃離」）按人們離開的國家計數。境內流離失所者在兩種視角中都計入其本國。「流向」分頁與{' '}
           <code>flows/</code> 檔案提供雙邊矩陣。
         </>
       ) : (
@@ -375,8 +380,8 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          比率 = 人數 ÷ UN WPP 年中總人口 × 1,000。兩點注意:分子是 12 月 31 日的存量、分母是 7 月 1
-          日的人口;WPP 估計基準年之後的年份為中推計預測值。缺人口資料時不顯示比率。
+          比率 = 人數 ÷ UN WPP 年中總人口 × 1,000。兩點注意：分子是 12 月 31 日的存量、分母是 7 月 1
+          日的人口；WPP 估計基準年之後的年份為中推計預測值。缺人口資料時不顯示比率。
         </>
       ) : (
         <>
@@ -393,11 +398,11 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          全站僅使用單色藍階(ColorBrewer
-          Blues)——不用紅/橙暖色,避免在視覺上把流離失所者呈現為「威脅」。七個級距。分級預設為
+          全站僅使用單色藍階（ColorBrewer
+          Blues）——不用紅/橙暖色，避免在視覺上把流離失所者呈現為「威脅」。七個級距。分級預設為
           <strong>分位數</strong>
-          ,且<strong>跨全部年份</strong>
-          計算(針對目前顯示的國家):拖動時間軸時顏色代表「量級」而非每年重排的「名次」,不同年份的截圖可以互相比較。零有自己的最淺色;未報告為灰色。
+          ，且<strong>跨全部年份</strong>
+          計算（針對目前顯示的國家）：拖動時間軸時顏色代表「量級」而非每年重排的「名次」，不同年份的截圖可以互相比較。零有自己的最淺色；未報告為灰色。
         </>
       ) : (
         <>
@@ -418,8 +423,8 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       zh ? (
         <>
           邊界取自 Natural
-          Earth,經簡化以利顯示。國名跟隨被引用的資料來源(UNHCR),另有小型覆寫表以利閱讀(如「Syrian
-          Arab Rep.」→「敘利亞」);原始名稱一律並列。爭議地區、科索沃與台灣皆有明確處理——詳見
+          Earth，經簡化以利顯示。國名跟隨被引用的資料來源（UNHCR），另有小型覆寫表以利閱讀（如「Syrian
+          Arab Rep.」→「敘利亞」）；原始名稱一律並列。爭議地區、科索沃與台灣皆有明確處理——詳見
           <a href={localizePath('/about/boundaries', locale)}>邊界、名稱與爭議地區</a>。
         </>
       ) : (
@@ -443,11 +448,11 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       zh ? (
         <>
           UNHCR 約在每年 6 月發布上年度數字、10/11
-          月發布年中數字。管線每日執行,但只在內容變動時提交。三種時間戳嚴格分開:
-          <code>data_as_of</code>(資料涵蓋到哪天)、<code>retrieved_at</code>
-          (我們何時擷取——只在內容變動時前進)、資料集快照
-          <code>snapshot_id</code>(整份資料的內容雜湊,目前為 <code>{manifest?.snapshot_id}</code>
-          )。大宗 CSV 的 <code>snapshot_id</code> 欄位帶的是母體來源的內容雜湊前 8 碼,可經{' '}
+          月發布年中數字。管線每日執行，但只在內容變動時提交。三種時間戳嚴格分開：
+          <code>data_as_of</code>（資料涵蓋到哪天）、<code>retrieved_at</code>
+          （我們何時擷取——只在內容變動時前進）、資料集快照
+          <code>snapshot_id</code>（整份資料的內容雜湊，目前為 <code>{manifest?.snapshot_id}</code>
+          ）。大宗 CSV 的 <code>snapshot_id</code> 欄位帶的是母體來源的內容雜湊前 8 碼，可經{' '}
           <code>sources.json</code> 回溯驗證。
         </>
       ) : (
@@ -469,10 +474,10 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          「近期境內流離失所事件」層轉載 IDMC 的初步事件估計。基於尊嚴與安全考量:
-          <strong>衝突</strong>事件的座標一律對齊約 25 公里的網格(絕不標示到聚落層級);少於 100
-          人的事件不單獨繪點;彈窗顯示數字、類型與日期,並連往 IDMC
-          的原始報告,而非轉貼敘述文字。此層的事件定義與年度 IDP 存量不同(後者不含災害)。
+          「近期境內流離失所事件」層轉載 IDMC 的初步事件估計。基於尊嚴與安全考量：
+          <strong>衝突</strong>事件的座標一律對齊約 25 公里的網格（絕不標示到聚落層級）；少於 100
+          人的事件不單獨繪點；彈窗顯示數字、類型與日期，並連往 IDMC
+          的原始報告，而非轉貼敘述文字。此層的事件定義與年度 IDP 存量不同（後者不含災害）。
         </>
       ) : (
         <>
@@ -492,10 +497,10 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          每個檢視都有固定連結,可重現年份、指標、視角、篩選、選取國家與地圖位置(分享與引用產生的連結會固定年份)。「引用」按鈕提供
-          APA 7、芝加哥(作者–年份)、BibTeX(<code>@dataset</code>,含 <code>version</code>
-          )與「引用本頁」四種格式;出版年份採用<strong>資料年份</strong>
-          而非點閱年份,並附上資料快照代碼以利精確回溯。請同時引用上游來源。
+          每個檢視都有固定連結，可重現年份、指標、視角、篩選、選取國家與地圖位置（分享與引用產生的連結會固定年份）。「引用」按鈕提供
+          APA 7、芝加哥（作者–年份）、BibTeX（<code>@dataset</code>，含 <code>version</code>
+          ）與「引用本頁」四種格式；出版年份採用<strong>資料年份</strong>
+          而非點閱年份，並附上資料快照代碼以利精確回溯。請同時引用上游來源。
         </>
       ) : (
         <>
@@ -510,7 +515,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     }
   </p>
   <p class="small muted">
-    {zh ? '有疑問或指正:見' : 'Questions or corrections: see'}{' '}
+    {zh ? '有疑問或指正：見' : 'Questions or corrections: see'}{' '}
     <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>{zh ? '。' : '.'}
   </p>
 </DocPage>

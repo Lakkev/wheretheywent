@@ -71,6 +71,11 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
    screen-reader session); basemap fallback has no label layer (own-boundaries + tooltips carry the
    information); `/zh-Hant/404` (Cloudflare Pages serves a single global 404); Playwright uses a
    local static server instead of `astro preview` (preview is single-instance).
+6. **Zenodo DOI for quarterly snapshots**: the success metric is citations, and the biggest
+   friction for academic citation is "will this URL exist in five years". Snapshot ids and the
+   git audit trail already exist — depositing a quarterly data snapshot to Zenodo (free,
+   CERN-run) yields a DOI per version plus a concept DOI. Needs the owner to create the Zenodo
+   account; the deposit step can then be automated.
 
 ## 6. Verification of this remediation
 

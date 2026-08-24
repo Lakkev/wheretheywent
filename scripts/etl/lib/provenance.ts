@@ -36,9 +36,9 @@ const UNHCR_CAVEATS = [
 ];
 const UNHCR_CAVEATS_ZH = [
   '數字彙整自各國政府與 UNHCR 行動的報告。國家有高報或低報的誘因——籌款訴求、主權主張、具爭議的法律身分。缺漏的數字不代表沒有流離失所者。',
-  '不含 UNRWA 登記之巴勒斯坦難民(約 600 萬),UNRWA 另有獨立統計。',
-  '來源中的 "-" 表示未報告,儲存為 null,與 0(確實為零)意義不同。',
-  '除另有說明外,數字為年末(12 月 31 日)存量。',
+  '不含 UNRWA 登記之巴勒斯坦難民（約 600 萬），UNRWA 另有獨立統計。',
+  '來源中的 "-" 表示未報告，儲存為 null，與 0（確實為零）意義不同。',
+  '除另有說明外，數字為年末（12 月 31 日）存量。',
 ];
 
 export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
@@ -86,8 +86,8 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
       'Age groups: 0–4, 5–11, 12–17, 18–59, 60+, other/unknown.',
     ],
     caveats_zh: [
-      '年齡/性別細分僅涵蓋部分人口;細分皆為 0 但總數非 0 表示未報告人口結構。',
-      '年齡組:0–4、5–11、12–17、18–59、60+、其他/未知。',
+      '年齡/性別細分僅涵蓋部分人口；細分皆為 0 但總數非 0 表示未報告人口結構。',
+      '年齡組：0–4、5–11、12–17、18–59、60+、其他/未知。',
     ],
   },
   unhcr_idmc: {
@@ -101,7 +101,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
     caveats: [
       'Conflict and violence IDP stock figures as reported by IDMC; disaster displacement is not included.',
     ],
-    caveats_zh: ['IDMC 報告之衝突與暴力所致 IDP 存量;不含災害流離失所。'],
+    caveats_zh: ['IDMC 報告之衝突與暴力所致 IDP 存量；不含災害流離失所。'],
   },
   unhcr_solutions: {
     publisher: 'UNHCR',
@@ -113,7 +113,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
     caveats: [
       'Flows during the year (returns, resettlement departures, naturalisations), not stocks.',
     ],
-    caveats_zh: ['年度流量(返回、重新安置、歸化),非存量。'],
+    caveats_zh: ['年度流量（返回、重新安置、歸化），非存量。'],
   },
   unhcr_asylum_applications: {
     publisher: 'UNHCR',
@@ -125,7 +125,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
     caveats: [
       'Only rows measured in persons (app_pc = P) are kept; case-based rows (C) are excluded to avoid double counting.',
     ],
-    caveats_zh: ['僅保留以人數計(app_pc = P)之列;以案件計(C)之列排除以避免重複計數。'],
+    caveats_zh: ['僅保留以人數計（app_pc = P）之列；以案件計（C）之列排除以避免重複計數。'],
   },
   unhcr_footnotes: {
     publisher: 'UNHCR',
@@ -149,7 +149,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
       'No confidence intervals are published.',
     ],
     caveats_zh: [
-      'UNHCR 以統計方法推估之當前數字,非正式報告值。僅含庇護國面向之難民與庇護申請者。',
+      'UNHCR 以統計方法推估之當前數字，非正式報告值。僅含庇護國面向之難民與庇護申請者。',
       '未公布信賴區間。',
     ],
   },
@@ -166,7 +166,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
       'Values for years after the estimate base year are medium-variant projections.',
     ],
     caveats_zh: [
-      '年中(7 月 1 日)人口;作為每千人比率的分母(分子為年末存量)。',
+      '年中（7 月 1 日）人口；作為每千人比率的分母（分子為年末存量）。',
       '估計基準年之後的年份為中推計情境之預測值。',
     ],
   },
@@ -182,8 +182,8 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
       'Figures are displacement events (flows) and may double count the same people displaced more than once.',
     ],
     caveats_zh: [
-      '自媒體與夥伴報告彙整之初步事件層級估計;校正版於 GIDD 發布。',
-      '數字為流離失所事件(流量),同一人多次流離可能重複計算。',
+      '自媒體與夥伴報告彙整之初步事件層級估計；校正版於 GIDD 發布。',
+      '數字為流離失所事件（流量），同一人多次流離可能重複計算。',
     ],
   },
   natural_earth: {
@@ -196,7 +196,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
     caveats: [
       'Boundaries are simplified for display and do not imply any opinion concerning the legal status of any territory.',
     ],
-    caveats_zh: ['邊界經簡化以利顯示,不代表對任何領土法律地位之意見。'],
+    caveats_zh: ['邊界經簡化以利顯示，不代表對任何領土法律地位之意見。'],
   },
 };
 

@@ -25,23 +25,23 @@ const countries = getCountries();
 const DESC: Record<string, { en: string; zh: string }> = {
   'unhcr-population-all-years.csv': {
     en: 'Long format: one row per country × view × year × metric (non-null only). Best for pandas/R.',
-    zh: '長格式:每列為國家 × 視角 × 年份 × 指標(僅含非空值)。最適合 pandas/R。',
+    zh: '長格式：每列為國家 × 視角 × 年份 × 指標（僅含非空值）。最適合 pandas/R。',
   },
   'unhcr-population-by-asylum.csv': {
     en: 'Wide format by country of asylum: one row per country × year, one column per metric.',
-    zh: '寬格式(庇護國視角):每列為國家 × 年份,每個指標一欄。',
+    zh: '寬格式（庇護國視角）：每列為國家 × 年份，每個指標一欄。',
   },
   'unhcr-population-by-origin.csv': {
     en: 'Wide format by country of origin: one row per country × year, one column per metric.',
-    zh: '寬格式(來源國視角):每列為國家 × 年份,每個指標一欄。',
+    zh: '寬格式（來源國視角）：每列為國家 × 年份，每個指標一欄。',
   },
   'countries.csv': {
     en: 'Entity list: ISO3, UNHCR name, display name, region, coverage flags, centroid.',
-    zh: '統計對象清單:ISO3、UNHCR 名稱、顯示名稱、區域、涵蓋旗標、質心座標。',
+    zh: '統計對象清單：ISO3、UNHCR 名稱、顯示名稱、區域、涵蓋旗標、質心座標。',
   },
   'wpp-total-population.csv': {
     en: 'UN WPP 2024 mid-year total population (per-1,000 denominator).',
-    zh: 'UN WPP 2024 年中總人口(每千人比率的分母)。',
+    zh: 'UN WPP 2024 年中總人口（每千人比率的分母）。',
   },
 };
 const statusText = (st: string) => {
@@ -74,7 +74,7 @@ const jsonLd = {
   locale={locale}
   title={tr('page.data.title')}
   lede={zh
-    ? '本站的每一個數字都可下載;每一列都帶有來源、資料截止日與擷取日。'
+    ? '本站的每一個數字都可下載；每一列都帶有來源、資料截止日與擷取日。'
     : 'Every number on this site is downloadable. Each row carries its source, as-of date and retrieval date.'}
   wide
   jsonLd={jsonLd}
@@ -84,7 +84,7 @@ const jsonLd = {
     <p class="small muted">
       {
         zh
-          ? 'RFC 4180、UTF-8、LF 換行。空欄位 = 未報告(與 0 有別)。'
+          ? 'RFC 4180、UTF-8、LF 換行。空欄位 = 未報告（與 0 有別）。'
           : 'RFC 4180, UTF-8, LF line endings. Empty field = not reported (distinct from 0).'
       }
       {tr('source.snapshot', { id: manifest?.snapshot_id ?? '—' })}.
@@ -119,25 +119,25 @@ const jsonLd = {
       <a href="/data/v1/datapackage.json">datapackage.json</a>
       {
         zh
-          ? '(Frictionless Data 描述檔,含表格結構)'
+          ? '（Frictionless Data 描述檔，含表格結構）'
           : '(Frictionless Data descriptor with table schemas)'
       } ·
       <a href="/data/v1/manifest.json">manifest.json</a>
-      {zh ? '(檔案清單、sha256、快照代碼)' : '(file list, sha256, snapshot id)'}
+      {zh ? '（檔案清單、sha256、快照代碼）' : '(file list, sha256, snapshot id)'}
     </p>
   </section>
 
   <section>
     <h2>
-      {zh ? 'JSON 檔案(靜態、開放 CORS、有版本)' : 'JSON files (static, CORS-open, versioned)'}
+      {zh ? 'JSON 檔案（靜態、開放 CORS、有版本）' : 'JSON files (static, CORS-open, versioned)'}
     </h2>
     <p class="small">
       {
         zh ? (
           <>
-            本站沒有 API 伺服器——一切都是 <code>/data/v1/</code> 下的靜態檔案,每日重新產生。以{' '}
+            本站沒有 API 伺服器——一切都是 <code>/data/v1/</code> 下的靜態檔案，每日重新產生。以{' '}
             <code>manifest.json</code> 中的 <code>?v=</code>{' '}
-            雜湊擷取可獲得不可變快取;不帶參數則取得最新版。
+            雜湊擷取可獲得不可變快取；不帶參數則取得最新版。
           </>
         ) : (
           <>
@@ -155,7 +155,7 @@ const jsonLd = {
           ><td><code>/data/v1/countries.json</code></td><td
             >{
               zh
-                ? `${countries?.count ?? '—'} 個統計對象:ISO3、UNHCR 名稱、顯示名稱、區域、質心/邊界框、涵蓋旗標`
+                ? `${countries?.count ?? '—'} 個統計對象：ISO3、UNHCR 名稱、顯示名稱、區域、質心/邊界框、涵蓋旗標`
                 : `${countries?.count ?? '—'} entities: ISO3, UNHCR name, display name, region, centroid/bbox, coverage flags`
             }</td
           ></tr
@@ -165,7 +165,7 @@ const jsonLd = {
             >{
               zh ? (
                 <>
-                  欄式存量:全部指標 × 國家 × 年份(兩種視角)、人口、全球總計。連續零壓為{' '}
+                  欄式存量：全部指標 × 國家 × 年份（兩種視角）、人口、全球總計。連續零壓為{' '}
                   <code>["z",n]</code>、連續空值壓為 <code>["n",n]</code>
                 </>
               ) : (
@@ -182,7 +182,7 @@ const jsonLd = {
           ><td><code>/data/v1/country/{'{ISO3}'}.json</code></td><td
             >{
               zh
-                ? `單一國家的完整資料:1951–${manifest?.year_max} 序列、人口結構、主要往來國、持久解決方案、庇護申請、IDMC、註腳`
+                ? `單一國家的完整資料：1951–${manifest?.year_max} 序列、人口結構、主要往來國、持久解決方案、庇護申請、IDMC、註腳`
                 : `Everything for one country: series 1951–${manifest?.year_max}, demographics, top partners, solutions, asylum applications, IDMC, footnotes`
             }</td
           ></tr
@@ -191,7 +191,7 @@ const jsonLd = {
           ><td><code>/data/v1/flows/{'{year}'}.json</code></td><td
             >{
               zh
-                ? '雙邊難民/庇護申請者矩陣(來源 × 庇護),2015 起'
+                ? '雙邊難民/庇護申請者矩陣（來源 × 庇護），2015 起'
                 : 'Bilateral refugee/asylum-seeker matrix (origin × asylum), 2015+'
             }</td
           ></tr
@@ -200,7 +200,7 @@ const jsonLd = {
           ><td><code>/data/v1/live/nowcast.json</code></td><td
             >{
               zh
-                ? 'UNHCR 即時推估(每月,明確標示為估計)'
+                ? 'UNHCR 即時推估（每月，明確標示為估計）'
                 : 'UNHCR nowcasting estimates (monthly, labelled as estimates)'
             }</td
           ></tr
@@ -209,7 +209,7 @@ const jsonLd = {
           ><td><code>/data/v1/live/idu-latest.json</code></td><td
             >{
               zh
-                ? 'IDMC 境內流離失所即時更新,近 180 天(初步;衝突座標已對齊 25 公里網格)'
+                ? 'IDMC 境內流離失所即時更新，近 180 天（初步；衝突座標已對齊 25 公里網格）'
                 : 'IDMC Internal Displacement Updates, last 180 days (preliminary; conflict coordinates snapped to a 25 km grid)'
             }</td
           ></tr
@@ -218,7 +218,7 @@ const jsonLd = {
           ><td><code>/data/v1/geo/world-50m.topo.json</code></td><td
             >{
               zh
-                ? 'Natural Earth 1:50m 邊界(簡化),ISO3 代碼'
+                ? 'Natural Earth 1:50m 邊界（簡化），ISO3 代碼'
                 : 'Natural Earth 1:50m boundaries (simplified), ISO3 ids'
             }</td
           ></tr
@@ -227,7 +227,7 @@ const jsonLd = {
           ><td><code>/data/v1/sources.json</code> · <code>/data/v1/metrics.json</code></td><td
             >{
               zh
-                ? '出處、授權、注意事項;指標定義(中英)'
+                ? '出處、授權、注意事項；指標定義（中英）'
                 : 'Provenance, licenses, caveats; metric definitions (en+zh)'
             }</td
           ></tr
@@ -281,12 +281,12 @@ const jsonLd = {
       </tbody>
     </table>
     <p class="small">
-      {zh ? '資料授權詳情:' : 'Data licence details:'}
+      {zh ? '資料授權詳情：' : 'Data licence details:'}
       <a href="https://github.com/Lakkev/wheretheywent/blob/master/DATA-LICENSE.md" rel="noopener"
         >DATA-LICENSE.md</a
       >{
         zh
-          ? '。本站程式碼保留所有權利;資料維持其原始開放授權。'
+          ? '。本站程式碼保留所有權利；資料維持其原始開放授權。'
           : '. The site code is all rights reserved; the data remains under its original open licences.'
       }
     </p>

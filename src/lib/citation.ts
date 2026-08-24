@@ -74,9 +74,9 @@ export function buildCitations(inp: CitationInput): Citations {
   const ver = inp.version ? ` (Version ${inp.version})` : '';
 
   if (inp.locale === 'zh-Hant') {
-    const page = `${site}。「${inp.title}」。資料:${srcList}(資料截至 ${dataAsOf};擷取於 ${retrieved})。${inp.url} [存取日期 ${accessedLong}]。${inp.version ? `快照 ${inp.version}。` : ''}`;
-    const apa = `${site}. (${y}). ${inp.title}${ver} [資料集]. 資料:${srcList}(資料截至 ${dataAsOf}). 讀取日期 ${accessedLong},取自 ${inp.url}`;
-    const chicago = `${site}. ${y}. 「${inp.title}」. 資料:${srcList}(資料截至 ${dataAsOf}). 存取於 ${accessedLong}. ${inp.url}.`;
+    const page = `${site}。「${inp.title}」。資料：${srcList}（資料截至 ${dataAsOf}；擷取於 ${retrieved}）。${inp.url} [存取日期 ${accessedLong}]。${inp.version ? `快照 ${inp.version}。` : ''}`;
+    const apa = `${site}. (${y}). ${inp.title}${ver} [資料集]. 資料：${srcList}（資料截至 ${dataAsOf}）. 讀取日期 ${accessedLong}，取自 ${inp.url}`;
+    const chicago = `${site}. ${y}. 「${inp.title}」. 資料：${srcList}（資料截至 ${dataAsOf}）. 存取於 ${accessedLong}. ${inp.url}.`;
     const bibtex = bib(inp, site, accessed, srcList, dataAsOf, String(y));
     return { apa, chicago, bibtex, page };
   }

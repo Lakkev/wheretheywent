@@ -141,7 +141,9 @@ suite on it.
 3. **Project mailbox**. `PUBLIC_CONTACT_EMAIL` is currently `contact@lakkev.com`, which does not
    exist yet. Easiest: Cloudflare → lakkev.com → **Email** → Email Routing → forward
    `contact@lakkev.com` to your real inbox. (Until then the "report a problem" links point at a
-   dead address.)
+   dead address.) Also disable **Scrape Shield → Email Address Obfuscation** for the zone:
+   otherwise crawlers, archives and no-JS readers see the literal text `[email protected]`
+   instead of the address — bad for a journalist audience.
 4. **After the push**: repo → Settings → Actions → Workflow permissions → **Read and write**;
    create an issue titled **"ETL alerts"**, pin it, subscribe (it must be issue #1, or change
    `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`); Settings → Secrets and variables →

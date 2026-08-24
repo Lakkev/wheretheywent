@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "2596f0dd",
+  "snapshot_id": "d87feb4a",
   "git_commit": null,
-  "generated_at": "2026-08-24T13:06:58Z",
+  "generated_at": "2026-08-24T20:20:08Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1075,8 +1075,8 @@
       "bytes": 119208
     },
     "geo/disputed-notes.json": {
-      "sha256": "167dcfdae25668d4c20e94c19b999bc21072afe74d14487974e95a5013ebfb10",
-      "bytes": 6501
+      "sha256": "6a887d0f5ad839412592012c792724322b9de220a927b0c5c33b98ad2d6c1adc",
+      "bytes": 6635
     },
     "geo/geo-index.json": {
       "sha256": "8fc99a331996c404360a41c30107c826d22f5e88768a8e90547ef2725a8827f3",
@@ -1087,20 +1087,20 @@
       "bytes": 169416
     },
     "live/idu-latest.json": {
-      "sha256": "e352f3bd8cfff0880119724a86c064267541ab7118a334e01e49fcb1c017d198",
-      "bytes": 1495594
+      "sha256": "427bfea8379739b07db48f5ae6736ba8e47cce80470daf5f9ece1f6b9ed3ddb1",
+      "bytes": 1495598
     },
     "live/nowcast.json": {
       "sha256": "49e413a1c3b501148ea8d27fbbd43921869d1921398d25d21a0d3c8be258facc",
       "bytes": 15529
     },
     "metrics.json": {
-      "sha256": "3a0615e2d4371b6ed6fd889375581d12be33a5e32dc03b75b1d4ed3ea61cb848",
-      "bytes": 7493
+      "sha256": "3bc296b00834e9a0a938e81b995024a2b14e31a2f04fced2c23dfb2bfed904f5",
+      "bytes": 7555
     },
     "sources.json": {
-      "sha256": "d5884148dcd7fa7048ae8d362df643f6c55e5eed92510ee1c33147fa4c529844",
-      "bytes": 14947
+      "sha256": "7f9b316e54665c60517366399ed2c693f658d05329095aab7ac983a19de1b0ee",
+      "bytes": 15011
     },
     "stock/1951-2014.json": {
       "sha256": "f65ddaeb212637f9938a6f7519e7bf432dcef4a6037fe6626fdcead2caeadd9a",

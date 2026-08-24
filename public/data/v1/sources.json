@@ -55,9 +55,9 @@
     ],
     "caveats_zh": [
       "數字彙整自各國政府與 UNHCR 行動的報告。國家有高報或低報的誘因——籌款訴求、主權主張、具爭議的法律身分。缺漏的數字不代表沒有流離失所者。",
-      "不含 UNRWA 登記之巴勒斯坦難民(約 600 萬),UNRWA 另有獨立統計。",
-      "來源中的 \"-\" 表示未報告,儲存為 null,與 0(確實為零)意義不同。",
-      "除另有說明外,數字為年末(12 月 31 日)存量。",
+      "不含 UNRWA 登記之巴勒斯坦難民（約 600 萬），UNRWA 另有獨立統計。",
+      "來源中的 \"-\" 表示未報告，儲存為 null，與 0（確實為零）意義不同。",
+      "除另有說明外，數字為年末（12 月 31 日）存量。",
       "IDP 數字由 UNHCR 轉引自 IDMC。",
       "難民數含「類難民處境」人口。"
     ],
@@ -90,8 +90,8 @@
       "Age groups: 0–4, 5–11, 12–17, 18–59, 60+, other/unknown."
     ],
     "caveats_zh": [
-      "年齡/性別細分僅涵蓋部分人口;細分皆為 0 但總數非 0 表示未報告人口結構。",
-      "年齡組:0–4、5–11、12–17、18–59、60+、其他/未知。"
+      "年齡/性別細分僅涵蓋部分人口；細分皆為 0 但總數非 0 表示未報告人口結構。",
+      "年齡組：0–4、5–11、12–17、18–59、60+、其他/未知。"
     ],
     "endpoints": [
       "https://api.unhcr.org/population/v1/demographics/?year=2010&coa_all=true&cf_type=ISO",
@@ -134,7 +134,7 @@
       "Conflict and violence IDP stock figures as reported by IDMC; disaster displacement is not included."
     ],
     "caveats_zh": [
-      "IDMC 報告之衝突與暴力所致 IDP 存量;不含災害流離失所。"
+      "IDMC 報告之衝突與暴力所致 IDP 存量；不含災害流離失所。"
     ],
     "endpoints": [
       "https://api.unhcr.org/population/v1/idmc/?yearFrom=2009&yearTo=2025&coo_all=true&cf_type=ISO"
@@ -162,7 +162,7 @@
       "Flows during the year (returns, resettlement departures, naturalisations), not stocks."
     ],
     "caveats_zh": [
-      "年度流量(返回、重新安置、歸化),非存量。"
+      "年度流量（返回、重新安置、歸化），非存量。"
     ],
     "endpoints": [
       "https://api.unhcr.org/population/v1/solutions/?yearFrom=2000&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
@@ -190,7 +190,7 @@
       "Only rows measured in persons (app_pc = P) are kept; case-based rows (C) are excluded to avoid double counting."
     ],
     "caveats_zh": [
-      "僅保留以人數計(app_pc = P)之列;以案件計(C)之列排除以避免重複計數。"
+      "僅保留以人數計（app_pc = P）之列；以案件計（C）之列排除以避免重複計數。"
     ],
     "endpoints": [
       "https://api.unhcr.org/population/v1/asylum-applications/?yearFrom=2015&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
@@ -244,7 +244,7 @@
       "No confidence intervals are published."
     ],
     "caveats_zh": [
-      "UNHCR 以統計方法推估之當前數字,非正式報告值。僅含庇護國面向之難民與庇護申請者。",
+      "UNHCR 以統計方法推估之當前數字，非正式報告值。僅含庇護國面向之難民與庇護申請者。",
       "未公布信賴區間。"
     ],
     "endpoints": [
@@ -274,7 +274,7 @@
       "Values for years after the estimate base year are medium-variant projections."
     ],
     "caveats_zh": [
-      "年中(7 月 1 日)人口;作為每千人比率的分母(分子為年末存量)。",
+      "年中（7 月 1 日）人口；作為每千人比率的分母（分子為年末存量）。",
       "估計基準年之後的年份為中推計情境之預測值。"
     ],
     "endpoints": [
@@ -292,20 +292,20 @@
     "attribution": "Internal Displacement Monitoring Centre (IDMC), Internal Displacement Updates",
     "data_as_of": "2026-08-23",
     "period_type": "rolling",
-    "retrieved_at": "2026-08-24T13:05:22Z",
+    "retrieved_at": "2026-08-24T20:20:00Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:d75059774471b590abfa8293e2cb6c2f7d283665104282fda76669c0d0d73011",
+    "content_hash": "sha256:3bb42d3f1b6ed6a640bfc269676116e91af97d12e47204a06cf07df2a3fbdade",
     "status": "ok",
     "caveats": [
       "Preliminary event-level estimates compiled from media and partner reports; revised figures are published in the GIDD.",
       "Figures are displacement events (flows) and may double count the same people displaced more than once."
     ],
     "caveats_zh": [
-      "自媒體與夥伴報告彙整之初步事件層級估計;校正版於 GIDD 發布。",
-      "數字為流離失所事件(流量),同一人多次流離可能重複計算。"
+      "自媒體與夥伴報告彙整之初步事件層級估計；校正版於 GIDD 發布。",
+      "數字為流離失所事件（流量），同一人多次流離可能重複計算。"
     ],
     "endpoints": [
       "https://helix-tools-api.idmcdb.org/external-api/idus/last-180-days/?client_id=IDMCWSHSOLO009"
@@ -333,7 +333,7 @@
       "Boundaries are simplified for display and do not imply any opinion concerning the legal status of any territory."
     ],
     "caveats_zh": [
-      "邊界經簡化以利顯示,不代表對任何領土法律地位之意見。"
+      "邊界經簡化以利顯示，不代表對任何領土法律地位之意見。"
     ],
     "endpoints": [
       "node_modules/world-atlas/countries-50m.json"
