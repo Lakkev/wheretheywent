@@ -91,7 +91,16 @@ const ogImage = `${SITE_URL}${ogImagePath ?? '/og/default.png'}`;
     <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#1f5fa8" />
     <meta name="contact" content={CONTACT_EMAIL} />
-    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {
+      /* `<` is escaped so upstream data containing "</script>" can never break out of the tag */
+      jsonLd && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
+        />
+      )
+    }
     <slot name="head" />
   </head>
   <body class={bodyClass}>
