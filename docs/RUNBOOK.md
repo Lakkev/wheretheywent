@@ -148,7 +148,9 @@ suite on it.
    `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`); Settings → Secrets and variables →
    Actions → Variables: `PUBLIC_SITE_URL=https://wheretheywent.lakkev.com`,
    `PUBLIC_CONTACT_EMAIL=roccafcheng@gmail.com`.
-5. **Automatic redeploys**. Right now deployments are manual — use `npm run deploy`
+5. **Automatic redeploys**. The deploy step is ALREADY WIRED into `etl-daily.yml`, gated on the
+   `CLOUDFLARE_API_TOKEN` repo secret — the moment the secret exists, a data change also builds
+   and deploys the site. Until then use `npm run deploy` manually
    (it refuses a dirty working tree, builds, stamps the commit into `dist/build-info.json`,
    then uploads via wrangler). To make the daily ETL publish
    by itself, pick one:
