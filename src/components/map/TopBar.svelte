@@ -152,14 +152,18 @@
           <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
         </nav>
         <nav class="lang-switch" aria-label={tr('nav.language')}>
-          {#each LOCALES as l (l)}
-            <a
-              href={localizePath('/', l) + pathWithQuery()}
-              hreflang={l}
-              lang={l}
-              aria-current={l === locale ? 'true' : undefined}>{LOCALE_NAMES[l]}</a
-            >
-          {/each}
+          <select
+            aria-label={tr('nav.language')}
+            onchange={(e) => (location.href = (e.currentTarget as HTMLSelectElement).value)}
+          >
+            {#each LOCALES as l (l)}
+              <option
+                value={localizePath('/', l) + pathWithQuery()}
+                selected={l === locale}
+                lang={l}>{LOCALE_NAMES[l]}</option
+              >
+            {/each}
+          </select>
         </nav>
       </div>
     {/if}

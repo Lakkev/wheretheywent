@@ -14,6 +14,7 @@ export const LYR_COMPARE = 'wtw-compare';
 export const LYR_IDU = 'wtw-idu';
 export const SRC_IDU = 'wtw-idu-src';
 export const LYR_FLOWS = 'wtw-flows';
+export const LYR_FLOWS_ANIM = 'wtw-flows-anim';
 export const SRC_FLOWS = 'wtw-flows-src';
 
 /** Minimal offline style: flat water background, no tiles (basemap fallback, §8.2). */
@@ -157,6 +158,23 @@ export function flowsLayer(): Record<string, unknown> {
       'line-color': '#0b3a6e',
       'line-opacity': 0.55,
       'line-width': ['coalesce', ['get', 'width'], 2],
+    },
+  };
+}
+
+/** Animated overlay on the flow arcs: a light dashed line whose dash phase is cycled per frame
+ *  (MapCanvas), reading as movement from origin toward asylum. Skipped for reduced-motion. */
+export function flowsAnimLayer(): Record<string, unknown> {
+  return {
+    id: LYR_FLOWS_ANIM,
+    type: 'line',
+    source: SRC_FLOWS,
+    layout: { 'line-cap': 'round' },
+    paint: {
+      'line-color': '#c6dbef',
+      'line-opacity': 0.9,
+      'line-width': ['*', 0.55, ['coalesce', ['get', 'width'], 2]],
+      'line-dasharray': [0, 4, 3],
     },
   };
 }

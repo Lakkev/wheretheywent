@@ -1,0 +1,14 @@
+---
+import CountryPage from '../../../components/pages/CountryPage.astro';
+import { listCountryIso3, getCountry } from '../../../lib/data-server';
+export async function getStaticPaths() {
+  return listCountryIso3().map((iso3) => ({
+    params: { iso3 },
+    props: { data: getCountry(iso3)! },
+  }));
+}
+const { iso3 } = Astro.params;
+const { data } = Astro.props;
+---
+
+<CountryPage locale="ko" iso3={iso3!} data={data} />

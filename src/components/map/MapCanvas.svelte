@@ -19,8 +19,10 @@
     SRC_IDU,
     LYR_IDU,
     flowsLayer,
+    flowsAnimLayer,
     SRC_FLOWS,
     LYR_FLOWS,
+    LYR_FLOWS_ANIM,
   } from '../../lib/map-style';
   import type { ViewResult } from '../../lib/view';
   import type { MapPos } from '../../lib/url';
@@ -237,9 +239,52 @@
     return pts;
   }
 
+  // Directional "ant-line" phase cycle — motion runs from origin toward asylum.
+  const FLOW_DASH_SEQ: number[][] = [
+    [0, 4, 3],
+    [0.5, 4, 2.5],
+    [1, 4, 2],
+    [1.5, 4, 1.5],
+    [2, 4, 1],
+    [2.5, 4, 0.5],
+    [3, 4, 0],
+    [0, 0.5, 3, 3.5],
+    [0, 1, 3, 3],
+    [0, 1.5, 3, 2.5],
+    [0, 2, 3, 2],
+    [0, 2.5, 3, 1.5],
+    [0, 3, 3, 1],
+    [0, 3.5, 3, 0.5],
+  ];
+  let flowAnimRaf: number | null = null;
+  let flowAnimStep = -1;
+  function stopFlowAnim() {
+    if (flowAnimRaf !== null) cancelAnimationFrame(flowAnimRaf);
+    flowAnimRaf = null;
+    flowAnimStep = -1;
+  }
+  function startFlowAnim() {
+    if (prefersReducedMotion() || flowAnimRaf !== null) return;
+    const tick = (ts: number) => {
+      if (!map || !map.getLayer(LYR_FLOWS_ANIM)) {
+        flowAnimRaf = null;
+        return;
+      }
+      const step = Math.floor(ts / 70) % FLOW_DASH_SEQ.length;
+      if (step !== flowAnimStep) {
+        flowAnimStep = step;
+        map.setPaintProperty(LYR_FLOWS_ANIM, 'line-dasharray', FLOW_DASH_SEQ[step]!);
+      }
+      flowAnimRaf = requestAnimationFrame(tick);
+    };
+    flowAnimRaf = requestAnimationFrame(tick);
+  }
+
   function applyFlows() {
     if (!map || !layersAdded) return;
     if (!flows || !flows.length) {
+      stopFlowAnim();
+      if (map.getLayer(LYR_FLOWS_ANIM)) map.removeLayer(LYR_FLOWS_ANIM);
       if (map.getLayer(LYR_FLOWS)) map.removeLayer(LYR_FLOWS);
       return;
     }
@@ -256,6 +301,8 @@
     if (src) src.setData(fc);
     else map.addSource(SRC_FLOWS, { type: 'geojson', data: fc });
     if (!map.getLayer(LYR_FLOWS)) map.addLayer(flowsLayer() as never);
+    if (!map.getLayer(LYR_FLOWS_ANIM)) map.addLayer(flowsAnimLayer() as never);
+    startFlowAnim();
   }
 
   function fitTo(iso3: string) {
@@ -410,6 +457,7 @@
 
   onDestroy(() => {
     destroyed = true;
+    stopFlowAnim();
     if (basemapTimer) clearTimeout(basemapTimer);
     if (prefetchTimer) clearTimeout(prefetchTimer);
     map?.remove();

@@ -28,7 +28,8 @@ test('language switch keeps the query string', async ({ page }) => {
   await page.goto('/?y=2016&m=idps');
   await waitForApp(page);
   await page.getByRole('button', { name: 'Menu' }).click();
-  await page.getByRole('link', { name: '繁體中文' }).click();
+  // language switcher is a dropdown (7 locales)
+  await page.locator('.menu-panel select').selectOption({ label: '繁體中文' });
   await page.waitForURL(/\/zh-Hant\/\?y=2016&m=idps/);
   await waitForApp(page);
   expect(await page.locator('.timeline .year').textContent()).toBe('2016');

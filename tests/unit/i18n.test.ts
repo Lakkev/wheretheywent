@@ -1,14 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import en from '../../src/i18n/en.json';
 import zh from '../../src/i18n/zh-Hant.json';
+import zhHans from '../../src/i18n/zh-Hans.json';
 import fr from '../../src/i18n/fr.json';
 import es from '../../src/i18n/es.json';
+import ja from '../../src/i18n/ja.json';
+import ko from '../../src/i18n/ko.json';
 import { t, interpolate, localizePath, stripLocale, localeFromPath } from '../../src/i18n/ui';
 
 const NON_EN: [string, Record<string, string>][] = [
   ['zh-Hant', zh],
+  ['zh-Hans', zhHans],
   ['fr', fr],
   ['es', es],
+  ['ja', ja],
+  ['ko', ko],
 ];
 
 describe('i18n dictionaries', () => {
@@ -48,6 +54,16 @@ describe('t / interpolate', () => {
     expect(t('es', 'nav.map')).toBe('Mapa');
     expect(t('es', 'metric.refugees')).toBe('Refugiados');
     expect(t('es', 'view.origin')).toBe('De dónde huyeron');
+  });
+  it('zh-Hans / ja / ko are genuinely translated', () => {
+    expect(t('zh-Hans', 'nav.map')).toBe('地图');
+    expect(t('zh-Hans', 'metric.refugees')).toBe('难民');
+    expect(t('ja', 'nav.map')).toBe('地図');
+    expect(t('ja', 'metric.refugees')).toBe('難民');
+    expect(t('ko', 'nav.map')).toBe('지도');
+    expect(t('ko', 'metric.refugees')).toBe('난민');
+    // Hans and Hant must actually differ in script
+    expect(t('zh-Hans', 'site.description')).not.toBe(t('zh-Hant', 'site.description'));
   });
   it.each(NON_EN)('at least 90%% of %s values differ from English', (_name, dict) => {
     const keys = Object.keys(en) as (keyof typeof en)[];

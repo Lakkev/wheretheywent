@@ -10,21 +10,35 @@
  */
 import en from './en.json';
 import zhHant from './zh-Hant.json';
+import zhHans from './zh-Hans.json';
 import fr from './fr.json';
 import es from './es.json';
+import ja from './ja.json';
+import ko from './ko.json';
 
-export type Locale = 'en' | 'zh-Hant' | 'fr' | 'es';
+export type Locale = 'en' | 'zh-Hant' | 'zh-Hans' | 'fr' | 'es' | 'ja' | 'ko';
 export type MessageKey = keyof typeof en;
 
-export const LOCALES: readonly Locale[] = ['en', 'zh-Hant', 'fr', 'es'] as const;
+export const LOCALES: readonly Locale[] = [
+  'en',
+  'zh-Hant',
+  'zh-Hans',
+  'fr',
+  'es',
+  'ja',
+  'ko',
+] as const;
 export const DEFAULT_LOCALE: Locale = 'en';
 
 /** Native-language names — language switcher labels and "untranslated" banners. */
 export const LOCALE_NAMES: Record<Locale, string> = {
   en: 'English',
   'zh-Hant': '繁體中文',
+  'zh-Hans': '简体中文',
   fr: 'Français',
   es: 'Español',
+  ja: '日本語',
+  ko: '한국어',
 };
 
 // Compile-time guarantee: every locale has every key from en and no extras.
@@ -34,26 +48,44 @@ const _fr1: Record<MessageKey, string> = fr;
 const _fr2: Record<keyof typeof fr, string> = en;
 const _es1: Record<MessageKey, string> = es;
 const _es2: Record<keyof typeof es, string> = en;
+const _hs1: Record<MessageKey, string> = zhHans;
+const _hs2: Record<keyof typeof zhHans, string> = en;
+const _ja1: Record<MessageKey, string> = ja;
+const _ja2: Record<keyof typeof ja, string> = en;
+const _ko1: Record<MessageKey, string> = ko;
+const _ko2: Record<keyof typeof ko, string> = en;
 void _zh1;
 void _zh2;
 void _fr1;
 void _fr2;
 void _es1;
 void _es2;
+void _hs1;
+void _hs2;
+void _ja1;
+void _ja2;
+void _ko1;
+void _ko2;
 
 const DICTS: Record<Locale, Record<MessageKey, string>> = {
   en,
   'zh-Hant': zhHant,
+  'zh-Hans': zhHans,
   fr,
   es,
+  ja,
+  ko,
 };
 
 /** BCP-47 tags used for Intl.* formatting. */
 export const INTL_TAG: Record<Locale, string> = {
   en: 'en',
   'zh-Hant': 'zh-Hant-TW',
+  'zh-Hans': 'zh-Hans-CN',
   fr: 'fr',
   es: 'es',
+  ja: 'ja',
+  ko: 'ko',
 };
 
 const PREFIXED = LOCALES.filter((l) => l !== DEFAULT_LOCALE);

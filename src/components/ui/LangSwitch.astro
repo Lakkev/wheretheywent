@@ -1,4 +1,5 @@
 ---
+/** Language switcher — a dropdown (7 locales), with plain links as the no-JS fallback. */
 import { LOCALES, LOCALE_NAMES, localizePath, stripLocale, useT, type Locale } from '../../i18n/ui';
 interface Props {
   locale: Locale;
@@ -10,16 +11,32 @@ const search = Astro.url.search;
 ---
 
 <nav class="lang-switch" aria-label={tr('nav.language')}>
-  {
-    LOCALES.map((l) => (
-      <a
-        href={localizePath(base, l) + search}
-        hreflang={l}
-        lang={l}
-        aria-current={l === locale ? 'true' : undefined}
-      >
-        {LOCALE_NAMES[l]}
-      </a>
-    ))
-  }
+  <label class="visually-hidden" for={`lang-select-${locale}`}>{tr('nav.language')}</label>
+  <select id={`lang-select-${locale}`} data-lang-select>
+    {
+      LOCALES.map((l) => (
+        <option value={localizePath(base, l) + search} selected={l === locale} lang={l}>
+          {LOCALE_NAMES[l]}
+        </option>
+      ))
+    }
+  </select>
+  <noscript>
+    {
+      LOCALES.map((l) => (
+        <a href={localizePath(base, l) + search} hreflang={l} lang={l}>
+          {LOCALE_NAMES[l]}
+        </a>
+      ))
+    }
+  </noscript>
 </nav>
+
+<script is:inline>
+  for (const s of document.querySelectorAll('select[data-lang-select]:not([data-wired])')) {
+    s.dataset.wired = '1';
+    s.addEventListener('change', function () {
+      location.href = this.value;
+    });
+  }
+</script>
