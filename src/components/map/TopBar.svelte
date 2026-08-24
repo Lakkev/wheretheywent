@@ -1,7 +1,14 @@
 <script lang="ts">
   import { ui, data, session, staleSources } from '../../lib/state.svelte';
   import { URL_METRICS } from '../../lib/url';
-  import { useT, localizePath, LOCALES, type Locale, type MessageKey } from '../../i18n/ui';
+  import {
+    useT,
+    localizePath,
+    LOCALES,
+    LOCALE_NAMES,
+    type Locale,
+    type MessageKey,
+  } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
   import { CONTACT_EMAIL } from '../../lib/site';
 
@@ -150,8 +157,7 @@
               href={localizePath('/', l) + pathWithQuery()}
               hreflang={l}
               lang={l}
-              aria-current={l === locale ? 'true' : undefined}
-              >{tr(l === 'en' ? 'nav.language.en' : 'nav.language.zh-Hant')}</a
+              aria-current={l === locale ? 'true' : undefined}>{LOCALE_NAMES[l]}</a
             >
           {/each}
         </nav>

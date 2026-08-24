@@ -1,36 +1,66 @@
 /**
  * Zero-dependency i18n.
  * - en.json is the source of truth for the key set.
- * - zh-Hant.json must have exactly the same keys (type-checked below; a missing
+ * - Every other locale file must have exactly the same keys (type-checked below; a missing
  *   translation is a compile error, a stray key is a compile error).
- * - zh-Hant.json is fully translated (2026-08-24); terminology is locked in docs/STYLE-zh.md,
- *   and a unit test asserts the file is genuinely translated (sentinels + >90% of values differ).
+ * - zh-Hant / fr / es are fully translated UI dictionaries; long-form doc pages are tiered —
+ *   pages not yet localised show the English content behind an explicit banner (doc.untranslated).
+ * - zh terminology is locked in docs/STYLE-zh.md; unit tests assert each dictionary is genuinely
+ *   translated (sentinels + >90% of values differ from English).
  */
 import en from './en.json';
 import zhHant from './zh-Hant.json';
+import fr from './fr.json';
+import es from './es.json';
 
-export type Locale = 'en' | 'zh-Hant';
+export type Locale = 'en' | 'zh-Hant' | 'fr' | 'es';
 export type MessageKey = keyof typeof en;
 
-export const LOCALES: readonly Locale[] = ['en', 'zh-Hant'] as const;
+export const LOCALES: readonly Locale[] = ['en', 'zh-Hant', 'fr', 'es'] as const;
 export const DEFAULT_LOCALE: Locale = 'en';
 
-// Compile-time guarantee: zh-Hant has every key from en and no extras.
-const _zhHantCheck: Record<MessageKey, string> = zhHant;
-const _enCheck: Record<keyof typeof zhHant, string> = en;
-void _zhHantCheck;
-void _enCheck;
+/** Native-language names — language switcher labels and "untranslated" banners. */
+export const LOCALE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  'zh-Hant': '繁體中文',
+  fr: 'Français',
+  es: 'Español',
+};
+
+// Compile-time guarantee: every locale has every key from en and no extras.
+const _zh1: Record<MessageKey, string> = zhHant;
+const _zh2: Record<keyof typeof zhHant, string> = en;
+const _fr1: Record<MessageKey, string> = fr;
+const _fr2: Record<keyof typeof fr, string> = en;
+const _es1: Record<MessageKey, string> = es;
+const _es2: Record<keyof typeof es, string> = en;
+void _zh1;
+void _zh2;
+void _fr1;
+void _fr2;
+void _es1;
+void _es2;
 
 const DICTS: Record<Locale, Record<MessageKey, string>> = {
   en,
   'zh-Hant': zhHant,
+  fr,
+  es,
 };
 
 /** BCP-47 tags used for Intl.* formatting. */
-export const INTL_TAG: Record<Locale, string> = { en: 'en', 'zh-Hant': 'zh-Hant-TW' };
+export const INTL_TAG: Record<Locale, string> = {
+  en: 'en',
+  'zh-Hant': 'zh-Hant-TW',
+  fr: 'fr',
+  es: 'es',
+};
+
+const PREFIXED = LOCALES.filter((l) => l !== DEFAULT_LOCALE);
+const PREFIX_RE = new RegExp(`^/(${PREFIXED.join('|')})(?=/|$)`);
 
 export function isLocale(x: unknown): x is Locale {
-  return x === 'en' || x === 'zh-Hant';
+  return (LOCALES as readonly string[]).includes(x as string);
 }
 
 /** Interpolate `{name}` placeholders. Missing params are left as-is (visible in e2e). */
@@ -59,17 +89,18 @@ export function useT(locale: Locale) {
 
 /** Locale from an Astro URL pathname. */
 export function localeFromPath(pathname: string): Locale {
-  return pathname === '/zh-Hant' || pathname.startsWith('/zh-Hant/') ? 'zh-Hant' : 'en';
+  const m = PREFIX_RE.exec(pathname);
+  return m && isLocale(m[1]) ? m[1] : DEFAULT_LOCALE;
 }
 
-/** Build a path for a locale: localizePath('/country/SYR', 'zh-Hant') → '/zh-Hant/country/SYR' */
+/** Build a path for a locale: localizePath('/country/SYR', 'fr') → '/fr/country/SYR' */
 export function localizePath(path: string, locale: Locale): string {
-  const clean = path.replace(/^\/zh-Hant(?=\/|$)/, '') || '/';
-  if (locale === 'en') return clean;
-  return clean === '/' ? '/zh-Hant/' : `/zh-Hant${clean}`;
+  const clean = path.replace(PREFIX_RE, '') || '/';
+  if (locale === DEFAULT_LOCALE) return clean;
+  return clean === '/' ? `/${locale}/` : `/${locale}${clean}`;
 }
 
-/** Strip locale prefix: '/zh-Hant/compare' → '/compare' */
+/** Strip locale prefix: '/fr/compare' → '/compare' */
 export function stripLocale(path: string): string {
-  return path.replace(/^\/zh-Hant(?=\/|$)/, '') || '/';
+  return path.replace(PREFIX_RE, '') || '/';
 }

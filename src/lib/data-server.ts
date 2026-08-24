@@ -38,6 +38,9 @@ export const getDisputedNotes = () => readJson<DisputedNotes>('geo/disputed-note
 export const getNowcast = () => readJson<NowcastFile>('live/nowcast.json');
 export const getIdu = () => readJson<IduFile>('live/idu-latest.json');
 export const getWorldTotals = () => readJson<WorldTotalsFile>('world-totals.json');
+/** True when a pre-generated og card exists for this country (scripts/dev/og-cards.mjs). */
+export const hasOgCard = (iso3: string) =>
+  existsSync(join(process.cwd(), 'public', 'og', 'country', `${iso3}.jpg`));
 export const getCountry = (iso3: string) => readJson<CountryFile>(`country/${iso3}.json`);
 
 export function getStockRecent(): StockFile | null {

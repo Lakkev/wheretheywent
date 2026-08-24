@@ -13,6 +13,8 @@ export const LYR_SELECTED = 'wtw-selected';
 export const LYR_COMPARE = 'wtw-compare';
 export const LYR_IDU = 'wtw-idu';
 export const SRC_IDU = 'wtw-idu-src';
+export const LYR_FLOWS = 'wtw-flows';
+export const SRC_FLOWS = 'wtw-flows-src';
 
 /** Minimal offline style: flat water background, no tiles (basemap fallback, §8.2). */
 export function fallbackStyle(): Record<string, unknown> {
@@ -140,6 +142,21 @@ export function iduLayer(): Record<string, unknown> {
       'circle-stroke-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-sort-key': ['coalesce', ['get', 'figure'], 0],
+    },
+  };
+}
+
+/** Phase 2: bilateral flow arcs for the selected country (top partners, origin → asylum). */
+export function flowsLayer(): Record<string, unknown> {
+  return {
+    id: LYR_FLOWS,
+    type: 'line',
+    source: SRC_FLOWS,
+    layout: { 'line-cap': 'round' },
+    paint: {
+      'line-color': '#0b3a6e',
+      'line-opacity': 0.55,
+      'line-width': ['coalesce', ['get', 'width'], 2],
     },
   };
 }

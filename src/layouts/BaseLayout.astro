@@ -4,7 +4,7 @@
  * Provides: <head> meta, hreflang alternates, JSON-LD slot, skip link, header nav, footer.
  */
 import '../styles/global.css';
-import { localeFromPath, localizePath, stripLocale, useT, type Locale } from '../i18n/ui';
+import { LOCALES, localeFromPath, localizePath, stripLocale, useT, type Locale } from '../i18n/ui';
 import { SITE_URL, SITE_NAME, CONTACT_EMAIL } from '../lib/site';
 import SiteHeader from '../components/ui/SiteHeader.astro';
 import SiteFooter from '../components/ui/SiteFooter.astro';
@@ -19,27 +19,40 @@ interface Props {
   bare?: boolean;
   bodyClass?: string;
   noindex?: boolean;
+  /** Page-specific og:image path (site-relative); defaults to the shared map card. */
+  ogImage?: string;
 }
 
-const { title, description, jsonLd, bare = false, bodyClass = '', noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  jsonLd,
+  bare = false,
+  bodyClass = '',
+  noindex = false,
+  ogImage: ogImagePath,
+} = Astro.props;
 const locale: Locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
 const tr = useT(locale);
 const desc = description ?? tr('site.description');
 const path = Astro.url.pathname;
 const base = stripLocale(path);
 const canonical = `${SITE_URL}${localizePath(base, locale)}`;
-const altEn = `${SITE_URL}${localizePath(base, 'en')}`;
-const altZh = `${SITE_URL}${localizePath(base, 'zh-Hant')}`;
-const htmlLang = locale === 'zh-Hant' ? 'zh-Hant' : 'en';
+const alternates = LOCALES.map((l) => ({ l, href: `${SITE_URL}${localizePath(base, l)}` }));
+const htmlLang = locale;
+const OG_LOCALE: Record<Locale, string> = {
+  en: 'en_US',
+  'zh-Hant': 'zh_TW',
+  fr: 'fr_FR',
+  es: 'es_ES',
+};
 const brand = tr('site.name');
 // The home page gets a descriptive title — a brand nobody has heard of yet is zero signal in search.
 const fullTitle =
   title === brand || title === SITE_NAME
     ? `${brand} — ${tr('site.titleTag')}`
     : `${title} · ${brand}`;
-const ogImage = `${SITE_URL}/og/default.png`;
-const ogLocale = locale === 'zh-Hant' ? 'zh_TW' : 'en_US';
-const ogLocaleAlt = locale === 'zh-Hant' ? 'en_US' : 'zh_TW';
+const ogImage = `${SITE_URL}${ogImagePath ?? '/og/default.png'}`;
 ---
 
 <!doctype html>
@@ -51,9 +64,8 @@ const ogLocaleAlt = locale === 'zh-Hant' ? 'en_US' : 'zh_TW';
     <meta name="description" content={desc} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={altEn} />
-    <link rel="alternate" hreflang="zh-Hant" href={altZh} />
-    <link rel="alternate" hreflang="x-default" href={altEn} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.l} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={alternates[0]!.href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:site_name" content={brand} />
     <meta property="og:title" content={fullTitle} />
@@ -64,8 +76,12 @@ const ogLocaleAlt = locale === 'zh-Hant' ? 'en_US' : 'zh_TW';
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={tr('site.ogAlt')} />
-    <meta property="og:locale" content={ogLocale} />
-    <meta property="og:locale:alternate" content={ogLocaleAlt} />
+    <meta property="og:locale" content={OG_LOCALE[locale]} />
+    {
+      LOCALES.filter((l) => l !== locale).map((l) => (
+        <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
+      ))
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={desc} />

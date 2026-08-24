@@ -174,6 +174,8 @@
   "page.boundaries.title": "Boundaries, names and disputed territories",
   "page.stories.title": "Stories",
   "page.stories.soon": "Stories are coming in a later release.",
+  "page.support.title": "Support this site",
+  "nav.support": "Support",
   "page.notFound.title": "Page not found",
   "page.notFound.body": "The page you asked for does not exist. The map is at the home page.",
   "page.report": "Report a problem with this view",
@@ -253,11 +255,15 @@
   "idu.conflict.toggle": "Conflict events",
   "idu.disaster.toggle": "Disaster events",
   "idu.definitionNote": "Event definitions differ from the annual IDP stock shown in colour, which excludes disasters.",
+  "flows.toggle": "Flow arcs (top 10 partners)",
+  "flows.note": "Arcs run from country of origin to country of asylum; width ∝ persons (refugees + asylum-seekers).",
+  "flows.from2015": "Bilateral flows are published from 2015 onwards.",
   "error.loadTitle": "The data could not be loaded",
   "error.loadBody": "This site is static, so this is usually a network or cache problem — not a server outage. Retrying often fixes it.",
   "error.technical": "Technical details",
   "map.loadingData": "Loading data…",
   "legend.per1kNote": "per 1,000 = 31 Dec stock ÷ WPP mid-year population",
   "legend.breaksNote": "Classes span all years, for the countries shown",
-  "source.aged": "Data last refreshed {date} — automatic updates may be interrupted"
+  "source.aged": "Data last refreshed {date} — automatic updates may be interrupted",
+  "doc.untranslated": "This page is not yet available in this language — the English version is shown below."
 }

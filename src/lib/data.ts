@@ -5,6 +5,7 @@
  *  - country files: in-flight dedupe + LRU(30)
  */
 import { unpack } from './columnar';
+import { INTL_TAG, type Locale } from '../i18n/ui';
 import {
   METRIC_IDS,
   type AnyMetricId,
@@ -18,6 +19,7 @@ import {
   type StockFile,
   type ViewId,
   type DisputedNotes,
+  type FlowsFile,
   type NowcastFile,
   type IduFile,
 } from './types';
@@ -74,6 +76,16 @@ export class DataClient {
   }
   idu() {
     return this.json<IduFile>('live/idu-latest.json');
+  }
+  private flowsCache = new Map<number, Promise<FlowsFile>>();
+  /** Bilateral matrix for a year (2015+), cached per year. */
+  flows(year: number): Promise<FlowsFile> {
+    let p = this.flowsCache.get(year);
+    if (!p) {
+      p = this.json<FlowsFile>(`flows/${year}.json`);
+      this.flowsCache.set(year, p);
+    }
+    return p;
   }
   stock(rel: string) {
     return this.json<StockFile>(rel);
@@ -260,19 +272,20 @@ export function indexCountries(file: CountriesFile): Map<string, CountryMeta> {
   return new Map(file.countries.map((c) => [c.iso3, c]));
 }
 
-/** Lazily constructed Intl region-name provider for zh-Hant (works in browser and Node ≥ 14). */
-let zhRegionNames: Intl.DisplayNames | null | undefined;
-function zhRegion(iso2: string): string | undefined {
-  if (zhRegionNames === undefined) {
+/** Lazily constructed Intl region-name providers per locale tag (browser and Node ≥ 14). */
+const regionNamesCache = new Map<string, Intl.DisplayNames | null>();
+function regionName(iso2: string, tag: string): string | undefined {
+  if (!regionNamesCache.has(tag)) {
     try {
-      zhRegionNames = new Intl.DisplayNames(['zh-Hant-TW'], { type: 'region', fallback: 'none' });
+      regionNamesCache.set(tag, new Intl.DisplayNames([tag], { type: 'region', fallback: 'none' }));
     } catch {
-      zhRegionNames = null;
+      regionNamesCache.set(tag, null);
     }
   }
-  if (!zhRegionNames) return undefined;
+  const dn = regionNamesCache.get(tag);
+  if (!dn) return undefined;
   try {
-    return zhRegionNames.of(iso2) ?? undefined;
+    return dn.of(iso2) ?? undefined;
   } catch {
     return undefined;
   }
@@ -284,18 +297,12 @@ function zhRegion(iso2: string): string | undefined {
  *   2. Intl.DisplayNames('zh-Hant') via iso2 — standard Chinese names for every real country
  *   3. the English display_name (pseudo-entities without overrides)
  */
-export function displayName(
-  meta: CountryMeta | undefined,
-  locale: 'en' | 'zh-Hant',
-  iso3?: string,
-): string {
+export function displayName(meta: CountryMeta | undefined, locale: Locale, iso3?: string): string {
   if (!meta) return iso3 ?? '';
-  if (locale === 'zh-Hant') {
-    if (meta.display_name_zh) return meta.display_name_zh;
-    if (meta.iso2) {
-      const zh = zhRegion(meta.iso2);
-      if (zh && zh !== meta.iso2) return zh;
-    }
+  if (locale === 'zh-Hant' && meta.display_name_zh) return meta.display_name_zh;
+  if (locale !== 'en' && meta.iso2) {
+    const n = regionName(meta.iso2, INTL_TAG[locale]);
+    if (n && n !== meta.iso2) return n;
   }
   return meta.display_name;
 }

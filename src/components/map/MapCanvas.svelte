@@ -18,6 +18,9 @@
     iduLayer,
     SRC_IDU,
     LYR_IDU,
+    flowsLayer,
+    SRC_FLOWS,
+    LYR_FLOWS,
   } from '../../lib/map-style';
   import type { ViewResult } from '../../lib/view';
   import type { MapPos } from '../../lib/url';
@@ -44,6 +47,7 @@
     showIdu = false,
     iduConflict = true,
     iduDisaster = true,
+    flows = null,
     highlight = null,
     onselect,
     onhover,
@@ -71,6 +75,8 @@
     /** F6: conflict/disaster sub-toggles — event types the annual stock does not cover */
     iduConflict?: boolean;
     iduDisaster?: boolean;
+    /** Phase 2: precomputed flow arcs for the selected country (origin → asylum). */
+    flows?: { from: [number, number]; to: [number, number]; value: number; width: number }[] | null;
     /** externally requested hover highlight (rank list / table rows) — same visual as map hover */
     highlight?: string | null;
     onselect: (iso3: string | null) => void;
@@ -144,6 +150,7 @@
     paintAll();
     paintSelection();
     applyIdu();
+    applyFlows();
   }
 
   function paintAll() {
@@ -206,6 +213,49 @@
     if (src) src.setData(fc);
     else map.addSource(SRC_IDU, { type: 'geojson', data: fc });
     if (!map.getLayer(LYR_IDU)) map.addLayer(iduLayer() as never);
+  }
+
+  /** Quadratic-bezier arc between two centroids, lifted perpendicular to the chord. */
+  function arcCoords(a: [number, number], b: [number, number]): [number, number][] {
+    const [x1, y1] = a;
+    const [x2, y2] = b;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const d = Math.hypot(dx, dy) || 1;
+    const lift = Math.min(12, d * 0.18);
+    const cx = (x1 + x2) / 2 - (dy / d) * lift;
+    const cy = (y1 + y2) / 2 + (dx / d) * lift;
+    const pts: [number, number][] = [];
+    for (let i = 0; i <= 24; i++) {
+      const t = i / 24;
+      const u = 1 - t;
+      pts.push([
+        u * u * x1 + 2 * u * t * cx + t * t * x2,
+        u * u * y1 + 2 * u * t * cy + t * t * y2,
+      ]);
+    }
+    return pts;
+  }
+
+  function applyFlows() {
+    if (!map || !layersAdded) return;
+    if (!flows || !flows.length) {
+      if (map.getLayer(LYR_FLOWS)) map.removeLayer(LYR_FLOWS);
+      return;
+    }
+    const fc: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: flows.map((f, i) => ({
+        type: 'Feature',
+        id: i,
+        properties: { width: f.width, value: f.value },
+        geometry: { type: 'LineString', coordinates: arcCoords(f.from, f.to) },
+      })),
+    };
+    const src = map.getSource(SRC_FLOWS) as import('maplibre-gl').GeoJSONSource | undefined;
+    if (src) src.setData(fc);
+    else map.addSource(SRC_FLOWS, { type: 'geojson', data: fc });
+    if (!map.getLayer(LYR_FLOWS)) map.addLayer(flowsLayer() as never);
   }
 
   function fitTo(iso3: string) {
@@ -384,6 +434,10 @@
     void iduDisaster;
     if (!showIdu) iduPopup = null;
     applyIdu();
+  });
+  $effect(() => {
+    void flows;
+    applyFlows();
   });
   // external hover (rank list / data table rows) drives the same hover outline on the map
   let prevExtHover: string | null = null;

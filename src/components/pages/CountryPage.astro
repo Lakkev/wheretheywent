@@ -16,6 +16,7 @@ import {
   getCountries,
   getWorldTotals,
   listDownloads,
+  hasOgCard,
 } from '../../lib/data-server';
 import { displayName } from '../../lib/data';
 import { SITE_URL, SITE_NAME } from '../../lib/site';
@@ -136,6 +137,7 @@ const jsonLd = {
   description={description}
   locale={locale}
   jsonLd={jsonLd}
+  ogImage={hasOgCard(iso3) ? `/og/country/${iso3}.jpg` : undefined}
 >
   <article class="doc wide">
     <header class="doc-header">

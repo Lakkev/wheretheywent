@@ -1,0 +1,142 @@
+---
+/** Story: 75 years of counting — figures computed from world-totals.json at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getWorldTotals, getSources, getManifest } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant';
+const wt = getWorldTotals();
+const src = getSources()?.['unhcr_population'];
+const manifest = getManifest();
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const years = Object.keys(wt?.totals ?? {})
+  .map(Number)
+  .sort((a, b) => a - b);
+const y0 = years[0];
+const yN = years[years.length - 1];
+const at = (year: number | undefined, metric: string) =>
+  year === undefined ? null : (wt?.totals?.[String(year)]?.[metric]?.asylum ?? null);
+const ref0 = at(y0, 'refugees');
+const refN = at(yN, 'refugees');
+const pocN = at(yN, 'total_poc');
+const idpN = at(yN, 'idps');
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/world.jpg"
+  title={zh ? '七十五年的計數' : 'Seventy-five years of counting'}
+  lede={zh
+    ? `${y0} 年，世界開始有系統地統計難民。這一頁講的不是流離失所的歷史，而是「計數」本身的歷史——以及讀這些數字時該小心什麼。`
+    : `In ${y0}, the world began systematically counting refugees. This page is not a history of displacement — it is a history of the counting itself, and of what to watch for when reading it.`}
+>
+  <h2>{zh ? '從兩百萬到今天' : 'From two million to today'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          {y0} 年的第一份年度統計記錄了 <strong>{n(ref0)}</strong> 名難民——主要是二戰後的歐洲。
+          {yN} 年，難民為 <strong>{n(refN)}</strong> 人，境內流離失所者 <strong>{n(idpN)}</strong>{' '}
+          人，所有受關注者合計 <strong>{n(pocN)}</strong>
+          人。但直接把 {y0} 與 {yN}
+          相比是危險的：七十五年間，不只世界變了，「誰會被算進來」也一直在變。
+        </>
+      ) : (
+        <>
+          The first annual count, in {y0}, recorded <strong>{n(ref0)}</strong> refugees — mostly
+          post-war Europe. In {yN}, there were <strong>{n(refN)}</strong> refugees,{' '}
+          <strong>{n(idpN)}</strong> internally displaced people, and <strong>{n(pocN)}</strong>{' '}
+          people of concern in total. But comparing {y0} to {yN} directly is dangerous: over
+          seventy-five years, not only the world changed — <em>who gets counted</em> kept changing
+          too.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&y=${y0}`)}
+      >{zh ? `在地圖上檢視 ${y0} 年 →` : `See ${y0} on the map →`}</a
+    >
+  </p>
+
+  <h2>{zh ? '計數規則的四次擴張' : 'Four expansions of the count'}</h2>
+  {
+    zh ? (
+      <ul>
+        <li>境內流離失所者：2009 年起才進入這份資料（經 IDMC），且僅涵蓋衝突與暴力。</li>
+        <li>無國籍者：2004 年起才有系統性統計，且僅按居住國、許多國家至今未報告。</li>
+        <li>其他需要國際保護者（OIP）：2018 年為委內瑞拉危機而生。</li>
+        <li>
+          「未報告」與「零」的區分：本站全程保留——灰色國家可能收容許多人，只是那一年沒有數字。
+        </li>
+      </ul>
+    ) : (
+      <ul>
+        <li>
+          Internally displaced people entered this dataset only from 2009 (via IDMC), and only for
+          conflict and violence.
+        </li>
+        <li>
+          Stateless people were counted systematically only from 2004, by country of residence — and
+          many countries still do not report.
+        </li>
+        <li>
+          "Other people in need of international protection" (OIP) was created in 2018 for the
+          Venezuelan crisis.
+        </li>
+        <li>
+          The distinction between "not reported" and "zero" is kept throughout this site — a grey
+          country may host many people for whom that year simply has no figure.
+        </li>
+      </ul>
+    )
+  }
+
+  <h2>{zh ? '怎麼誠實地讀' : 'How to read honestly'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          跨年份比較時，把游標放在時間軸上：每個指標的「開始統計年份」都有標示。跨國比較時，記得數字是各國政府與
+          UNHCR
+          行動「報告」的結果——高報與低報的誘因都存在。這不是資料的缺陷，而是資料的本質；誠實標示它，正是本站存在的理由。
+        </>
+      ) : (
+        <>
+          When comparing across years, watch the timeline: the first-collected year of every metric
+          is marked. When comparing across countries, remember the numbers are what governments and
+          UNHCR operations <em>report</em> — incentives to over- and under-count both exist. That is
+          not a flaw in the data; it is the nature of the data. Labelling it honestly is this site's
+          reason to exist.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由 <code>world-totals.json</code>（快照{' '}
+          {manifest?.snapshot_id ?? '—'}）計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}）。方法與限制見
+          <a href={localizePath('/methodology', locale)}>方法論</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from <code>world-totals.json</code>{' '}
+          (snapshot {manifest?.snapshot_id ?? '—'}; source: {src?.attribution ?? 'UNHCR'}, data as
+          of {src?.data_as_of ?? '—'}). Methods and limits:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

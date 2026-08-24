@@ -1,0 +1,112 @@
+---
+/** /support — voluntary sponsorship of the site's maintenance. Strictly separated from
+ *  donations to displaced people (those belong to the organisations listed on /about). */
+import DocPage from './DocPage.astro';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { CONTACT_EMAIL, CONTACT_WECHAT } from '../../lib/site';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant';
+---
+
+<DocPage
+  locale={locale}
+  title={tr('page.support.title')}
+  lede={zh
+    ? '本站獨立營運、無廣告、無追蹤，資料永遠免費開放。若它對您的工作有幫助，歡迎自願贊助站方營運。'
+    : 'This site is independent, ad-free and tracking-free, and the data is free forever. If it helps your work, voluntary sponsorship of its upkeep is welcome.'}
+>
+  <h2>{zh ? '贊助支持的是什麼' : 'What sponsorship supports'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          本站的架構刻意做到主機成本為零，所以贊助支持的不是伺服器，而是：維護者投入的時間、網域費用，以及下一步的工作——更多語言版本、每季資料快照的
+          DOI 永久典藏（Zenodo）、流向視覺化與故事單元的持續擴充。
+        </>
+      ) : (
+        <>
+          The site is deliberately architected to cost $0 in hosting, so sponsorship does not pay
+          for servers. It supports the maintainer's time, the domain, and what comes next: more
+          language editions, DOI-archived quarterly snapshots (Zenodo), and the continued build-out
+          of flow visualisations and stories.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '永遠不會改變的事' : 'What will never change'}</h2>
+  <ul>
+    {
+      zh ? (
+        <>
+          <li>
+            資料、下載與引用功能<strong>永遠免費</strong>——不會有付費牆。
+          </li>
+          <li>不放廣告、不裝追蹤器、不賣資料。</li>
+          <li>
+            <strong>本站不為流離失所者募款</strong>：想捐助流離失所者，請直接透過
+            <a href={localizePath('/about', locale)}>關於頁</a>
+            列出的組織。站方贊助與人道捐款嚴格分開，本站不經手任何善款、不收取任何推薦費。
+          </li>
+          <li>贊助不影響任何數字、排序或呈現——資料只忠於來源。</li>
+        </>
+      ) : (
+        <>
+          <li>
+            The data, downloads and citation tools stay <strong>free forever</strong> — no paywall.
+          </li>
+          <li>No ads, no trackers, no selling of data.</li>
+          <li>
+            <strong>This site does not fundraise for displaced people</strong>: to give to displaced
+            people, go directly to the organisations listed on the{' '}
+            <a href={localizePath('/about', locale)}>about page</a>. Site sponsorship and
+            humanitarian giving are strictly separate; no charitable money passes through this site,
+            and no referral fees are taken.
+          </li>
+          <li>
+            Sponsorship never influences any number, ranking or presentation — the data answers only
+            to its sources.
+          </li>
+        </>
+      )
+    }
+  </ul>
+
+  <h2>{zh ? '如何贊助' : 'How to sponsor'}</h2>
+  <p class="callout small">
+    {
+      zh
+        ? 'PayPal 贊助即將開放——連結確定後會直接出現在這裡，本頁政策屆時不會有任何其他改動。'
+        : 'PayPal sponsorship is coming soon — the link will appear right here once it is set up, with no other change to the policy on this page.'
+    }
+  </p>
+  <p>
+    {zh ? '聯絡：' : 'Contact:'}
+    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    {zh ? ' · 微信：' : ' · WeChat: '}<code>{CONTACT_WECHAT}</code>
+  </p>
+
+  <h2>{zh ? '透明原則' : 'Transparency'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          本頁任何政策改變，都會先在此明文說明後才生效。目前的營運狀態（獨立、無外部經費、成本
+          $0）公開於<a href={localizePath('/about', locale)}>關於頁</a>
+          ；資料的產生方式與驗證機制見<a href={localizePath('/methodology', locale)}>方法論</a>。
+        </>
+      ) : (
+        <>
+          Any change to the policy on this page will be stated here in writing before it takes
+          effect. The current operating status (independent, unfunded, $0 cost) is public on the{' '}
+          <a href={localizePath('/about', locale)}>about page</a>; how the data is produced and
+          validated is on the <a href={localizePath('/methodology', locale)}>methodology page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

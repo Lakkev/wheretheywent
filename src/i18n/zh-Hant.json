@@ -174,6 +174,8 @@
   "page.boundaries.title": "邊界、名稱與爭議地區",
   "page.stories.title": "故事",
   "page.stories.soon": "故事單元將於後續版本推出。",
+  "page.support.title": "支持本站",
+  "nav.support": "支持",
   "page.notFound.title": "找不到頁面",
   "page.notFound.body": "您要找的頁面不存在。地圖在首頁。",
   "page.report": "回報此檢視的問題",
@@ -253,11 +255,15 @@
   "idu.conflict.toggle": "衝突事件",
   "idu.disaster.toggle": "災害事件",
   "idu.definitionNote": "事件定義與地圖顏色所示的年度 IDP 存量不同；後者不含災害。",
+  "flows.toggle": "流向弧線（前 10 大夥伴）",
+  "flows.note": "弧線由來源國指向庇護國；寬度與人數成正比（難民＋庇護申請者）。",
+  "flows.from2015": "雙邊流向資料自 2015 年起發布。",
   "error.loadTitle": "資料載入失敗",
   "error.loadBody": "本站為靜態網站，這通常是網路或快取問題，而非伺服器故障。重試通常可以解決。",
   "error.technical": "技術細節",
   "map.loadingData": "資料載入中…",
   "legend.per1kNote": "每千人 = 12/31 存量 ÷ WPP 年中人口",
   "legend.breaksNote": "色階分級跨全部年份計算，依目前顯示的國家",
-  "source.aged": "資料最後更新於 {date} — 自動更新可能已中斷"
+  "source.aged": "資料最後更新於 {date} — 自動更新可能已中斷",
+  "doc.untranslated": "此頁尚未有本語言版本——以下顯示英文版。"
 }

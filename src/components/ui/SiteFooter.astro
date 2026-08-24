@@ -25,6 +25,7 @@ const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(reportS
       <span class="num">{tr('page.updated', { id: snap, date: built })}</span> ·
       <a href={localizePath('/data', locale)}>{tr('nav.data')}</a> ·
       <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
+      <a href={localizePath('/support', locale)}>{tr('nav.support')}</a> ·
       <a
         href={reportHref}
         data-report-email={CONTACT_EMAIL}

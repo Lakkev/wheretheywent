@@ -1,13 +1,75 @@
 ---
+/** /stories — the D2 general-reader entry point: guided, sourced walks through the data. */
 import DocPage from './DocPage.astro';
-import { useT, type Locale } from '../../i18n/ui';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
+const zh = locale === 'zh-Hant';
+const STORIES = [
+  {
+    slug: 'world',
+    title: zh ? '七十五年的計數' : 'Seventy-five years of counting',
+    blurb: zh
+      ? '不是流離失所的歷史，而是「計數」本身的歷史——以及讀數字時該小心什麼。'
+      : 'Not a history of displacement — a history of the counting itself, and what to watch for.',
+  },
+  {
+    slug: 'syria',
+    title: zh ? '敘利亞：十四年的流離' : 'Syria: fourteen years displaced',
+    blurb: zh
+      ? '全球最大的難民來源國——而多數流離失所者，從未離開敘利亞境內。'
+      : 'The world’s largest country of origin — and most of the displaced never left Syria at all.',
+  },
+  {
+    slug: 'venezuela',
+    title: zh ? '委內瑞拉：一個新類別的誕生' : 'Venezuela: how a new category was born',
+    blurb: zh
+      ? '數百萬人在法律上既不是難民、也不是庇護申請者。統計必須誠實面對這件事。'
+      : 'Millions were legally neither refugees nor asylum-seekers. The statistics had to be honest about it.',
+  },
+  {
+    slug: 'bangladesh',
+    title: zh ? '孟加拉：一年之間' : 'Bangladesh: within a single year',
+    blurb: zh
+      ? '2017 年 8 月之後，年度統計出現一次罕見的垂直跳升。'
+      : 'After August 2017, the annual statistics show a rare vertical jump.',
+  },
+];
 ---
 
-<DocPage locale={locale} title={tr('page.stories.title')}>
-  <p>{tr('page.stories.soon')}</p>
+<DocPage
+  locale={locale}
+  title={tr('page.stories.title')}
+  lede={zh
+    ? '每一篇都從公開統計出發：數字在建置時由資料算出、附出處、可在地圖上重現。沒有照片、沒有個案——只有可查證的數。'
+    : 'Each story starts from the published statistics: figures are computed from the data at build time, sourced, and reproducible on the map. No photos, no case files — only checkable numbers.'}
+>
+  <ul class="story-list">
+    {
+      STORIES.map((s) => (
+        <li class="card">
+          <h2>
+            <a href={localizePath(`/stories/${s.slug}`, locale)}>{s.title}</a>
+          </h2>
+          <p class="muted">{s.blurb}</p>
+        </li>
+      ))
+    }
+  </ul>
 </DocPage>
+
+<style>
+  .story-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3, 12px);
+  }
+  .story-list h2 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+  }
+</style>

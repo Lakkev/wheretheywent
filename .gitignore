@@ -13,4 +13,7 @@ playwright-report/
 .DS_Store
 Thumbs.db
 public/data/v1/_*
+# S9: live/* are preliminary, replaced daily, and huge over time — not part of the audit trail.
+# The audit trail covers the annual statistics; IDMC/UNHCR retain the live source data.
+public/data/v1/live/
 public/vendor/

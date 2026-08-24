@@ -1,7 +1,7 @@
 ---
 /** Generic document page wrapper: header block + slot. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import type { Locale } from '../../i18n/ui';
+import { useT, type Locale } from '../../i18n/ui';
 interface Props {
   locale: Locale;
   title: string;
@@ -9,15 +9,37 @@ interface Props {
   description?: string;
   wide?: boolean;
   jsonLd?: unknown;
+  ogImage?: string;
+  /** Locales this page's long-form CONTENT exists in. Locales outside the list fall back to
+   *  English content behind an explicit banner — honest, never silently half-translated. */
+  translated?: readonly Locale[];
 }
-const { locale, title, lede, description, wide = false, jsonLd } = Astro.props;
+const {
+  locale,
+  title,
+  lede,
+  description,
+  wide = false,
+  jsonLd,
+  ogImage,
+  translated = ['en', 'zh-Hant'],
+} = Astro.props;
+const tr = useT(locale);
+const untranslated = !translated.includes(locale);
 ---
 
-<BaseLayout title={title} description={description ?? lede} locale={locale} jsonLd={jsonLd}>
+<BaseLayout
+  title={title}
+  description={description ?? lede}
+  locale={locale}
+  jsonLd={jsonLd}
+  ogImage={ogImage}
+>
   <article class:list={['doc', { wide }]}>
     <header class="doc-header">
       <h1>{title}</h1>
       {lede && <p class="lede">{lede}</p>}
+      {untranslated && <p class="callout small">{tr('doc.untranslated')}</p>}
       <slot name="header" />
     </header>
     <slot />

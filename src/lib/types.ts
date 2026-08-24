@@ -252,6 +252,12 @@ export interface IduFile {
   source_id: string;
 }
 
+/** flows/{year}.json — bilateral matrix, 2015+: [origin, asylum, refugees, asylum_seekers]. */
+export interface FlowsFile {
+  year: number;
+  rows: [string, string, number | null, number | null][];
+}
+
 /** #14: global totals per year/metric/view — powers "share of world" lines. */
 export interface WorldTotalsFile {
   schema: 1;

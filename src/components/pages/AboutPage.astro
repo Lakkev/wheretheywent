@@ -1,7 +1,7 @@
 ---
 import DocPage from './DocPage.astro';
 import { useT, localizePath, type Locale } from '../../i18n/ui';
-import { CONTACT_EMAIL, REPO_URL } from '../../lib/site';
+import { CONTACT_EMAIL, CONTACT_WECHAT, REPO_URL } from '../../lib/site';
 import { getManifest } from '../../lib/data-server';
 interface Props {
   locale: Locale;
@@ -91,12 +91,17 @@ const ORGS = [
       {
         zh ? (
           <>
-            <strong>本站不收捐款。</strong>沒有任何金錢經過本站（見下）。
+            <strong>本站不為流離失所者募款。</strong>
+            想捐助流離失所者，請直接透過下方列出的組織——本站不經手任何善款、不收取任何推薦費。站方營運的自願贊助另見
+            <a href={localizePath('/support', locale)}>支持本站</a>，兩者嚴格分開。
           </>
         ) : (
           <>
-            <strong>It does not collect donations.</strong> No money passes through this site (see
-            below).
+            <strong>It does not fundraise for displaced people.</strong> To give to displaced
+            people, go directly to the organisations listed below — no charitable money passes
+            through this site, and no referral fees are taken. Voluntary sponsorship of the site's
+            own upkeep is a separate thing entirely: see{' '}
+            <a href={localizePath('/support', locale)}>Support this site</a>.
           </>
         )
       }
@@ -127,7 +132,8 @@ const ORGS = [
           由 <strong>Lakkev</strong>（lakkev.com）獨立維護，無外部經費，營運成本為每月 0
           元（靜態架站 +
           免費層服務）。每一份發布的資料快照都提交至版本庫——即使本站有一天消失，所有數字仍可取回、仍可驗證。聯絡：
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>。
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>（微信：
+          <code>{CONTACT_WECHAT}</code>）。
         </>
       ) : (
         <>
@@ -135,7 +141,8 @@ const ORGS = [
           hosting cost is $0/month (static site + free tiers). Every published data snapshot is
           committed to a version-controlled repository — even if this site ever disappears, every
           number remains retrievable and verifiable. Contact:{' '}
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> (WeChat:{' '}
+          <code>{CONTACT_WECHAT}</code>).
         </>
       )
     }
@@ -207,7 +214,7 @@ const ORGS = [
     {
       zh ? (
         <>
-          本站不收捐款、不經手任何金錢，<strong>也不收取推薦費——並承諾永不收取</strong>
+          本站不為流離失所者募款、不經手任何善款，<strong>也不收取推薦費——並承諾永不收取</strong>
           ；若此政策有任何改變，本頁會在任何連結變動之前先行說明。以下組織直接與流離失所者工作；每個連結都通往
           <em>它們自己的</em>頁面，且各自公布經審計的財務報告。請注意：本站的主要資料來源即為
           UNHCR。獨立評鑑可參考{' '}
@@ -222,7 +229,7 @@ const ORGS = [
         </>
       ) : (
         <>
-          This site does not take donations, does not route money, and{' '}
+          This site does not fundraise for displaced people, routes no charitable money, and{' '}
           <strong>receives no referral fees — and commits to never accepting them</strong>; if that
           ever changes, this page will say so before any link changes. The organisations below work
           directly with displaced people; each link goes to <em>their own</em> page, and each

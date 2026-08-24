@@ -11,6 +11,11 @@ const STATIC = [
   '/about',
   '/about/boundaries',
   '/stories',
+  '/stories/world',
+  '/stories/syria',
+  '/stories/venezuela',
+  '/stories/bangladesh',
+  '/support',
 ];
 
 export const GET: APIRoute = () => {

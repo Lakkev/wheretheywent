@@ -40,12 +40,10 @@
   import Legend from './Legend.svelte';
   import Timeline from './Timeline.svelte';
   import DetailPanel from './DetailPanel.svelte';
-  import DataTable from './DataTable.svelte';
   import MapCanvas from './MapCanvas.svelte';
   import NoWebGLFallback from './NoWebGLFallback.svelte';
   import AttributionBar from './AttributionBar.svelte';
   import NowcastCard from './NowcastCard.svelte';
-  import Dialogs from './Dialogs.svelte';
   import Toasts from '../ui/Toasts.svelte';
 
   let {
@@ -72,6 +70,55 @@
   // colour excludes disasters, so mixing them silently would misrepresent the coloured layer.
   let evConflict = $state(true);
   let evDisaster = $state(false);
+  /** Phase 2: flow arcs for the selected country — fetched per year, top-10 partners. */
+  const FLOWS_FROM = 2015;
+  let flowArcs = $state<
+    { from: [number, number]; to: [number, number]; value: number; width: number }[] | null
+  >(null);
+  $effect(() => {
+    const iso3 = ui.c;
+    const y = ui.y;
+    const v = ui.v;
+    const on = ui.f;
+    const haveCountries = !!data.countriesFile; // rerun once centroids exist
+    if (!on || !iso3 || y < FLOWS_FROM || !haveCountries) {
+      flowArcs = null;
+      return;
+    }
+    let cancelled = false;
+    raw.client
+      .flows(y)
+      .then((ff) => {
+        if (cancelled) return;
+        const top = ff.rows
+          .filter((r) => (v === 'asylum' ? r[1] === iso3 : r[0] === iso3))
+          .map((r) => ({
+            partner: v === 'asylum' ? r[0] : r[1],
+            value: (r[2] ?? 0) + (r[3] ?? 0),
+          }))
+          .filter((x) => x.value > 0)
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 10);
+        const sel = raw.countryIndex.get(iso3)?.centroid;
+        if (!sel) {
+          flowArcs = [];
+          return;
+        }
+        const max = top[0]?.value ?? 1;
+        flowArcs = top.flatMap((x) => {
+          const c = raw.countryIndex.get(x.partner)?.centroid;
+          if (!c) return [];
+          // arcs always run origin → asylum (the direction people moved)
+          const from = v === 'asylum' ? c : sel;
+          const to = v === 'asylum' ? sel : c;
+          return [{ from, to, value: x.value, width: 1.5 + 6.5 * Math.sqrt(x.value / max) }];
+        });
+      })
+      .catch(() => (flowArcs = null));
+    return () => {
+      cancelled = true;
+    };
+  });
 
   const ctx = () => ({
     yearMin: data.yearMin,
@@ -387,9 +434,15 @@
     <Timeline bind:this={timelineRef} {locale} total={view.total} />
   </div>
   {#if ui.t}
-    <DataTable {locale} {view} />
+    {#await import('./DataTable.svelte') then { default: DataTable }}
+      <DataTable {locale} {view} />
+    {/await}
   {/if}
-  <Dialogs {locale} {view} {permalink} />
+  {#if session.dialog}
+    {#await import('./Dialogs.svelte') then { default: Dialogs }}
+      <Dialogs {locale} {view} {permalink} />
+    {/await}
+  {/if}
 {/if}
 
 {#if webgl && data.geoLoaded && raw.geo && data.countriesFile}
@@ -411,6 +464,7 @@
     showIdu={ui.e}
     iduConflict={evConflict}
     iduDisaster={evDisaster}
+    flows={flowArcs}
     highlight={session.hover}
     onselect={(iso3) => selectCountry(iso3)}
     onhover={(iso3) => (session.hover = iso3)}

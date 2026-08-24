@@ -132,6 +132,20 @@
             locale,
           )}
         </p>
+        <label class="small check">
+          <input
+            type="checkbox"
+            checked={ui.f}
+            disabled={ui.y < 2015}
+            onchange={() => (ui.f = !ui.f)}
+          />
+          {tr('flows.toggle')}
+        </label>
+        {#if ui.y < 2015}
+          <p class="muted small">{tr('flows.from2015')}</p>
+        {:else if ui.f}
+          <p class="muted small">{tr('flows.note')}</p>
+        {/if}
         {#if session.detailLoading && !file}<p class="muted">{tr('detail.loading')}</p>{/if}
         {#if metricRows.length}
           <table class="metrics">

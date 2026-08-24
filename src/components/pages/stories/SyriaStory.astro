@@ -1,0 +1,125 @@
+---
+/** Story: Syria — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { useT, localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, peak, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant';
+const syr = getCountry('SYR');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const ref2010 = syr ? metricAt(syr, 'origin', 'refugees', 2010) : null;
+const refPeak = syr ? peak(syr, 'origin', 'refugees') : null;
+const refNow = syr ? latestReported(syr, 'origin', 'refugees') : null;
+const idpPeak = syr ? peak(syr, 'asylum', 'idps') : null;
+const idpNow = syr ? latestReported(syr, 'asylum', 'idps') : null;
+const retNow = syr ? latestReported(syr, 'origin', 'returned_refugees') : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/syria.jpg"
+  title={zh ? '敘利亞：十四年的流離' : 'Syria: fourteen years displaced'}
+  lede={zh
+    ? '2011 年之前，敘利亞是接收難民的國家。此後它成為全球最大的難民來源國——而多數流離失所者，從未離開敘利亞境內。'
+    : 'Before 2011, Syria was a country that hosted refugees. Since then it has become the world’s largest country of origin — and most of the displaced never left Syria at all.'}
+>
+  <h2>{zh ? '數字的轉折' : 'The turn in the numbers'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          2010 年年末，UNHCR 記錄的敘利亞籍難民為 <strong>{n(ref2010)}</strong> 人。到了
+          {refPeak?.year} 年，這個數字達到 <strong>{n(refPeak?.value)}</strong>
+          ——最新資料（{refNow?.year} 年）為 <strong>{n(refNow?.value)}</strong> 人。
+        </>
+      ) : (
+        <>
+          At the end of 2010, UNHCR recorded <strong>{n(ref2010)}</strong> Syrian refugees. By{' '}
+          {refPeak?.year} the figure reached <strong>{n(refPeak?.value)}</strong> — the latest
+          figure ({refNow?.year}) is <strong>{n(refNow?.value)}</strong>.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&v=origin&c=SYR&y=${refNow?.year ?? 2024}`)}
+      >{zh ? '在地圖上檢視 →' : 'See it on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '多數人沒有跨過國界' : 'Most never crossed a border'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          境內流離失所者（IDP）在 {idpPeak?.year} 年達到高峰：<strong>{n(idpPeak?.value)}</strong>
+          人——高於任何單一國家收容的敘利亞難民數。最新資料（{idpNow?.year} 年）為{' '}
+          <strong>{n(idpNow?.value)}</strong>{' '}
+          人。境內流離失所沒有「收容國」：這些人算在敘利亞自己名下，在兩種視角中都一樣。
+        </>
+      ) : (
+        <>
+          Internal displacement peaked in {idpPeak?.year} at <strong>{n(idpPeak?.value)}</strong>{' '}
+          people — more than any single country hosted in Syrian refugees. The latest figure (
+          {idpNow?.year}) is <strong>{n(idpNow?.value)}</strong>. Internal displacement has no "host
+          country": these people are counted under Syria itself, in both views.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=idps&v=origin&c=SYR&y=${idpPeak?.year ?? 2016}`)}
+      >{zh ? `在地圖上檢視 ${idpPeak?.year} 年 →` : `See ${idpPeak?.year} on the map →`}</a
+    >
+  </p>
+
+  <h2>{zh ? '回返，緩慢地' : 'Returns, slowly'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          {retNow?.year} 年，有 <strong>{n(retNow?.value)}</strong>
+          名難民回到敘利亞（年度流量，非存量）。回返是自願、安全與尊嚴的問題——數字只記錄發生了多少，不評斷該不該發生。
+        </>
+      ) : (
+        <>
+          In {retNow?.year}, <strong>{n(retNow?.value)}</strong> refugees returned to Syria (a flow
+          during the year, not a stock). Return is a question of voluntariness, safety and dignity —
+          the number records how many happened, not whether they should have.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}
+          ），不由編輯手寫，會隨每次資料更新自動修正。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/SYR', locale)}>敘利亞國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}) — never
+          hand-written, and corrected automatically with every data update. Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/SYR', locale)}>the Syria country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

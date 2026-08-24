@@ -1,0 +1,121 @@
+---
+/** Story: Venezuela and the OIP category — figures computed from the current snapshot. */
+import DocPage from '../DocPage.astro';
+import { useT, localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, firstReported, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant';
+const ven = getCountry('VEN');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const oipFirst = ven ? firstReported(ven, 'origin', 'oip') : null;
+const oipNow = ven ? latestReported(ven, 'origin', 'oip') : null;
+const refNow = ven ? latestReported(ven, 'origin', 'refugees') : null;
+const asyNow = ven ? latestReported(ven, 'origin', 'asylum_seekers') : null;
+const refBefore = ven ? metricAt(ven, 'origin', 'refugees', 2015) : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/venezuela.jpg"
+  title={zh ? '委內瑞拉：一個新類別的誕生' : 'Venezuela: how a new category was born'}
+  lede={zh
+    ? '數百萬人離開了委內瑞拉，但多數人在法律上既不是難民、也不是庇護申請者。統計必須誠實面對這件事——於是 2018 年出現了一個新類別。'
+    : 'Millions left Venezuela, but most are legally neither refugees nor asylum-seekers. The statistics had to be honest about that — so in 2018 a new category appeared.'}
+>
+  <h2>{zh ? '不合身的類別' : 'Categories that did not fit'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          2015 年，UNHCR 記錄的委內瑞拉籍難民僅 <strong>{n(refBefore)}</strong>
+          人。其後數年，數百萬人越過邊界——多數獲得的是拉美各國的居留許可，而非難民身分。若只看「難民」一欄，這場大規模流離幾乎不存在。
+        </>
+      ) : (
+        <>
+          In 2015, UNHCR recorded just <strong>{n(refBefore)}</strong> Venezuelan refugees. In the
+          years that followed, millions crossed borders — most receiving residence permits across
+          Latin America rather than refugee status. Looking only at the "refugees" column, this mass
+          displacement barely exists.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? 'OIP：把人算進來' : 'OIP: counting people in'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          {oipFirst?.year} 年起，UNHCR 新增「其他需要國際保護者」（OIP）類別，首年即記錄{' '}
+          <strong>{n(oipFirst?.value)}</strong> 人。最新資料（{oipNow?.year} 年）：OIP{' '}
+          <strong>{n(oipNow?.value)}</strong> 人、難民 <strong>{n(refNow?.value)}</strong>
+          人、庇護申請者 <strong>{n(asyNow?.value)}</strong>
+          人。這正是本站在時間軸上標示「{oipFirst?.year ?? 2018}
+          年之前未進行統計」的原因——類別誕生前的空白是結構性的，不是「未報告」。
+        </>
+      ) : (
+        <>
+          From {oipFirst?.year}, UNHCR added "Other people in need of international protection"
+          (OIP), recording <strong>{n(oipFirst?.value)}</strong> people in its first year. The
+          latest figures ({oipNow?.year}): OIP <strong>{n(oipNow?.value)}</strong>, refugees{' '}
+          <strong>{n(refNow?.value)}</strong>, asylum-seekers <strong>{n(asyNow?.value)}</strong>.
+          This is exactly why the timeline on this site marks "not collected before{' '}
+          {oipFirst?.year ?? 2018}" — the blank before a category exists is structural, not
+          "unreported".
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=oip&v=origin&c=VEN&y=${oipNow?.year ?? 2024}`)}
+      >{zh ? '在地圖上檢視 OIP →' : 'See OIP on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '定義決定了誰被看見' : 'Definitions decide who is seen'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          這個故事的教訓超出委內瑞拉：任何流離失所統計都是法律類別的投影。比較年份或國家之前，先確認類別本身沒有變——本站的每個指標都附有定義與注意事項，正是為此。
+        </>
+      ) : (
+        <>
+          The lesson goes beyond Venezuela: every displacement statistic is a projection of legal
+          categories. Before comparing years or countries, check that the categories themselves did
+          not change — that is why every metric on this site carries its definition and caveats.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}）。定義見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/VEN', locale)}>委內瑞拉國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}). Definitions:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/VEN', locale)}>the Venezuela country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

@@ -1,0 +1,111 @@
+---
+/** Story: Bangladesh after August 2017 — figures computed from the current snapshot. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant';
+const bgd = getCountry('BGD');
+const mmr = getCountry('MMR');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const host2016 = bgd ? metricAt(bgd, 'asylum', 'refugees', 2016) : null;
+const host2017 = bgd ? metricAt(bgd, 'asylum', 'refugees', 2017) : null;
+const hostNow = bgd ? latestReported(bgd, 'asylum', 'refugees') : null;
+const mmrOriginNow = mmr ? latestReported(mmr, 'origin', 'refugees') : null;
+const mmrIdpNow = mmr ? latestReported(mmr, 'asylum', 'idps') : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/bangladesh.jpg"
+  title={zh ? '孟加拉：一年之間' : 'Bangladesh: within a single year'}
+  lede={zh
+    ? '2017 年 8 月之後，逃離緬甸的羅興亞人湧入孟加拉東南部。年度統計裡，這場危機呈現為一次罕見的垂直跳升。'
+    : 'After August 2017, Rohingya fleeing Myanmar crossed into south-eastern Bangladesh. In the annual statistics, the crisis appears as a rare vertical jump.'}
+>
+  <h2>{zh ? '一格之差' : 'One row apart'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          2016 年年末，孟加拉收容的難民為 <strong>{n(host2016)}</strong> 人；2017 年年末，
+          <strong>{n(host2017)}</strong>
+          人。年度存量統計通常變化平緩——像這樣一年之內的跳升，在整份資料集中屈指可數。最新資料（
+          {hostNow?.year} 年）為 <strong>{n(hostNow?.value)}</strong> 人。
+        </>
+      ) : (
+        <>
+          At the end of 2016, Bangladesh hosted <strong>{n(host2016)}</strong> refugees; at the end
+          of 2017, <strong>{n(host2017)}</strong>. Annual stocks usually move slowly — a jump like
+          this within one year is one of a handful in the whole dataset. The latest figure (
+          {hostNow?.year}) is <strong>{n(hostNow?.value)}</strong>.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&v=asylum&c=BGD&y=2017`)}
+      >{zh ? '在地圖上檢視 2017 年 →' : 'See 2017 on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '來源端的數字' : 'The origin side'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          同一群人，換一種視角：{mmrOriginNow?.year} 年，緬甸籍難民共{' '}
+          <strong>{n(mmrOriginNow?.value)}</strong> 人；緬甸境內另有{' '}
+          <strong>{n(mmrIdpNow?.value)}</strong>
+          名境內流離失所者（{mmrIdpNow?.year}{' '}
+          年）。切換「現居地／來源地」兩種視角，看到的是同一場流離的兩面。
+        </>
+      ) : (
+        <>
+          The same people, in the other view: in {mmrOriginNow?.year} there were{' '}
+          <strong>{n(mmrOriginNow?.value)}</strong> refugees from Myanmar, and{' '}
+          <strong>{n(mmrIdpNow?.value)}</strong> internally displaced people inside Myanmar (
+          {mmrIdpNow?.year}). Switching between the "where they are" and "where they fled from"
+          views shows the two faces of one displacement.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a
+      href={localizePath('/compare', locale) + `?cmp=BGD,MMR&m=refugees&y=${hostNow?.year ?? 2024}`}
+      >{zh ? '並列比較孟加拉與緬甸 →' : 'Compare Bangladesh and Myanmar →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}）。定義見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/BGD', locale)}>孟加拉</a>與
+          <a href={localizePath('/country/MMR', locale)}>緬甸</a>國家頁。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}). Definitions:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; full series: the{' '}
+          <a href={localizePath('/country/BGD', locale)}>Bangladesh</a> and{' '}
+          <a href={localizePath('/country/MMR', locale)}>Myanmar</a> country pages.
+        </>
+      )
+    }
+  </p>
+</DocPage>
