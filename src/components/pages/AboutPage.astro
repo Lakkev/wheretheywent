@@ -8,7 +8,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
-const zh = locale === 'zh-Hant';
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
 const manifest = getManifest();
 const report = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(tr('report.subject'))}&body=${encodeURIComponent(tr('report.body', { url: Astro.url.href }))}`;
 const ORGS = [

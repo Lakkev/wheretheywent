@@ -1,5 +1,6 @@
 /** metrics.json — definitions, units, caveats, source ids (§6, §13.2 #15). zh-Hant via definition_zh/caveats_zh. */
 import type { MetricsFile, MetricDef, AnyMetricId } from '../../../src/lib/types.ts';
+import { METRIC_I18N } from './metrics-i18n.ts';
 
 const U = 'unhcr_population';
 
@@ -136,7 +137,15 @@ const DEFS: Record<AnyMetricId, Omit<MetricDef, 'id'>> = {
 
 export function buildMetrics(): MetricsFile {
   const metrics = {} as Record<AnyMetricId, MetricDef>;
-  for (const [id, d] of Object.entries(DEFS) as [AnyMetricId, Omit<MetricDef, 'id'>][])
-    metrics[id] = { id, ...d };
+  for (const [id, d] of Object.entries(DEFS) as [AnyMetricId, Omit<MetricDef, 'id'>][]) {
+    const x = METRIC_I18N[id];
+    metrics[id] = {
+      id,
+      ...d,
+      // full per-locale maps — zh-Hant text lives in DEFS, the other five in metrics-i18n.ts
+      definition_i18n: { 'zh-Hant': d.definition_zh ?? d.definition, ...x.definition },
+      caveats_i18n: { 'zh-Hant': d.caveats_zh ?? d.caveats, ...x.caveats },
+    };
+  }
   return { schema: 1, metrics };
 }

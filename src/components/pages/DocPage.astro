@@ -26,6 +26,11 @@ const {
 } = Astro.props;
 const tr = useT(locale);
 const untranslated = !translated.includes(locale);
+// zh-Hans readers fall back to zh-Hant content (readable), never to English — say so honestly.
+const bannerKey =
+  locale === 'zh-Hans' && translated.includes('zh-Hant')
+    ? ('doc.untranslatedHant' as const)
+    : ('doc.untranslated' as const);
 ---
 
 <BaseLayout
@@ -39,7 +44,7 @@ const untranslated = !translated.includes(locale);
     <header class="doc-header">
       <h1>{title}</h1>
       {lede && <p class="lede">{lede}</p>}
-      {untranslated && <p class="callout small">{tr('doc.untranslated')}</p>}
+      {untranslated && <p class="callout small">{tr(bannerKey)}</p>}
       <slot name="header" />
     </header>
     <slot />

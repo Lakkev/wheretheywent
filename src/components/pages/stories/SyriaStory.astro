@@ -10,7 +10,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
-const zh = locale === 'zh-Hant';
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
 const syr = getCountry('SYR');
 const src = getSources()?.['unhcr_population'];
 const n = (v: number | null | undefined) =>

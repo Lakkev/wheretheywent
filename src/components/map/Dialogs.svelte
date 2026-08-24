@@ -13,7 +13,12 @@
     safeFilename,
     type ViewExportRow,
   } from '../../lib/csv-client';
-  import { displayName } from '../../lib/data';
+  import {
+    displayName,
+    metricCaveats as metricCaveatsFor,
+    sourceCaveats,
+    zhData,
+  } from '../../lib/data';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
   import { localizePath } from '../../i18n/ui';
@@ -56,8 +61,7 @@
   /** metric-level caveats travel with every export (#audit-2) */
   const metricCaveats = $derived.by(() => {
     const def = data.metrics?.metrics?.[ui.m];
-    if (!def) return [];
-    return locale === 'zh-Hant' && def.caveats_zh?.length ? def.caveats_zh : def.caveats;
+    return def ? metricCaveatsFor(def, locale) : [];
   });
   const citations = $derived(
     buildCitations({ locale, title, url: permalink, sources, version: snapshotId }),
@@ -129,12 +133,7 @@
           sources.map((s, i) => [i === 0 ? sourceId : 'wpp_population', s]),
         ),
         citations,
-        notes: [
-          ...metricCaveats,
-          ...sources.flatMap((s) =>
-            locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats,
-          ),
-        ],
+        notes: [...metricCaveats, ...sources.flatMap((s) => sourceCaveats(s, locale))],
         data: exportRows(),
       });
       saveFile(`wtw-${safeFilename(title)}.json`, JSON.stringify(j, null, 2), 'application/json');
@@ -206,7 +205,7 @@
   <Modal title={tr('page.boundaries.title')} onclose={close} closeLabel={tr('common.close')} wide>
     {#if disputed}
       <blockquote class="callout small">
-        {locale === 'zh-Hant' ? disputed.disclaimer_zh : disputed.disclaimer_en}
+        {zhData(locale) ? disputed.disclaimer_zh : disputed.disclaimer_en}
       </blockquote>
       <p class="small muted">
         {tr('map.attribution.boundaries')} · {tr('detail.nameNote', { source: 'UNHCR' })}
@@ -215,12 +214,12 @@
         {#each disputed.notes as n (n.id)}
           <details class="small">
             <summary
-              ><strong>{locale === 'zh-Hant' ? n.name_zh : n.name}</strong>{#if n.iso3}&nbsp;<code
+              ><strong>{zhData(locale) ? n.name_zh : n.name}</strong>{#if n.iso3}&nbsp;<code
                   class="muted">{n.iso3}</code
                 >{/if}</summary
             >
-            <p>{locale === 'zh-Hant' ? n.how_shown_zh : n.how_shown}</p>
-            <p class="muted">{locale === 'zh-Hant' ? n.source_naming_zh : n.source_naming}</p>
+            <p>{zhData(locale) ? n.how_shown_zh : n.how_shown}</p>
+            <p class="muted">{zhData(locale) ? n.source_naming_zh : n.source_naming}</p>
           </details>
         {/each}
       </div>

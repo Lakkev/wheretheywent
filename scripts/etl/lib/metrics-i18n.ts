@@ -1,0 +1,206 @@
+/**
+ * Data-level translations for metric definitions and caveats — zh-Hans / fr / es / ja / ko.
+ * (zh-Hant lives in metrics.ts as definition_zh/caveats_zh and is merged into the same
+ * *_i18n maps at build time.) PRINCIPLE: the academic core is never tiered to English —
+ * every UI language gets a real translation of every definition and caveat.
+ */
+import type { AnyMetricId } from '../../../src/lib/types.ts';
+
+type Lang = 'zh-Hans' | 'fr' | 'es' | 'ja' | 'ko';
+export interface MetricI18n {
+  definition: Record<Lang, string>;
+  caveats: Record<Lang, string[]>;
+}
+
+export const METRIC_I18N: Record<AnyMetricId, MetricI18n> = {
+  refugees: {
+    definition: {
+      'zh-Hans':
+        '依 1951 年《难民地位公约》/1967 年议定书、1969 年《非洲统一组织公约》或 UNHCR 章程被认定为难民者，以及获得补充性/辅助性保护或临时保护者；含「类难民处境」人口。不含 UNRWA 职权下的巴勒斯坦难民。',
+      fr: "Personnes reconnues comme réfugiées au titre de la Convention de 1951/du Protocole de 1967, de la Convention de l'OUA de 1969 ou du Statut du HCR, ainsi que les bénéficiaires de protections complémentaires/subsidiaires ou temporaires ; inclut les personnes en situation apparentée à celle des réfugiés. Exclut les réfugiés de Palestine relevant du mandat de l'UNRWA.",
+      es: 'Personas reconocidas como refugiadas en virtud de la Convención de 1951/el Protocolo de 1967, la Convención de la OUA de 1969 o el Estatuto de ACNUR, así como quienes reciben protección complementaria/subsidiaria o temporal; incluye a personas en situación similar a la de los refugiados. Excluye a los refugiados de Palestina bajo el mandato del OOPS (UNRWA).',
+      ja: '1951年条約／1967年議定書、1969年OAU条約、またはUNHCR規程に基づき難民と認定された人々、および補完的・補助的保護や一時的保護を受ける人々。難民に類似した状況にある人々を含む。UNRWAの任務下にあるパレスチナ難民は含まない。',
+      ko: '1951년 협약/1967년 의정서, 1969년 OAU 협약 또는 UNHCR 규정에 따라 난민으로 인정된 사람과 보충적·보조적 보호 또는 임시 보호를 받는 사람. 난민 유사 상황에 있는 인구를 포함. UNRWA 관할의 팔레스타인 난민은 제외.',
+    },
+    caveats: {
+      'zh-Hans': ['年末存量（12 月 31 日）。', '不含约 600 万 UNRWA 登记的巴勒斯坦难民。'],
+      fr: [
+        "Stock de fin d'année (31 décembre).",
+        "Exclut environ 6 millions de réfugiés de Palestine enregistrés auprès de l'UNRWA.",
+      ],
+      es: [
+        'Stock a fin de año (31 de diciembre).',
+        'Excluye a unos 6 millones de refugiados de Palestina registrados en el OOPS (UNRWA).',
+      ],
+      ja: [
+        '年末（12月31日）時点のストック。',
+        'UNRWA登録のパレスチナ難民（約600万人）は含まない。',
+      ],
+      ko: ['연말(12월 31일) 기준 스톡.', 'UNRWA에 등록된 팔레스타인 난민 약 600만 명은 제외.'],
+    },
+  },
+  asylum_seekers: {
+    definition: {
+      'zh-Hans': '已提出国际保护申请、但难民身份尚待决定者（待审个案）。',
+      fr: "Personnes ayant demandé une protection internationale et dont la demande de statut de réfugié n'a pas encore été tranchée (dossiers en instance).",
+      es: 'Personas que han solicitado protección internacional y cuya solicitud de estatuto de refugiado aún no se ha resuelto (casos pendientes).',
+      ja: '国際保護を申請し、難民認定の判断がまだ出ていない人々（係属中の案件）。',
+      ko: '국제적 보호를 신청했으나 난민 지위가 아직 결정되지 않은 사람(계류 중인 사건).',
+    },
+    caveats: {
+      'zh-Hans': ['年末待审个案，以人数计。'],
+      fr: ["Dossiers en instance en fin d'année, comptés en personnes."],
+      es: ['Casos pendientes a fin de año, contados en personas.'],
+      ja: ['年末時点の係属案件。人数ベース。'],
+      ko: ['연말 기준 계류 사건, 인원수 기준.'],
+    },
+  },
+  idps: {
+    definition: {
+      'zh-Hans':
+        '因冲突或暴力而在本国境内流离失所者（由 IDMC 汇总、UNHCR 转载）。计入其本国（来源国＝庇护国）。',
+      fr: "Personnes déplacées à l'intérieur de leur propre pays par un conflit ou des violences (données compilées par l'IDMC, publiées via le HCR). Comptées dans leur propre pays (origine = asile).",
+      es: 'Personas desplazadas dentro de su propio país por conflicto o violencia (recopiladas por el IDMC y publicadas vía ACNUR). Se cuentan en su propio país (origen = asilo).',
+      ja: '紛争や暴力によって自国内で避難を強いられた人々（IDMCが集計し、UNHCR経由で公表）。自国の下に計上（出身国＝庇護国）。',
+      ko: '분쟁이나 폭력으로 자국 내에서 실향한 사람들(IDMC 집계, UNHCR 경유 공표). 자국 아래 집계(출신국=비호국).',
+    },
+    caveats: {
+      'zh-Hans': [
+        '来源：IDMC（经 UNHCR）。不含灾害所致的流离失所。',
+        '两种视角下数字相同（境内流离失所没有庇护国）。',
+      ],
+      fr: [
+        'Source : IDMC via le HCR. Les déplacements liés aux catastrophes ne sont pas inclus.',
+        "Identique dans les deux vues (le déplacement interne n'a pas de pays d'accueil).",
+      ],
+      es: [
+        'Fuente: IDMC vía ACNUR. No incluye el desplazamiento por desastres.',
+        'Idéntico en ambas vistas (el desplazamiento interno no tiene país de acogida).',
+      ],
+      ja: [
+        '出典：IDMC（UNHCR経由）。災害による避難は含まない。',
+        '両ビューで同一（国内避難に受入国はない）。',
+      ],
+      ko: [
+        '출처: IDMC(UNHCR 경유). 재해로 인한 실향은 포함하지 않음.',
+        '두 보기에서 동일(국내 실향에는 수용국이 없음).',
+      ],
+    },
+  },
+  stateless: {
+    definition: {
+      'zh-Hans': '依任何国家法律皆不被视为其国民者，含国籍未定者。',
+      fr: "Personnes qu'aucun État ne considère comme ses ressortissants par application de sa législation, y compris les personnes de nationalité indéterminée.",
+      es: 'Personas que ningún Estado considera nacionales suyos conforme a su legislación, incluidas las personas de nacionalidad indeterminada.',
+      ja: 'いずれの国の法律によっても国民と認められない人々。国籍未確定の人々を含む。',
+      ko: '어느 국가의 법으로도 국민으로 인정되지 않는 사람. 국적 미확정자를 포함.',
+    },
+    caveats: {
+      'zh-Hans': ['仅按居住国报告；许多国家未报告。'],
+      fr: ['Déclaré uniquement par pays de résidence ; de nombreux pays ne déclarent pas.'],
+      es: ['Se informa solo por país de residencia; muchos países no informan.'],
+      ja: ['居住国別のみ報告。多くの国は未報告。'],
+      ko: ['거주국 기준으로만 보고되며, 많은 국가가 보고하지 않음.'],
+    },
+  },
+  ooc: {
+    definition: {
+      'zh-Hans': '不直接属于其他类别、但获 UNHCR 延伸保护或协助者。',
+      fr: "Personnes n'entrant pas directement dans les autres catégories mais auxquelles le HCR étend sa protection et/ou son assistance.",
+      es: 'Personas que no encajan directamente en las demás categorías pero a quienes ACNUR extiende su protección y/o asistencia.',
+      ja: '他のいずれの区分にも直接は該当しないが、UNHCRが保護・支援を提供している人々。',
+      ko: '다른 범주에 직접 해당하지 않으나 UNHCR가 보호·지원을 제공하는 사람들.',
+    },
+    caveats: { 'zh-Hans': [], fr: [], es: [], ja: [], ko: [] },
+  },
+  returned_refugees: {
+    definition: {
+      'zh-Hans': '于该年度内自行或经安排返回来源国的前难民。',
+      fr: "Anciens réfugiés retournés dans leur pays d'origine au cours de l'année civile, spontanément ou de façon organisée.",
+      es: 'Antiguos refugiados que regresaron a su país de origen durante el año civil, de forma espontánea u organizada.',
+      ja: 'その暦年中に自発的または組織的に出身国へ帰還した元難民。',
+      ko: '해당 역년 중 자발적 또는 조직적으로 출신국에 귀환한 전 난민.',
+    },
+    caveats: {
+      'zh-Hans': ['年度流量，非存量。'],
+      fr: ["Flux au cours de l'année, pas un stock."],
+      es: ['Flujo durante el año, no un stock.'],
+      ja: ['年中のフロー。ストックではない。'],
+      ko: ['연중 흐름(플로우)이며 스톡이 아님.'],
+    },
+  },
+  returned_idps: {
+    definition: {
+      'zh-Hans': '于该年度内返回原居地的前境内流离失所者。',
+      fr: "Anciens déplacés internes retournés dans leur zone d'origine au cours de l'année civile.",
+      es: 'Antiguos desplazados internos que regresaron a su zona de origen durante el año civil.',
+      ja: 'その暦年中に元の居住地域へ帰還した元国内避難民。',
+      ko: '해당 역년 중 원거주지로 귀환한 전 국내실향민.',
+    },
+    caveats: {
+      'zh-Hans': ['年度流量，非存量。'],
+      fr: ["Flux au cours de l'année, pas un stock."],
+      es: ['Flujo durante el año, no un stock.'],
+      ja: ['年中のフロー。ストックではない。'],
+      ko: ['연중 흐름(플로우)이며 스톡이 아님.'],
+    },
+  },
+  oip: {
+    definition: {
+      'zh-Hans':
+        '身在来源国境外、很可能需要国际保护、但身份尚未确定者（2018 年起使用，主要为境外委内瑞拉人）。',
+      fr: "Personnes hors de leur pays d'origine qui ont vraisemblablement besoin d'une protection internationale mais dont le statut n'a pas été déterminé (catégorie utilisée depuis 2018, notamment pour les Vénézuéliens à l'étranger).",
+      es: 'Personas fuera de su país de origen que probablemente necesitan protección internacional pero cuyo estatuto no se ha determinado (categoría usada desde 2018, principalmente para venezolanos en el extranjero).',
+      ja: '出身国の外にいて国際保護を必要とする可能性が高いが、地位が未確定の人々（2018年から使用。主に国外のベネズエラ人）。',
+      ko: '출신국 밖에 있으며 국제적 보호가 필요할 가능성이 높으나 지위가 미확정인 사람들(2018년부터 사용, 주로 국외 베네수엘라인).',
+    },
+    caveats: {
+      'zh-Hans': ['自 2018 年起报告；多为流落境外的委内瑞拉人。'],
+      fr: ["Déclaré depuis 2018 ; principalement des Vénézuéliens déplacés à l'étranger."],
+      es: ['Se informa desde 2018; en su mayoría venezolanos desplazados en el extranjero.'],
+      ja: ['2018年から報告。大半は国外に逃れたベネズエラ人。'],
+      ko: ['2018년부터 보고. 대부분 국외로 떠난 베네수엘라인.'],
+    },
+  },
+  hst: {
+    definition: {
+      'zh-Hans': '受惠于 UNHCR 方案的接待社区成员（仅少数行动报告）。',
+      fr: "Membres des communautés d'accueil bénéficiant de programmes du HCR (déclaré pour un petit nombre d'opérations).",
+      es: 'Miembros de comunidades de acogida que se benefician de programas de ACNUR (informado solo para un pequeño número de operaciones).',
+      ja: 'UNHCRの事業の恩恵を受ける受入コミュニティの構成員（報告は一部の事業のみ）。',
+      ko: 'UNHCR 사업의 혜택을 받는 수용 공동체 구성원(일부 사업만 보고).',
+    },
+    caveats: {
+      'zh-Hans': ['非流离失所人口；不计入总数。'],
+      fr: ['Population non déplacée ; exclue des totaux.'],
+      es: ['No es población desplazada; se excluye de los totales.'],
+      ja: ['避難民ではないため合計から除外。'],
+      ko: ['실향 인구가 아니므로 총계에서 제외.'],
+    },
+  },
+  total_poc: {
+    definition: {
+      'zh-Hans':
+        '难民、庇护申请者、境内流离失所者、无国籍者、其他受关注者与其他需要国际保护者之总和（不含接待社区与回返者）。',
+      fr: "Somme des réfugiés, demandeurs d'asile, déplacés internes, apatrides, autres personnes concernées et autres personnes ayant besoin d'une protection internationale (hors communautés d'accueil et personnes de retour).",
+      es: 'Suma de refugiados, solicitantes de asilo, desplazados internos, apátridas, otras personas de interés y otras personas necesitadas de protección internacional (excluye comunidades de acogida y retornados).',
+      ja: '難民、庇護希望者、国内避難民、無国籍者、その他の支援対象者、国際保護を必要とするその他の人々の合計（受入コミュニティと帰還者は含まない）。',
+      ko: '난민, 비호신청자, 국내실향민, 무국적자, 기타 보호대상자, 국제적 보호가 필요한 기타 인구의 합(수용 공동체와 귀환자는 제외).',
+    },
+    caveats: {
+      'zh-Hans': ['由前端自各组成指标加总；仅当至少一个组成有报告时，null 组成才视为 0。'],
+      fr: [
+        "Calculé côté client à partir des indicateurs composants ; un composant null n'est traité comme 0 que si au moins un composant est déclaré.",
+      ],
+      es: [
+        'Se calcula en el cliente a partir de los indicadores componentes; un componente null solo se trata como 0 si al menos un componente está informado.',
+      ],
+      ja: [
+        'クライアント側で構成指標から合算。null の構成要素は、少なくとも1つの構成要素が報告されている場合にのみ 0 として扱う。',
+      ],
+      ko: [
+        '클라이언트에서 구성 지표를 합산. null 구성요소는 최소 하나의 구성요소가 보고된 경우에만 0으로 처리.',
+      ],
+    },
+  },
+};

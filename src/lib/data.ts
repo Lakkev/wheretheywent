@@ -20,6 +20,8 @@ import {
   type ViewId,
   type DisputedNotes,
   type FlowsFile,
+  type MetricDef,
+  type SourceEntry,
   type NowcastFile,
   type IduFile,
 } from './types';
@@ -270,6 +272,50 @@ function sumComponents(s: Series, yi: number): number | null {
 
 export function indexCountries(file: CountriesFile): Map<string, CountryMeta> {
   return new Map(file.countries.map((c) => [c.iso3, c]));
+}
+
+/** True for both written-Chinese locales — long-form zh-Hant content is readable for zh-Hans
+ *  readers, so they fall back to it (never to English) wherever no Hans text exists yet. */
+export const zhData = (locale: Locale): boolean => locale === 'zh-Hant' || locale === 'zh-Hans';
+
+/**
+ * Data-level i18n resolution (metric definitions, source caveats). Chain:
+ * exact locale → zh-Hans falls back to zh-Hant → legacy _zh field for zh locales → English.
+ * All six non-en locales are fully translated at ETL time; the chain is a safety net.
+ */
+function pickI18n(
+  i18n: Record<string, string> | undefined,
+  legacyZh: string | undefined,
+  base: string,
+  locale: Locale,
+): string {
+  if (locale === 'en') return base;
+  const hit = i18n?.[locale] ?? (locale === 'zh-Hans' ? i18n?.['zh-Hant'] : undefined);
+  if (hit !== undefined) return hit;
+  if (zhData(locale) && legacyZh) return legacyZh;
+  return base;
+}
+function pickI18nList(
+  i18n: Record<string, string[]> | undefined,
+  legacyZh: string[] | undefined,
+  base: string[],
+  locale: Locale,
+): string[] {
+  if (locale === 'en') return base;
+  const hit = i18n?.[locale] ?? (locale === 'zh-Hans' ? i18n?.['zh-Hant'] : undefined);
+  if (hit !== undefined) return hit;
+  if (zhData(locale) && legacyZh) return legacyZh;
+  return base;
+}
+
+export function metricDefinition(def: MetricDef, locale: Locale): string {
+  return pickI18n(def.definition_i18n, def.definition_zh, def.definition, locale);
+}
+export function metricCaveats(def: MetricDef, locale: Locale): string[] {
+  return pickI18nList(def.caveats_i18n, def.caveats_zh, def.caveats, locale);
+}
+export function sourceCaveats(s: SourceEntry, locale: Locale): string[] {
+  return pickI18nList(s.caveats_i18n, s.caveats_zh, s.caveats, locale);
 }
 
 /** Lazily constructed Intl region-name providers per locale tag (browser and Node ≥ 14). */

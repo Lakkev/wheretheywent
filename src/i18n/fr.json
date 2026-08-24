@@ -265,5 +265,6 @@
   "legend.per1kNote": "pour 1 000 = stock au 31 déc. ÷ population WPP de mi-année",
   "legend.breaksNote": "Les classes couvrent toutes les années, pour les pays affichés",
   "source.aged": "Données actualisées le {date} — les mises à jour automatiques sont peut-être interrompues",
-  "doc.untranslated": "Cette page n'est pas encore disponible en français — la version anglaise est affichée ci-dessous."
+  "doc.untranslated": "Cette page n'est pas encore disponible en français — la version anglaise est affichée ci-dessous.",
+  "doc.untranslatedHant": "Cette page n'est pas encore disponible en chinois simplifié — la version en chinois traditionnel est affichée ci-dessous."
 }

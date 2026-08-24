@@ -34,7 +34,7 @@
   } from '../../lib/url';
   import { computeView, type ViewResult } from '../../lib/view';
   import { hasWebGL2 } from '../../lib/webgl';
-  import { onIdle, footnoteMatchesMetric } from '../../lib/data';
+  import { onIdle, footnoteMatchesMetric, metricCaveats as metricCaveatsFor } from '../../lib/data';
   import TopBar from './TopBar.svelte';
   import FilterRail from './FilterRail.svelte';
   import Legend from './Legend.svelte';
@@ -349,8 +349,7 @@
   /** metric-level caveats (metrics.json), locale-resolved (#audit-2). */
   const metricCaveats = $derived.by(() => {
     const def = data.metrics?.metrics?.[ui.m];
-    if (!def) return [];
-    return locale === 'zh-Hant' && def.caveats_zh?.length ? def.caveats_zh : def.caveats;
+    return def ? metricCaveatsFor(def, locale) : [];
   });
   const detailOpen = $derived(!!ui.c);
 </script>

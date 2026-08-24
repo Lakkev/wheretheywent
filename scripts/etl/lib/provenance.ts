@@ -6,6 +6,7 @@
  */
 import type { SourceEntry, SourceStatus } from '../../../src/lib/types.ts';
 import type { SourceId } from '../config.ts';
+import { CAVEATS_I18N } from './caveats-i18n.ts';
 
 export interface SourceStatic {
   publisher: string;
@@ -231,6 +232,7 @@ export function buildSourceEntry(a: BuildSourceArgs): SourceEntry {
     status: a.status ?? 'ok',
     caveats: s.caveats,
     caveats_zh: s.caveats_zh,
+    caveats_i18n: { 'zh-Hant': s.caveats_zh, ...CAVEATS_I18N[a.id] },
     endpoints: a.endpoints,
   };
 }

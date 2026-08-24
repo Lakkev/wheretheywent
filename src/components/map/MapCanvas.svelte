@@ -28,7 +28,7 @@
   import type { MapPos } from '../../lib/url';
   import type { CountryMeta, IduFile } from '../../lib/types';
   import { fmtValue } from '../../lib/format';
-  import { displayName } from '../../lib/data';
+  import { displayName, zhData } from '../../lib/data';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
   import { prefersReducedMotion } from '../../lib/webgl';
 
@@ -614,7 +614,7 @@
           ※ {tipFootnotes} · {tr('country.footnotes')}
         </div>{/if}
       {#if tipMeta?.note}<div class="muted note">
-          {locale === 'zh-Hant' && tipMeta.note_zh ? tipMeta.note_zh : tipMeta.note}
+          {zhData(locale) && tipMeta.note_zh ? tipMeta.note_zh : tipMeta.note}
         </div>{/if}
     {/if}
   </div>

@@ -3,6 +3,7 @@
   import type { SourceEntry } from '../../lib/types';
   import { fmtDateLong } from '../../lib/format';
   import { useT, type Locale } from '../../i18n/ui';
+  import { sourceCaveats } from '../../lib/data';
   let {
     locale,
     source,
@@ -17,10 +18,7 @@
     extraCaveats?: string[];
   } = $props();
   const tr = $derived(useT(locale));
-  const caveats = $derived([
-    ...(locale === 'zh-Hant' && source.caveats_zh ? source.caveats_zh : source.caveats),
-    ...extraCaveats,
-  ]);
+  const caveats = $derived([...sourceCaveats(source, locale), ...extraCaveats]);
   let open = $state(false);
 </script>
 

@@ -63,7 +63,9 @@ export function buildCitations(inp: CitationInput): Citations {
   const site =
     inp.locale === 'zh-Hant'
       ? (inp.siteNameZh ?? '他們去了哪裡 (Where They Went)')
-      : (inp.siteName ?? 'Where They Went');
+      : inp.locale === 'zh-Hans'
+        ? (inp.siteNameZh ?? '他们去了哪里 (Where They Went)')
+        : (inp.siteName ?? 'Where They Went');
   const primary = inp.sources[0];
   const dataAsOf = primary ? fmtDateLong(primary.data_as_of, inp.locale) : '';
   const retrieved = primary ? fmtDateLong(primary.retrieved_at, inp.locale) : '';
@@ -73,10 +75,32 @@ export function buildCitations(inp: CitationInput): Citations {
   const y = primary?.data_as_of ? year(primary.data_as_of) : year(accessed);
   const ver = inp.version ? ` (Version ${inp.version})` : '';
 
-  if (inp.locale === 'zh-Hant') {
-    const page = `${site}。「${inp.title}」。資料：${srcList}（資料截至 ${dataAsOf}；擷取於 ${retrieved}）。${inp.url} [存取日期 ${accessedLong}]。${inp.version ? `快照 ${inp.version}。` : ''}`;
-    const apa = `${site}. (${y}). ${inp.title}${ver} [資料集]. 資料：${srcList}（資料截至 ${dataAsOf}）. 讀取日期 ${accessedLong}，取自 ${inp.url}`;
-    const chicago = `${site}. ${y}. 「${inp.title}」. 資料：${srcList}（資料截至 ${dataAsOf}）. 存取於 ${accessedLong}. ${inp.url}.`;
+  if (inp.locale === 'zh-Hant' || inp.locale === 'zh-Hans') {
+    const L =
+      inp.locale === 'zh-Hans'
+        ? {
+            data: '数据：',
+            asOf: '数据截至 ',
+            retr: '获取于 ',
+            acc: '访问日期 ',
+            accAt: '访问于 ',
+            read: '读取日期 ',
+            ds: '数据集',
+            snap: '快照 ',
+          }
+        : {
+            data: '資料：',
+            asOf: '資料截至 ',
+            retr: '擷取於 ',
+            acc: '存取日期 ',
+            accAt: '存取於 ',
+            read: '讀取日期 ',
+            ds: '資料集',
+            snap: '快照 ',
+          };
+    const page = `${site}。「${inp.title}」。${L.data}${srcList}（${L.asOf}${dataAsOf}；${L.retr}${retrieved}）。${inp.url} [${L.acc}${accessedLong}]。${inp.version ? `${L.snap}${inp.version}。` : ''}`;
+    const apa = `${site}. (${y}). ${inp.title}${ver} [${L.ds}]. ${L.data}${srcList}（${L.asOf}${dataAsOf}）. ${L.read}${accessedLong}，取自 ${inp.url}`;
+    const chicago = `${site}. ${y}. 「${inp.title}」. ${L.data}${srcList}（${L.asOf}${dataAsOf}）. ${L.accAt}${accessedLong}. ${inp.url}.`;
     const bibtex = bib(inp, site, accessed, srcList, dataAsOf, String(y));
     return { apa, chicago, bibtex, page };
   }

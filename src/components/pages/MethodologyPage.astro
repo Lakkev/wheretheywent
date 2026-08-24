@@ -2,13 +2,14 @@
 import DocPage from './DocPage.astro';
 import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
 import { getSources, getManifest, getMetrics } from '../../lib/data-server';
+import { metricDefinition, metricCaveats } from '../../lib/data';
 import { fmtDateIso } from '../../lib/format';
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
-const zh = locale === 'zh-Hant';
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
 const sources = getSources() ?? {};
 const manifest = getManifest();
 const metrics = getMetrics();
@@ -16,8 +17,8 @@ const pop = sources['unhcr_population'];
 const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
   ...m,
   label_i18n: tr(`metric.${m.id}` as MessageKey),
-  def: zh && m.definition_zh ? m.definition_zh : m.definition,
-  cavs: zh && m.caveats_zh?.length ? m.caveats_zh : m.caveats,
+  def: metricDefinition(m, locale),
+  cavs: metricCaveats(m, locale),
 }));
 ---
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ui, data, session, raw, toggleCompare, selectCountry } from '../../lib/state.svelte';
   import type { ViewResult } from '../../lib/view';
-  import { displayName, footnoteMatchesMetric } from '../../lib/data';
+  import { displayName, footnoteMatchesMetric, sourceCaveats, zhData } from '../../lib/data';
   import { fmtInt, fmtRate, fmtCompact } from '../../lib/format';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { TABS, type Tab } from '../../lib/url';
@@ -35,7 +35,7 @@
   const src = $derived(data.sources?.[ui.m === 'idps' ? 'unhcr_idmc' : 'unhcr_population']);
   const tabs: Tab[] = [...TABS];
   const note = $derived(
-    meta ? (locale === 'zh-Hant' && meta.note_zh ? meta.note_zh : meta.note) : undefined,
+    meta ? (zhData(locale) && meta.note_zh ? meta.note_zh : meta.note) : undefined,
   );
 
   const kpi = $derived.by(() => {
@@ -203,10 +203,9 @@
                   {s.retrieved_at.slice(0, 10)} · {s.license.id}</span
                 >
                 {#if s.status !== 'ok'}<span class="chip stale">{statusLabel(s.status)}</span>{/if}
-                {#if (locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats).length}
+                {#if sourceCaveats(s, locale).length}
                   <ul class="muted">
-                    {#each locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats as c, i (i)}<li
-                      >
+                    {#each sourceCaveats(s, locale) as c, i (i)}<li>
                         {c}
                       </li>{/each}
                   </ul>

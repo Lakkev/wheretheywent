@@ -18,7 +18,7 @@ import {
   listDownloads,
   hasOgCard,
 } from '../../lib/data-server';
-import { displayName } from '../../lib/data';
+import { displayName, metricDefinition, zhData } from '../../lib/data';
 import { SITE_URL, SITE_NAME } from '../../lib/site';
 import { fmtInt, fmtDateLong } from '../../lib/format';
 import CountryApp from '../country/CountryApp.svelte';
@@ -46,12 +46,14 @@ const latest = METRIC_IDS.map((m, mi) => ({
   o: unpack(data.origin.v[mi]!)[yi] ?? null,
 })).filter((r) => r.a !== null || r.o !== null);
 const src = sources['unhcr_population'];
-const note = locale === 'zh-Hant' && data.meta.note_zh ? data.meta.note_zh : data.meta.note;
+const note = zhData(locale) && data.meta.note_zh ? data.meta.note_zh : data.meta.note;
 const pageUrl = `${SITE_URL}${localizePath(`/country/${iso3}`, locale)}`;
 const description =
   locale === 'zh-Hant'
     ? `${name}：收容與來源的難民、庇護申請者、境內流離失所者與無國籍者，${data.years[0]}–${yearMax}。來源：UNHCR（資料截至 ${src?.data_as_of ?? ''}）。可下載、可引用。`
-    : `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
+    : locale === 'zh-Hans'
+      ? `${name}：收容与来源的难民、庇护申请者、境内流离失所者与无国籍者，${data.years[0]}–${yearMax}。来源：UNHCR（数据截至 ${src?.data_as_of ?? ''}）。可下载、可引用。`
+      : `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
 const bulkCsvBytes =
   listDownloads().find((d) => d.name === 'unhcr-population-all-years.csv')?.bytes ?? null;
 const jsonLd = {
@@ -60,7 +62,9 @@ const jsonLd = {
   name:
     locale === 'zh-Hant'
       ? `${name} — 被迫流離失所統計 ${data.years[0]}–${yearMax}`
-      : `${name} — forced displacement statistics ${data.years[0]}–${yearMax}`,
+      : locale === 'zh-Hans'
+        ? `${name} — 被迫流离失所统计 ${data.years[0]}–${yearMax}`
+        : `${name} — forced displacement statistics ${data.years[0]}–${yearMax}`,
   description,
   url: pageUrl,
   identifier: `${SITE_URL}/data/v1/country/${iso3}.json`,
@@ -68,14 +72,16 @@ const jsonLd = {
   keywords:
     locale === 'zh-Hant'
       ? ['難民', '庇護申請者', '境內流離失所者', '無國籍', 'UNHCR', name]
-      : [
-          'refugees',
-          'asylum seekers',
-          'internally displaced persons',
-          'statelessness',
-          'UNHCR',
-          name,
-        ],
+      : locale === 'zh-Hans'
+        ? ['难民', '庇护申请者', '境内流离失所者', '无国籍', 'UNHCR', name]
+        : [
+            'refugees',
+            'asylum seekers',
+            'internally displaced persons',
+            'statelessness',
+            'UNHCR',
+            name,
+          ],
   datePublished: src?.data_as_of,
   citation: [src?.attribution ?? 'UNHCR Refugee Data Finder'],
   license: src?.license.url ?? 'https://creativecommons.org/licenses/by/4.0/',
@@ -110,10 +116,7 @@ const jsonLd = {
   variableMeasured: METRIC_IDS.map((m) => ({
     '@type': 'PropertyValue',
     name: tr(`metric.${m}` as MessageKey),
-    description:
-      (locale === 'zh-Hant'
-        ? (metrics.metrics?.[m]?.definition_zh ?? metrics.metrics?.[m]?.definition)
-        : metrics.metrics?.[m]?.definition) ?? '',
+    description: metrics.metrics?.[m] ? metricDefinition(metrics.metrics[m], locale) : '',
   })),
   distribution: [
     {

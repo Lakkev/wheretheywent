@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "d87feb4a",
+  "snapshot_id": "b368e439",
   "git_commit": null,
-  "generated_at": "2026-08-24T20:20:08Z",
+  "generated_at": "2026-08-24T22:00:10Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1095,12 +1095,12 @@
       "bytes": 15529
     },
     "metrics.json": {
-      "sha256": "3bc296b00834e9a0a938e81b995024a2b14e31a2f04fced2c23dfb2bfed904f5",
-      "bytes": 7555
+      "sha256": "34a80ae1dd143db67ae65535ddd6c51c9470367cf007b5afc31c9f4ccf964fd7",
+      "bytes": 24542
     },
     "sources.json": {
-      "sha256": "7f9b316e54665c60517366399ed2c693f658d05329095aab7ac983a19de1b0ee",
-      "bytes": 15011
+      "sha256": "629059c02577c05487f25bbf016f978207cd4a2f9e0cb80270a9bbdb365a866a",
+      "bytes": 29976
     },
     "stock/1951-2014.json": {
       "sha256": "f65ddaeb212637f9938a6f7519e7bf432dcef4a6037fe6626fdcead2caeadd9a",

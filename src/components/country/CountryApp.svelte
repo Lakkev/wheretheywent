@@ -17,7 +17,7 @@
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtInt, fmtRate, fmtCompact, fmtDateIso } from '../../lib/format';
   import { URL_METRICS } from '../../lib/url';
-  import { footnoteMatchesMetric } from '../../lib/data';
+  import { footnoteMatchesMetric, displayName, sourceCaveats } from '../../lib/data';
   import { buildCitations } from '../../lib/citation';
   import {
     viewRowsToCsv,
@@ -64,11 +64,7 @@
   let metric = $state<AnyMetricId>('refugees');
   let dialog = $state<null | 'cite' | 'download'>(null);
   let withComments = $state(true); // #12: provenance comments on by default
-  const name = $derived(
-    locale === 'zh-Hant' && file.meta.display_name_zh
-      ? file.meta.display_name_zh
-      : file.meta.display_name,
-  );
+  const name = $derived(displayName(file.meta, locale));
   const countryIndex = $derived(
     new Map<string, CountryMeta>(
       Object.entries(names).map(([iso3, display_name]) => [
@@ -236,7 +232,7 @@
             Object.entries(sources).filter(([k]) => file.sources.includes(k)),
           ),
           citations,
-          notes: (locale === 'zh-Hant' ? (src?.caveats_zh ?? src?.caveats) : src?.caveats) ?? [],
+          notes: src ? sourceCaveats(src, locale) : [],
           data: file,
         }),
         null,

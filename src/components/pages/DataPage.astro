@@ -10,13 +10,14 @@ import {
   getCountries,
 } from '../../lib/data-server';
 import { fmtBytes, fmtDateIso } from '../../lib/format';
+import { metricDefinition, metricCaveats } from '../../lib/data';
 import { SITE_URL } from '../../lib/site';
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
-const zh = locale === 'zh-Hant';
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
 const manifest = getManifest();
 const sources = getSources() ?? {};
 const metrics = getMetrics();
@@ -304,10 +305,10 @@ const jsonLd = {
               <code>{m.source_id}</code>
             </dt>
             <dd>
-              {zh && m.definition_zh ? m.definition_zh : m.definition}
-              {(zh && m.caveats_zh?.length ? m.caveats_zh : m.caveats).length ? (
+              {metricDefinition(m, locale)}
+              {metricCaveats(m, locale).length ? (
                 <ul>
-                  {(zh && m.caveats_zh?.length ? m.caveats_zh : m.caveats).map((c) => (
+                  {metricCaveats(m, locale).map((c) => (
                     <li>{c}</li>
                   ))}
                 </ul>

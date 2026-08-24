@@ -59,6 +59,8 @@ export interface SourceEntry {
   last_error?: string;
   caveats: string[];
   caveats_zh?: string[];
+  /** Full per-locale caveat translations (data-level strings are never tiered to English). */
+  caveats_i18n?: Record<string, string[]>;
   /** Endpoint(s) or URL(s) actually fetched. */
   endpoints?: string[];
 }
@@ -70,6 +72,9 @@ export interface MetricDef {
   definition: string;
   /** zh-Hant rendering of definition/caveats (labels come from i18n metric.* keys). */
   definition_zh?: string;
+  /** Full per-locale definition/caveat translations — the academic core is never tiered. */
+  definition_i18n?: Record<string, string>;
+  caveats_i18n?: Record<string, string[]>;
   unit: 'persons';
   source_id: string;
   views: ViewId[];
