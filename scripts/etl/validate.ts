@@ -574,7 +574,7 @@ function main() {
         'source_id',
         'data_as_of',
         'retrieved_at',
-        'snapshot_id',
+        'population_snapshot_id',
       ])
         assert(head.includes(col), `header missing ${col}`);
       return head;

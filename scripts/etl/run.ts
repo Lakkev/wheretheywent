@@ -47,6 +47,7 @@ import { buildMetrics } from './lib/metrics.ts';
 import { buildSourceEntry, markStale } from './lib/provenance.ts';
 import {
   buildStock,
+  buildWorldTotals,
   buildCountryFiles,
   buildFlows,
   writeDownloads,
@@ -493,14 +494,20 @@ async function main() {
       const recentStart = Math.max(yearMin, maxYear - YEARS.recentWindow + 1);
       const recentYears = allYears.filter((y) => y >= recentStart);
       const historyYears = allYears.filter((y) => y < recentStart);
+      const recentStock = buildStock(inp, recentYears, used);
       const recentName = `stock/${recentStart}-${maxYear}.json`;
-      writeJsonAtomic(join(OUT, recentName), buildStock(inp, recentYears, used));
+      writeJsonAtomic(join(OUT, recentName), recentStock);
       stockFiles = [recentName];
+      const stocksForTotals = [recentStock];
       if (historyYears.length) {
+        const histStock = buildStock(inp, historyYears, used);
         const histName = `stock/${yearMin}-${recentStart - 1}.json`;
-        writeJsonAtomic(join(OUT, histName), buildStock(inp, historyYears, used));
+        writeJsonAtomic(join(OUT, histName), histStock);
         stockFiles.push(histName);
+        stocksForTotals.push(histStock);
       }
+      // #14: global totals per year/metric — "share of world" lines on country pages
+      writeJsonAtomic(join(OUT, 'world-totals.json'), buildWorldTotals(stocksForTotals));
       // country files
       const countryFiles = buildCountryFiles(inp, allYears, used);
       writeCountryFiles(OUT, countryFiles);

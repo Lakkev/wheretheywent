@@ -1,4 +1,4 @@
-iso3,country_name,view,year,metric,value,unit,source_id,source_attribution,data_as_of,retrieved_at,snapshot_id
+iso3,country_name,view,year,metric,value,unit,source_id,source_attribution,data_as_of,retrieved_at,population_snapshot_id
 ABW,Aruba,asylum,2011,refugees,0,persons,unhcr_population,UNHCR Refugee Population Statistics Database,2025-12-31,2026-08-19T14:21:59Z,88406d26
 ABW,Aruba,asylum,2011,asylum_seekers,5,persons,unhcr_population,UNHCR Refugee Population Statistics Database,2025-12-31,2026-08-19T14:21:59Z,88406d26
 ABW,Aruba,asylum,2011,idps,0,persons,unhcr_idmc,UNHCR Refugee Population Statistics Database,2025-12-31,2026-08-19T14:21:59Z,88406d26

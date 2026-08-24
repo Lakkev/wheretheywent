@@ -29,11 +29,13 @@ const PD = { id: 'Public Domain', url: 'https://www.naturalearthdata.com/about/t
 const UNHCR_ATTR = 'UNHCR Refugee Population Statistics Database';
 const UNHCR_LANDING = 'https://www.unhcr.org/refugee-statistics/';
 const UNHCR_CAVEATS = [
+  'Compiled from what governments and UNHCR operations report. States have incentives to over- and under-count — funding appeals, sovereignty claims, contested legal statuses. A missing figure is not an absence of displaced people.',
   'Excludes Palestine refugees registered with UNRWA (about 6 million), which publishes separate statistics.',
   '"-" in the source means not reported; it is stored as null and is different from 0 (reported zero).',
   'Figures are year-end stocks (31 December) unless stated otherwise.',
 ];
 const UNHCR_CAVEATS_ZH = [
+  '數字彙整自各國政府與 UNHCR 行動的報告。國家有高報或低報的誘因——籌款訴求、主權主張、具爭議的法律身分。缺漏的數字不代表沒有流離失所者。',
   '不含 UNRWA 登記之巴勒斯坦難民(約 600 萬),UNRWA 另有獨立統計。',
   '來源中的 "-" 表示未報告,儲存為 null,與 0(確實為零)意義不同。',
   '除另有說明外,數字為年末(12 月 31 日)存量。',
@@ -147,7 +149,7 @@ export const SOURCE_STATIC: Record<SourceId, SourceStatic> = {
       'No confidence intervals are published.',
     ],
     caveats_zh: [
-      'UNHCR 以統計方法推估之當前數字,非正式報告值。僅含收容國面向之難民與庇護申請者。',
+      'UNHCR 以統計方法推估之當前數字,非正式報告值。僅含庇護國面向之難民與庇護申請者。',
       '未公布信賴區間。',
     ],
   },

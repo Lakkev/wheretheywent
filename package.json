@@ -20,6 +20,7 @@
     "etl": "node scripts/etl/run.ts --out .etl-staging",
     "etl:validate": "node scripts/etl/validate.ts --in .etl-staging",
     "etl:promote": "node scripts/etl/promote.ts",
+    "deploy": "node scripts/dev/predeploy.mjs check && npm run build && node scripts/dev/predeploy.mjs stamp && wrangler pages deploy dist --project-name wheretheywent",
     "geo": "node scripts/etl/geo/build-geo.ts",
     "validate:data": "node scripts/etl/validate.ts --in public/data/v1",
     "predev": "node scripts/dev/vendor-maplibre.mjs",

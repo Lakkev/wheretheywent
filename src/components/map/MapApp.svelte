@@ -16,6 +16,7 @@
     loadHistory,
     loadLive,
     loadDetail,
+    prefetchCountry,
     applyState,
     snapshot,
     setYear,
@@ -67,6 +68,10 @@
   let mapRef = $state<MapCanvas | undefined>(undefined);
   let timelineRef = $state<Timeline | undefined>(undefined);
   let urlPos = $state<MapPos | null>(null);
+  // F6: IDU sub-toggles. Conflict on by default; disasters off — the annual IDP stock shown in
+  // colour excludes disasters, so mixing them silently would misrepresent the coloured layer.
+  let evConflict = $state(true);
+  let evDisaster = $state(false);
 
   const ctx = () => ({
     yearMin: data.yearMin,
@@ -88,16 +93,19 @@
         scale: ui.sc,
         regions: ui.r,
         min: ui.min,
+        breakYears: raw.stock.years,
       },
       raw.stock,
       countries,
     );
   });
-  const permalink = $derived(
-    typeof location !== 'undefined'
-      ? `${location.origin}${location.pathname}${encodeState(snapshot(), ctx())}`
-      : '',
-  );
+  const permalink = $derived.by(() => {
+    if (typeof location === 'undefined') return '';
+    let q = encodeState(snapshot(), ctx());
+    // pin the year in shared/cited links: yearMax advances every year (#audit F3)
+    if (!/[?&]y=/.test(q)) q = q ? `${q}&y=${ui.y}` : `?y=${ui.y}`;
+    return `${location.origin}${location.pathname}${q}`;
+  });
 
   // ---------- URL sync ----------
   let lastState: MapState | null = null;
@@ -222,7 +230,8 @@
     session.webgl2 = webgl;
     const mq = matchMedia('(max-width: 900px)');
     session.narrow = mq.matches;
-    mq.addEventListener('change', (e) => (session.narrow = e.matches));
+    const onMq = (e: MediaQueryListEvent) => (session.narrow = e.matches);
+    mq.addEventListener('change', onMq);
     // decode URL early with static year bounds so the first paint is right
     applyFromUrl();
     (async () => {
@@ -242,6 +251,9 @@
         onIdle(() => void loadLive(), 4000);
       } catch (e) {
         data.error = String(e);
+        // remove the skeleton here too — otherwise it sits underneath the error dialog forever
+        document.getElementById('map-skeleton')?.remove();
+        document.getElementById('map-canvas-skeleton')?.remove();
         toast(tr('common.error'));
       }
     })();
@@ -251,6 +263,7 @@
     return () => {
       window.removeEventListener('popstate', pop);
       window.removeEventListener('keydown', onKey);
+      mq.removeEventListener('change', onMq);
     };
   });
 
@@ -276,6 +289,22 @@
       (x) => (x.year === null || x.year === ui.y) && footnoteMatchesMetric(x.population_type, ui.m),
     ).length;
   }
+  /** WPP world population for the current year — legend "1 in n" line (anti-numbing). */
+  const worldPop = $derived.by(() => {
+    void data.stockVersion;
+    let sum = 0;
+    for (const c of data.countriesFile?.countries ?? []) {
+      const p = raw.stock.pop(c.iso3, ui.y);
+      if (p) sum += p;
+    }
+    return sum > 0 ? sum : null;
+  });
+  /** metric-level caveats (metrics.json), locale-resolved (#audit-2). */
+  const metricCaveats = $derived.by(() => {
+    const def = data.metrics?.metrics?.[ui.m];
+    if (!def) return [];
+    return locale === 'zh-Hant' && def.caveats_zh?.length ? def.caveats_zh : def.caveats;
+  });
   const detailOpen = $derived(!!ui.c);
 </script>
 
@@ -322,10 +351,28 @@
             title={tr('map.idu.body')}
             onclick={() => (ui.e = !ui.e)}>◉ {tr('map.idu.title')}</button
           >
+          {#if ui.e}
+            <div class="idu-sub" title={tr('idu.definitionNote')}>
+              <button
+                class="btn idu-chip"
+                class:is-active={evConflict}
+                type="button"
+                aria-pressed={evConflict}
+                onclick={() => (evConflict = !evConflict)}>{tr('idu.conflict.toggle')}</button
+              >
+              <button
+                class="btn idu-chip"
+                class:is-active={evDisaster}
+                type="button"
+                aria-pressed={evDisaster}
+                onclick={() => (evDisaster = !evDisaster)}>{tr('idu.disaster.toggle')}</button
+              >
+            </div>
+          {/if}
         {/if}
         <NowcastCard {locale} />
       {/if}
-      <Legend {locale} {view} />
+      <Legend {locale} {view} {worldPop} {metricCaveats} />
     </div>
     {#if detailOpen}
       <DetailPanel
@@ -362,6 +409,8 @@
     countryIndex={raw.countryIndex}
     idu={data.idu}
     showIdu={ui.e}
+    iduConflict={evConflict}
+    iduDisaster={evDisaster}
     highlight={session.hover}
     onselect={(iso3) => selectCountry(iso3)}
     onhover={(iso3) => (session.hover = iso3)}
@@ -380,8 +429,12 @@
 {#if data.error}
   <div class="modal-backdrop">
     <div class="modal">
-      <h2>{tr('common.error')}</h2>
-      <p class="small muted">{data.error}</p>
+      <h2>{tr('error.loadTitle')}</h2>
+      <p class="small">{tr('error.loadBody')}</p>
+      <details class="small muted">
+        <summary>{tr('error.technical')}</summary>
+        <p>{data.error}</p>
+      </details>
       <button class="btn primary" type="button" onclick={() => location.reload()}
         >{tr('common.retry')}</button
       >
@@ -397,12 +450,30 @@
     font-size: var(--fs-xs);
     box-shadow: var(--shadow-1);
   }
+  .idu-sub {
+    position: absolute;
+    left: var(--overlay-gap);
+    top: 164px;
+    display: flex;
+    gap: 4px;
+  }
+  .idu-chip {
+    font-size: var(--fs-xs);
+    padding: 2px 8px;
+    box-shadow: var(--shadow-1);
+  }
+  .idu-chip:not(.is-active) {
+    opacity: 0.55;
+  }
   .idu-toggle:not(.is-active) {
     background: var(--c-surface);
   }
   @media (max-width: 900px) {
     .idu-toggle {
       top: 184px;
+    }
+    .idu-sub {
+      top: 216px;
     }
   }
   .nobasemap {

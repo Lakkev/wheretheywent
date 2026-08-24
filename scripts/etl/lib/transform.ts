@@ -22,8 +22,9 @@ import {
   type Footnote,
   type AsylumAppRow,
   type SourcesFile,
+  type WorldTotalsFile,
 } from '../../../src/lib/types.ts';
-import { pack } from '../../../src/lib/columnar.ts';
+import { pack, unpack } from '../../../src/lib/columnar.ts';
 import { toCsv } from '../../../src/lib/csv.ts';
 import { writeJsonAtomic, writeFileAtomic } from './atomic.ts';
 import type { StockMap, BilateralRow, UnmatchedEntry } from '../sources/unhcr-population.ts';
@@ -115,6 +116,32 @@ export function buildStock(inp: TransformInput, years: number[], sourcesUsed: st
     unmappable: [...unmappable].sort(),
     sources: sourcesUsed,
   };
+}
+
+/** #14: world-totals.json — year → metric → global totals by view, incl. derived total_poc. */
+export function buildWorldTotals(stocks: StockFile[]): WorldTotalsFile {
+  const totals: WorldTotalsFile['totals'] = {};
+  const POC = ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'] as const;
+  const sum = (vals: (number | null | undefined)[]): number | null =>
+    vals.reduce<number | null>(
+      (acc, v) => (v === null || v === undefined ? acc : (acc ?? 0) + v),
+      null,
+    );
+  for (const s of stocks) {
+    const a = s.totals.asylum.map((p) => unpack(p));
+    const o = s.totals.origin.map((p) => unpack(p));
+    s.years.forEach((y, yi) => {
+      const row = (totals[String(y)] ??= {});
+      METRIC_IDS.forEach((m, mi) => {
+        row[m] = { asylum: a[mi]?.[yi] ?? null, origin: o[mi]?.[yi] ?? null };
+      });
+      row['total_poc'] = {
+        asylum: sum(POC.map((m) => a[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
+        origin: sum(POC.map((m) => o[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
+      };
+    });
+  }
+  return { schema: 1, totals };
 }
 
 const TOP_N = 10;
@@ -243,7 +270,7 @@ export function writeDownloads(inp: TransformInput, years: number[], snapshotId:
     'source_attribution',
     'data_as_of',
     'retrieved_at',
-    'snapshot_id',
+    'population_snapshot_id',
   ];
   const longRows: (string | number | null)[][] = [];
   const wideRows: Record<'asylum' | 'origin', (string | number | null)[][]> = {
@@ -298,7 +325,7 @@ export function writeDownloads(inp: TransformInput, years: number[], snapshotId:
     'source_id',
     'data_as_of',
     'retrieved_at',
-    'snapshot_id',
+    'population_snapshot_id',
   ];
   writeFileAtomic(join(dir, 'unhcr-population-by-asylum.csv'), toCsv(wideHeader, wideRows.asylum));
   writeFileAtomic(join(dir, 'unhcr-population-by-origin.csv'), toCsv(wideHeader, wideRows.origin));
@@ -366,7 +393,7 @@ export function writeDownloads(inp: TransformInput, years: number[], snapshotId:
           'source_id',
           'data_as_of',
           'retrieved_at',
-          'snapshot_id',
+          'population_snapshot_id',
         ],
         rows,
       ),
@@ -387,7 +414,11 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
     field('source_id', 'string', 'Key into sources.json'),
     field('data_as_of', 'date', 'Upstream coverage date'),
     field('retrieved_at', 'datetime', 'When the data was fetched'),
-    field('snapshot_id', 'string', 'Content-addressed snapshot id'),
+    field(
+      'population_snapshot_id',
+      'string',
+      'First 8 hex of the population source content hash (resolve via sources.json)',
+    ),
   ];
   const metricFields = METRIC_IDS.map((m) => field(m, 'integer', 'Persons; empty = not reported'));
   return {
@@ -396,7 +427,7 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
     title: 'Where They Went — forced displacement statistics',
     version: snapshotId,
     created: inp.now,
-    homepage: process.env.PUBLIC_SITE_URL ?? 'https://wheretheywent.lakkev.com',
+    homepage: 'https://wheretheywent.lakkev.com', // pinned: published content must not vary with env (#audit S8)
     licenses: [
       {
         name: 'CC-BY-4.0',

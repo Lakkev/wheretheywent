@@ -38,8 +38,8 @@ Machine-readable equivalents: `metrics.json` (metrics), `sources.json` (provenan
 | Where                                                 | Value                                                 | Resolve via                                    |
 | ----------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------- |
 | `manifest.json → snapshot_id`                         | first 8 hex of sha256 over all published file hashes  | `manifest.json` itself                         |
-| bulk CSV `snapshot_id` column · `datapackage.version` | first 8 hex of the **population source** content hash | `sources.json → unhcr_population.content_hash` |
-| client "this view" CSV/JSON downloads                 | `manifest.snapshot_id` of the dataset the app loaded  | `manifest.json`                                |
+| bulk CSV `population_snapshot_id` column · `datapackage.version` | first 8 hex of the **population source** content hash | `sources.json → unhcr_population.content_hash` |
+| client CSV `dataset_snapshot_id` column / JSON downloads         | `manifest.snapshot_id` of the dataset the app loaded  | `manifest.json`                                |
 
 The manifest-wide id cannot be embedded inside the CSVs it hashes (it would change them);
 the population content hash identifies the exact upstream payload behind every number.
@@ -110,15 +110,17 @@ bilingual disputed-territory notes shown in the boundaries modal/page.
 
 See `datapackage.json`. All CSVs: UTF-8, LF, RFC 4180, header row, empty field = null.
 
-- `unhcr-population-all-years.csv` — long: `iso3,country_name,view,year,metric,value,unit,source_id,source_attribution,data_as_of,retrieved_at,snapshot_id`
+- `unhcr-population-all-years.csv` — long: `iso3,country_name,view,year,metric,value,unit,source_id,source_attribution,data_as_of,retrieved_at,population_snapshot_id`
 - `unhcr-population-by-asylum.csv` / `-by-origin.csv` — wide: one row per entity × year, one column per metric
 - `countries.csv`, `wpp-total-population.csv`
 
 ### Client-side downloads ("this view")
 
-`iso3,country_name,view,year,metric,value,unit,per_1000_residents,population,rank,source_id,
-source_attribution,data_as_of,retrieved_at,snapshot_id` (+ optional `#` comment lines when the
-user opts in).
+`iso3,country_name,view,year,metric,value,unit,yoy_delta,per_1000_residents,population,rank,source_id,
+source_attribution,data_as_of,retrieved_at,dataset_snapshot_id` (`yoy_delta` = change vs the prior
+year; empty when either year is unreported). Leading `#` comment lines
+(title, permalink, source, dates, snapshot, active filters, metric caveats) are included by
+default; unchecking "Include # provenance comment lines" produces strict RFC 4180 output.
 
 ## Known entity quirks
 

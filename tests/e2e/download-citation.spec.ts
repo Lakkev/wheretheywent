@@ -65,8 +65,16 @@ test('download CSV of the current view: header carries provenance, rows match th
   )
     .toArray()
     .then((c) => Buffer.concat(c).toString('utf8'));
-  expect(text.startsWith('#')).toBe(false); // strict RFC 4180 by default
-  const rows = parseCsv(text);
+  // #12: provenance comment lines ship by default (uncheck the box for strict RFC 4180)
+  expect(text.startsWith('# ')).toBe(true);
+  expect(text).toContain('# permalink:');
+  expect(text).toContain('# dataset_snapshot_id:');
+  const rows = parseCsv(
+    text
+      .split('\n')
+      .filter((l) => !l.startsWith('# '))
+      .join('\n'),
+  );
   const header = rows[0]!;
   for (const col of [
     'iso3',
@@ -78,7 +86,7 @@ test('download CSV of the current view: header carries provenance, rows match th
     'source_attribution',
     'data_as_of',
     'retrieved_at',
-    'snapshot_id',
+    'dataset_snapshot_id',
   ])
     expect(header).toContain(col);
   const body = rows.slice(1).filter((r) => r.length > 1);
@@ -147,11 +155,15 @@ test('citation dialog: four formats with UNHCR, data_as_of and permalink', async
     expect(v).toMatch(/2025/); // data as of 31 December 2025
     expect(v).toContain('c=SYR');
   }
-  expect(await areas.nth(3).inputValue()).toMatch(/^@misc\{/);
+  // #audit-5: BibTeX emits @dataset (biblatex) with a version field
+  expect(await areas.nth(3).inputValue()).toMatch(/^@dataset\{/);
+  expect(await areas.nth(3).inputValue()).toContain('version =');
 });
 
 test('country page cite + download', async ({ page }) => {
   await page.goto('/country/LBN?y=2024');
+  // #14: the share-of-world line renders from world-totals.json after hydration
+  await expect(page.locator('.kpis')).toContainText('of the world total');
   await page.getByRole('button', { name: /Cite/ }).click();
   const v = await page.getByRole('dialog').locator('textarea').first().inputValue();
   expect(v).toContain('Lebanon');
@@ -167,6 +179,10 @@ test('country page cite + download', async ({ page }) => {
   )
     .toArray()
     .then((c) => Buffer.concat(c).toString('utf8'));
-  expect(text.split('\n')[0]).toContain('data_as_of');
+  // #12: provenance comment lines ship by default; the header is the first non-comment line
+  expect(text.startsWith('# ')).toBe(true);
+  const header = text.split('\n').find((l) => !l.startsWith('# '))!;
+  expect(header).toContain('data_as_of');
+  expect(header).toContain('dataset_snapshot_id');
   expect(text).toContain('LBN');
 });

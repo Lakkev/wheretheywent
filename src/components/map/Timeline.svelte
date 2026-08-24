@@ -13,21 +13,32 @@
     void data.stockVersion;
     return raw.stock.years[0] ?? yearMax;
   });
+  /** #8: first year this metric was collected at all — earlier years are structurally absent. */
+  const coverageFrom = $derived(data.metrics?.metrics?.[ui.m]?.coverage_from ?? null);
 
   // sparkline of the global total for the current metric/view across loaded years
   const spark = $derived.by(() => {
     void data.stockVersion;
     const ys = raw.stock.years;
     const s = raw.stock.totalSeries(ui.v, ui.m);
-    const vals = s.map((v) => v ?? 0);
-    const max = Math.max(1, ...vals);
+    const max = Math.max(1, ...s.filter((v): v is number => v !== null));
     const W = 600,
       H = 28;
-    const pts = ys.map(
-      (y, i) =>
-        `${(((y - yearMin) / Math.max(1, yearMax - yearMin)) * W).toFixed(1)},${(H - (vals[i]! / max) * (H - 2)).toFixed(1)}`,
-    );
-    return { d: pts.length ? `M${pts.join(' L')}` : '', W, H };
+    // segment the path at nulls — a gap, never a fabricated drop to zero (#audit-7)
+    let d = '';
+    let pen = false;
+    ys.forEach((y, i) => {
+      const v = s[i];
+      if (v === null || v === undefined) {
+        pen = false;
+        return;
+      }
+      const x = (((y - yearMin) / Math.max(1, yearMax - yearMin)) * W).toFixed(1);
+      const py = (H - (v / max) * (H - 2)).toFixed(1);
+      d += (pen ? ' L' : ' M') + x + ',' + py;
+      pen = true;
+    });
+    return { d: d.trim(), W, H };
   });
 
   let timer: ReturnType<typeof setInterval> | null = null;
@@ -81,6 +92,16 @@
       preserveAspectRatio="none"
       aria-hidden="true"
     >
+      {#if coverageFrom && coverageFrom > yearMin}
+        <rect
+          x="0"
+          y="0"
+          width={((coverageFrom - yearMin) / Math.max(1, yearMax - yearMin)) * spark.W}
+          height={spark.H}
+          fill="var(--c-nodata)"
+          opacity="0.3"
+        />
+      {/if}
       {#if spark.d}<path
           d={spark.d}
           fill="none"
@@ -111,7 +132,13 @@
     />
     <div class="ticks" aria-hidden="true">
       <span>{yearMin}</span>
-      {#if !data.historyLoaded}<span class="muted">{tr('timeline.loadingHistory')}</span>{/if}
+      {#if !data.historyLoaded}<span class="muted">{tr('timeline.loadingHistory')}</span>
+      {:else if coverageFrom && ui.y < coverageFrom}<span class="muted"
+          >{tr('timeline.notCollected', {
+            metric: tr(`metric.${ui.m}` as MessageKey),
+            year: coverageFrom,
+          })}</span
+        >{/if}
       <span>{yearMax}</span>
     </div>
   </div>
@@ -120,7 +147,7 @@
       class="btn icon"
       type="button"
       onclick={() => setYear(ui.y - 1)}
-      aria-label="Previous year"
+      aria-label={tr('a11y.prevYear')}
       disabled={ui.y <= loadedMin}>‹</button
     >
     <button class="btn" type="button" onclick={play} aria-pressed={session.playing}
@@ -130,7 +157,7 @@
       class="btn icon"
       type="button"
       onclick={() => setYear(ui.y + 1)}
-      aria-label="Next year"
+      aria-label={tr('a11y.nextYear')}
       disabled={ui.y >= yearMax}>›</button
     >
   </div>

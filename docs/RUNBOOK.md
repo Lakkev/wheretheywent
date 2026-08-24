@@ -147,8 +147,9 @@ suite on it.
    `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`); Settings → Secrets and variables →
    Actions → Variables: `PUBLIC_SITE_URL=https://wheretheywent.lakkev.com`,
    `PUBLIC_CONTACT_EMAIL=contact@lakkev.com`.
-5. **Automatic redeploys**. Right now deployments are manual
-   (`npx wrangler pages deploy dist --project-name wheretheywent`). To make the daily ETL publish
+5. **Automatic redeploys**. Right now deployments are manual — use `npm run deploy`
+   (it refuses a dirty working tree, builds, stamps the commit into `dist/build-info.json`,
+   then uploads via wrangler). To make the daily ETL publish
    by itself, pick one:
    - _Git integration_ (spec default): Cloudflare → Workers & Pages → wheretheywent → Settings →
      Builds → Connect to Git → this repo; build command `npm run build`, output `dist`,

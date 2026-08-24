@@ -203,6 +203,30 @@ finding-by-finding record) led to:
 Accepted deviations from the spec are tabulated in GAP-ANALYSIS §4 — read that before "fixing"
 any of them back.
 
+### 3.18 Multi-expert review changes (2026-08-24)
+
+- **i18n depth**: translations are data, not chrome — `definition_zh`/`caveats_zh` live in
+  `metrics.json` and `sources.json` (produced by the ETL), so every consumer (map legend, data
+  page, downloads, JSON-LD) localises from one source of truth. UI strings stay in
+  `src/i18n/zh-Hant.json`, key-parity-typed against `en.json`; `docs/STYLE-zh.md` locks
+  terminology (庇護國 not 收容國 — Taiwan legal register, etc.).
+- **Fixed classing**: `computeView` accepts `breakYears`; `MapApp` passes all loaded years, so
+  quantile breaks are stable while scrubbing — colour means magnitude, and screenshots from
+  different years are comparable.
+- **IDU dignity guards** (ETL + client): conflict coordinates snapped to 0.25°, events <100
+  people never drawn individually, popup links out to IDMC instead of republishing narrative.
+  Conflict/disaster sub-toggles (disasters off by default: the coloured annual IDP layer
+  excludes disasters, so mixing them silently would misrepresent it).
+- **Export provenance by default**: `#` comment lines (title, permalink, source, dates,
+  snapshot, filters, metric caveats) ship unless the user opts into strict RFC 4180
+  (`wtw.csvStrict`); snapshot columns renamed to say *which* snapshot
+  (`population_snapshot_id` vs `dataset_snapshot_id`); `yoy_delta` in all view exports.
+- **`world-totals.json`**: year → metric → global totals (both views, incl. derived
+  `total_poc`), built from the stock totals at ETL time; powers "share of world total" on
+  country pages without shipping the stock files to them.
+- **Deploy traceability (S4)**: `npm run deploy` = dirty-tree guard → build → stamp
+  `dist/build-info.json` (commit + time) → wrangler upload.
+
 ## 4. Budgets (measured 2026-08-19)
 
 | Item                                       | Measured               | Budget                   |

@@ -16,14 +16,14 @@ const yearMax = manifest?.year_max ?? 2025;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: SITE_NAME,
+  name: tr('site.name'),
   url: SITE_URL,
   description: tr('site.description'),
   inLanguage: locale,
 };
 ---
 
-<MapLayout title={SITE_NAME} locale={locale} jsonLd={jsonLd}>
+<MapLayout title={tr('site.name')} locale={locale} jsonLd={jsonLd}>
   <div class="map-root" id="map-root">
     <h1 class="visually-hidden">{tr('site.name')} — {tr('site.tagline')}</h1>
     <div class="map-canvas" id="map-canvas-skeleton"></div>

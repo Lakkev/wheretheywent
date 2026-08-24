@@ -260,14 +260,43 @@ export function indexCountries(file: CountriesFile): Map<string, CountryMeta> {
   return new Map(file.countries.map((c) => [c.iso3, c]));
 }
 
-/** Display name for the locale (falls back to display_name). */
+/** Lazily constructed Intl region-name provider for zh-Hant (works in browser and Node ≥ 14). */
+let zhRegionNames: Intl.DisplayNames | null | undefined;
+function zhRegion(iso2: string): string | undefined {
+  if (zhRegionNames === undefined) {
+    try {
+      zhRegionNames = new Intl.DisplayNames(['zh-Hant-TW'], { type: 'region', fallback: 'none' });
+    } catch {
+      zhRegionNames = null;
+    }
+  }
+  if (!zhRegionNames) return undefined;
+  try {
+    return zhRegionNames.of(iso2) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Display name for the locale. zh-Hant resolution order (§5 "國名用 Intl.DisplayNames"):
+ *   1. curated display_name_zh override (Serbia/Taiwan/pseudo-entities — carries policy nuance)
+ *   2. Intl.DisplayNames('zh-Hant') via iso2 — standard Chinese names for every real country
+ *   3. the English display_name (pseudo-entities without overrides)
+ */
 export function displayName(
   meta: CountryMeta | undefined,
   locale: 'en' | 'zh-Hant',
   iso3?: string,
 ): string {
   if (!meta) return iso3 ?? '';
-  if (locale === 'zh-Hant' && meta.display_name_zh) return meta.display_name_zh;
+  if (locale === 'zh-Hant') {
+    if (meta.display_name_zh) return meta.display_name_zh;
+    if (meta.iso2) {
+      const zh = zhRegion(meta.iso2);
+      if (zh && zh !== meta.iso2) return zh;
+    }
+  }
   return meta.display_name;
 }
 

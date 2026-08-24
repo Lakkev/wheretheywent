@@ -56,7 +56,7 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
 | §7.9 `snapshot_id` = git short hash                                     | Content-addressed digest + separate `git_commit` field      | A commit hash cannot be embedded in the files that the commit hashes. Content digest is deterministic and reproducible; `git_commit` records CI context when present                                                     |
 | §7.5 IDU trimmed to "~100 KB"                                           | 3,000 newest events ≈ 1.5 MB raw / 119 KB brotli, on demand | The spec's estimate assumed heavier trimming than useful; the transfer size (brotli) matches the spec's intent and the layer is opt-in (`e=1`)                                                                           |
 | §2 D11 "IDU primary"                                                    | IDU is an opt-in map layer; nowcast a collapsed card        | Both are estimates; defaulting an estimate layer ON over confirmed annual data would blur the site's confirmed-vs-estimate line. "Primary" is honoured in the sense that IDU is the only _event-level_ live source       |
-| `zh-Hant.json` values are English                                       | —                                                           | This IS the spec (D3): structure complete, English values for MVP                                                                                                                                                        |
+| ~~`zh-Hant.json` values are English~~                                   | **Superseded 2026-08-24**: fully translated                 | The D3 "English values for MVP" allowance is retired — the whole UI, doc pages, metric definitions and caveats now ship in zh-Hant (see §7); a unit test fails the build if the file regresses to English                 |
 | columnar codec also packs null-runs (`["n",n]`)                         | extension                                                   | Lossless, round-trip-tested, cuts the history file substantially                                                                                                                                                         |
 | §7.4 `/countries/?limit=250` → 500; nowcast `limit=1000` → page default | —                                                           | Identical single-page results                                                                                                                                                                                            |
 
@@ -79,3 +79,34 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
   (#5 across 9 metrics × 75 years; #7 re-packed 20k+ series byte-identically)
 - `npm run test:e2e` — full suite including real-LCP perf gate and CSV↔screen parity
 - Deployed and spot-checked on the production URL (see RUNBOOK §8 for the remaining owner tasks)
+
+## 7. Multi-expert review — implemented 2026-08-24
+
+A second full-system review (systems-design, sociology/research, linguistics, psychology,
+software-engineering lenses) triggered by the owner's report that zh-Hant "wasn't translated".
+Everything below is implemented and gated (`npm run check`, 62 unit tests):
+
+- **zh-Hant is real**: ~260 UI keys translated with a locked terminology table
+  (`docs/STYLE-zh.md`); Methodology/About/Data/Boundaries pages fully bilingual; metric
+  definitions and caveats carry `definition_zh`/`caveats_zh` end-to-end (ETL → JSON → UI →
+  downloads); country names via `Intl.DisplayNames('zh-Hant-TW')`; full-width punctuation policy.
+- **Critical bug**: `prefetchCountry` was called but never imported in `MapApp` (runtime
+  ReferenceError on hover in production). Fixed; e2e now attaches `pageerror` listeners and
+  asserts a hover-prefetch request (F1/F5).
+- **Psychology/dignity**: legend sentence + evidence chips (Reported / IDMC estimate / Derived);
+  "≈ 1 in every n people on Earth" anchor; IDU conflict coordinates snapped to a 0.25° grid at
+  ETL, events <100 people not drawn individually, popups link to IDMC instead of pasting
+  narrative; reporting-incentives caveat on every source.
+- **Statistical honesty**: fixed class breaks across the whole year range (colour = magnitude,
+  not per-year rank); sparkline gaps at nulls; `coverage_from` (stateless 2004, OIP 2018) hatches
+  the timeline and explains "not collected before {year}".
+- **Researcher workflow**: provenance `#` comments ship by default (opt-out = strict RFC 4180);
+  columns renamed `population_snapshot_id` (bulk) / `dataset_snapshot_id` (view CSV); YoY Δ
+  column in the table and `yoy_delta` in every export; `world-totals.json` + "share of world
+  total" on country pages; citations use the data year, `@dataset` BibTeX with `version`.
+- **Ops**: dead-man's-switch chip when `manifest.generated_at` is >10 days old; `unstable`
+  sources escalate the 3-day alarm; `npm run deploy` refuses a dirty tree and stamps the commit
+  into `dist/build-info.json` (S4); UA/homepage strings pinned (S8).
+- Deferred from this round: dynamic-import of dialog/table islands (F8 — bundle already within
+  budget); `live/*` commit-growth policy (S9); Cloudflare GitHub-App check cleanup (S3, needs
+  dashboard access); GitHub Actions billing gate (owner decision).

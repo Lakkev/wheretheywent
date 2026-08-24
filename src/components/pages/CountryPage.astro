@@ -9,7 +9,15 @@ import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui'
 import type { CountryFile } from '../../lib/types';
 import { METRIC_IDS } from '../../lib/types';
 import { unpack } from '../../lib/columnar';
-import { getSources, getMetrics, getManifest, getCountries } from '../../lib/data-server';
+import {
+  getSources,
+  getMetrics,
+  getManifest,
+  getCountries,
+  getWorldTotals,
+  listDownloads,
+} from '../../lib/data-server';
+import { displayName } from '../../lib/data';
 import { SITE_URL, SITE_NAME } from '../../lib/site';
 import { fmtInt, fmtDateLong } from '../../lib/format';
 import CountryApp from '../country/CountryApp.svelte';
@@ -25,12 +33,10 @@ const metrics = getMetrics() ?? { schema: 1, metrics: {} as never };
 const manifest = getManifest();
 const countries = getCountries();
 const names: Record<string, string> = {};
-for (const c of countries?.countries ?? [])
-  names[c.iso3] = locale === 'zh-Hant' && c.display_name_zh ? c.display_name_zh : c.display_name;
-const name =
-  locale === 'zh-Hant' && data.meta.display_name_zh
-    ? data.meta.display_name_zh
-    : data.meta.display_name;
+for (const c of countries?.countries ?? []) names[c.iso3] = displayName(c, locale);
+const name = displayName(data.meta, locale);
+const regionKey = ('region.' + data.meta.region_slug) as Parameters<typeof tr>[0];
+const regionLabel = tr(regionKey).startsWith('region.') ? data.meta.region : tr(regionKey);
 const yearMax = data.years[data.years.length - 1]!;
 const yi = data.years.length - 1;
 const latest = METRIC_IDS.map((m, mi) => ({
@@ -41,15 +47,36 @@ const latest = METRIC_IDS.map((m, mi) => ({
 const src = sources['unhcr_population'];
 const note = locale === 'zh-Hant' && data.meta.note_zh ? data.meta.note_zh : data.meta.note;
 const pageUrl = `${SITE_URL}${localizePath(`/country/${iso3}`, locale)}`;
-const description = `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
+const description =
+  locale === 'zh-Hant'
+    ? `${name}:收容與來源的難民、庇護申請者、境內流離失所者與無國籍者,${data.years[0]}–${yearMax}。來源:UNHCR(資料截至 ${src?.data_as_of ?? ''})。可下載、可引用。`
+    : `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
+const bulkCsvBytes =
+  listDownloads().find((d) => d.name === 'unhcr-population-all-years.csv')?.bytes ?? null;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
-  name: `${name} — forced displacement statistics ${data.years[0]}–${yearMax}`,
+  name:
+    locale === 'zh-Hant'
+      ? `${name} — 被迫流離失所統計 ${data.years[0]}–${yearMax}`
+      : `${name} — forced displacement statistics ${data.years[0]}–${yearMax}`,
   description,
   url: pageUrl,
-  sameAs: `${SITE_URL}/data/v1/country/${iso3}.json`,
   identifier: `${SITE_URL}/data/v1/country/${iso3}.json`,
+  inLanguage: locale,
+  keywords:
+    locale === 'zh-Hant'
+      ? ['難民', '庇護申請者', '境內流離失所者', '無國籍', 'UNHCR', name]
+      : [
+          'refugees',
+          'asylum seekers',
+          'internally displaced persons',
+          'statelessness',
+          'UNHCR',
+          name,
+        ],
+  datePublished: src?.data_as_of,
+  citation: [src?.attribution ?? 'UNHCR Refugee Data Finder'],
   license: src?.license.url ?? 'https://creativecommons.org/licenses/by/4.0/',
   isAccessibleForFree: true,
   creator: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
@@ -64,24 +91,41 @@ const jsonLd = {
       license: s.license.url,
     })),
   temporalCoverage: `${data.years[0]}/${yearMax}`,
-  spatialCoverage: { '@type': 'Place', name },
+  spatialCoverage: {
+    '@type': 'Place',
+    name,
+    ...(data.meta.bbox
+      ? {
+          geo: {
+            '@type': 'GeoShape',
+            // schema.org box = "south west north east"
+            box: `${data.meta.bbox[1]} ${data.meta.bbox[0]} ${data.meta.bbox[3]} ${data.meta.bbox[2]}`,
+          },
+        }
+      : {}),
+  },
   dateModified: src?.retrieved_at ?? manifest?.generated_at,
   version: manifest?.snapshot_id,
   variableMeasured: METRIC_IDS.map((m) => ({
     '@type': 'PropertyValue',
-    name: metrics.metrics?.[m]?.label ?? m,
-    description: metrics.metrics?.[m]?.definition ?? '',
+    name: tr(`metric.${m}` as MessageKey),
+    description:
+      (locale === 'zh-Hant'
+        ? (metrics.metrics?.[m]?.definition_zh ?? metrics.metrics?.[m]?.definition)
+        : metrics.metrics?.[m]?.definition) ?? '',
   })),
   distribution: [
     {
       '@type': 'DataDownload',
       encodingFormat: 'application/json',
       contentUrl: `${SITE_URL}/data/v1/country/${iso3}.json`,
+      contentSize: `${Buffer.byteLength(JSON.stringify(data))}`,
     },
     {
       '@type': 'DataDownload',
       encodingFormat: 'text/csv',
       contentUrl: `${SITE_URL}/data/v1/downloads/unhcr-population-all-years.csv`,
+      ...(bulkCsvBytes ? { contentSize: `${bulkCsvBytes}` } : {}),
     },
   ],
 };
@@ -96,7 +140,7 @@ const jsonLd = {
   <article class="doc wide">
     <header class="doc-header">
       <p class="muted small">
-        <a href={localizePath('/', locale)}>{tr('nav.map')}</a> › {data.meta.region} › {iso3}
+        <a href={localizePath('/', locale)}>{tr('nav.map')}</a> › {regionLabel} › {iso3}
       </p>
       <h1>{name}</h1>
       {
@@ -161,6 +205,7 @@ const jsonLd = {
       names={names}
       siteUrl={SITE_URL}
       snapshotId={manifest?.snapshot_id ?? 'local'}
+      worldTotals={getWorldTotals()}
     />
   </article>
 </BaseLayout>

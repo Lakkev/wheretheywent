@@ -174,7 +174,13 @@
     typeof location !== 'undefined' ? `${siteUrl}${location.pathname}${location.search}` : '',
   );
   const citations = $derived(
-    buildCitations({ locale, title, url: permalink, sources: src ? [src] : [] }),
+    buildCitations({
+      locale,
+      title,
+      url: permalink,
+      sources: src ? [src] : [],
+      version: client.manifest?.snapshot_id,
+    }),
   );
 
   $effect(() => {
@@ -242,6 +248,11 @@
           metric,
           view,
           value: v,
+          yoy_delta: (() => {
+            const pv =
+              yi > 0 && f.years[yi - 1] === yr - 1 ? valueAt(f, view, metric, yi - 1) : null;
+            return pv !== null ? v - pv : null;
+          })(),
           per_1000: pop ? (v / pop) * 1000 : null,
           population: pop,
           rank: null,
@@ -254,7 +265,7 @@
       retrieved_at: src?.retrieved_at ?? '',
       snapshot_id: client.manifest?.snapshot_id ?? '',
     };
-    const withComments = localStorage.getItem('wtw.csvComments') === '1';
+    const withComments = localStorage.getItem('wtw.csvStrict') !== '1';
     saveFile(
       `wtw-compare-${safeFilename(cmp.join('-'))}-${metric}.csv`,
       viewRowsToCsv(out, prov, {
@@ -369,7 +380,7 @@
   {/if}
 
   {#if dialog === 'cite'}
-    <Modal title={tr('cite.title')} onclose={() => (dialog = null)}>
+    <Modal title={tr('cite.title')} onclose={() => (dialog = null)} closeLabel={tr('common.close')}>
       <CopyField {locale} label={tr('cite.page')} value={citations.page} mono={false} />
       <CopyField {locale} label={tr('cite.apa')} value={citations.apa} mono={false} rows={2} />
       <CopyField

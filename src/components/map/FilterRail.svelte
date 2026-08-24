@@ -4,7 +4,7 @@
   import { topRows } from '../../lib/view';
   import { displayName } from '../../lib/data';
   import { fmtValue } from '../../lib/format';
-  import { useT, type Locale } from '../../i18n/ui';
+  import { useT, type Locale, type MessageKey } from '../../i18n/ui';
 
   let {
     locale,
@@ -20,6 +20,10 @@
   }
   const regions = $derived(data.countriesFile?.regions ?? []);
   const top = $derived(topRows(view, 20));
+  const regionLabel = (r: { slug: string; name: string }) => {
+    const label = tr(('region.' + r.slug) as MessageKey);
+    return label.startsWith('region.') ? r.name : label;
+  };
   const maxTop = $derived(top[0]?.value ?? 1);
   const matches = $derived.by(() => {
     const q = query.trim().toLowerCase();
@@ -105,7 +109,7 @@
                 checked={ui.r.includes(reg.slug)}
                 onchange={() => toggleRegion(reg.slug)}
               />
-              {reg.name}</label
+              {regionLabel(reg)}</label
             >
           {/each}
         </fieldset>

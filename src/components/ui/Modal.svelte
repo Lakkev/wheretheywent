@@ -7,7 +7,14 @@
     onclose,
     children,
     wide = false,
-  }: { title: string; onclose: () => void; children: Snippet; wide?: boolean } = $props();
+    closeLabel = 'Close',
+  }: {
+    title: string;
+    onclose: () => void;
+    children: Snippet;
+    wide?: boolean;
+    closeLabel?: string;
+  } = $props();
   let box: HTMLDivElement;
   let prev: Element | null = null;
   const FOCUSABLE =
@@ -57,7 +64,7 @@
   >
     <div class="modal-head">
       <h2 id="modal-title">{title}</h2>
-      <button class="btn ghost icon" type="button" aria-label="Close" onclick={onclose}>×</button>
+      <button class="btn ghost icon" type="button" aria-label={closeLabel} onclick={onclose}>×</button>
     </div>
     {@render children()}
   </div>

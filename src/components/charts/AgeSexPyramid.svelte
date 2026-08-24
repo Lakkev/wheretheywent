@@ -12,7 +12,9 @@
     height = 200,
   }: { file: CountryFile; locale: Locale; year: number; height?: number } = $props();
   const tr = $derived(useT(locale));
-  const AGES = ['0–4', '5–11', '12–17', '18–59', '60+', 'other'];
+  const AGES = $derived(['0–4', '5–11', '12–17', '18–59', '60+', tr('chart.ageOther')]);
+  const SEX_F = $derived(tr('chart.female'));
+  const SEX_M = $derived(tr('chart.male'));
   let el: HTMLDivElement;
   let svgEl: SVGSVGElement | null = null;
   // nearest available year ≤ requested, else nearest
@@ -39,8 +41,8 @@
       el.replaceChildren();
       if (!r || !breakdownAvailable) return;
       const data = AGES.flatMap((age, i) => [
-        { age, sex: 'F', value: -(r.f[i] ?? 0), abs: r.f[i] ?? 0 },
-        { age, sex: 'M', value: r.m[i] ?? 0, abs: r.m[i] ?? 0 },
+        { age, sex: SEX_F, value: -(r.f[i] ?? 0), abs: r.f[i] ?? 0 },
+        { age, sex: SEX_M, value: r.m[i] ?? 0, abs: r.m[i] ?? 0 },
       ]);
       const plot = Plot.plot({
         height: h,
@@ -53,14 +55,14 @@
             Math.abs(d) >= 1000 ? `${Math.round(Math.abs(d) / 1000)}k` : String(Math.abs(d)),
         },
         y: { domain: AGES, label: null },
-        color: { domain: ['F', 'M'], range: ['#9ecae1', '#2171b5'], legend: true },
+        color: { domain: [SEX_F, SEX_M], range: ['#9ecae1', '#2171b5'], legend: true },
         marks: [
           Plot.barX(data, {
             x: 'value',
             y: 'age',
             fill: 'sex',
             title: (d: { sex: string; age: string; abs: number }) =>
-              `${d.sex === 'F' ? 'Female' : 'Male'} ${d.age}: ${fmtInt(d.abs, locale)}`,
+              `${d.sex} ${d.age}: ${fmtInt(d.abs, locale)}`,
           }),
           Plot.ruleX([0]),
         ],
@@ -90,8 +92,8 @@
       <p class="muted small">{tr('detail.noData')}</p>
     {/if}
     <figcaption class="small muted">
-      F {fmtInt(fTotal, locale)} ({fmtPct(row.total ? (fTotal ?? 0) / row.total : null, locale)}) ·
-      M {fmtInt(mTotal, locale)} · {tr('common.all')}
+      {SEX_F} {fmtInt(fTotal, locale)} ({fmtPct(row.total ? (fTotal ?? 0) / row.total : null, locale)}) ·
+      {SEX_M} {fmtInt(mTotal, locale)} · {tr('common.all')}
       {fmtInt(row.total, locale)}
     </figcaption>
   {/if}

@@ -1,4 +1,4 @@
-iso3,country_name,year,population,source_id,data_as_of,retrieved_at,snapshot_id
+iso3,country_name,year,population,source_id,data_as_of,retrieved_at,population_snapshot_id
 ABW,Aruba,1951,43858,wpp_population,2023-07-01,2026-08-19T14:21:59Z,88406d26
 ABW,Aruba,1952,45029,wpp_population,2023-07-01,2026-08-19T14:21:59Z,88406d26
 ABW,Aruba,1953,46245,wpp_population,2023-07-01,2026-08-19T14:21:59Z,88406d26

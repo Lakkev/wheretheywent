@@ -21,6 +21,8 @@ export interface ViewExportRow {
   metric: string;
   view: string;
   value: number | null;
+  /** Δ vs prior year (#14); null when either year is unreported or non-adjacent */
+  yoy_delta: number | null;
   per_1000: number | null;
   population: number | null;
   rank: number | null;
@@ -34,6 +36,7 @@ export const VIEW_CSV_HEADER = [
   'metric',
   'value',
   'unit',
+  'yoy_delta',
   'per_1000_residents',
   'population',
   'rank',
@@ -41,7 +44,7 @@ export const VIEW_CSV_HEADER = [
   'source_attribution',
   'data_as_of',
   'retrieved_at',
-  'snapshot_id',
+  'dataset_snapshot_id',
 ] as const;
 
 export function viewRowsToCsv(
@@ -57,6 +60,7 @@ export function viewRowsToCsv(
     r.metric,
     r.value,
     'persons',
+    r.yoy_delta,
     r.per_1000 === null ? null : Math.round(r.per_1000 * 1000) / 1000,
     r.population,
     r.rank,
@@ -82,7 +86,7 @@ export function provenanceComments(
     `source: ${prov.source_attribution} (${prov.source_id})`,
     `data_as_of: ${prov.data_as_of}`,
     `retrieved_at: ${prov.retrieved_at}`,
-    `snapshot_id: ${prov.snapshot_id}`,
+    `dataset_snapshot_id: ${prov.snapshot_id}`,
     'license: CC BY 4.0 (UNHCR); see DATA-LICENSE.md',
     ...extra,
   ];

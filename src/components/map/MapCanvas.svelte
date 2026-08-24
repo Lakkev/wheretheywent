@@ -24,7 +24,7 @@
   import type { CountryMeta, IduFile } from '../../lib/types';
   import { fmtValue } from '../../lib/format';
   import { displayName } from '../../lib/data';
-  import { useT, type Locale } from '../../i18n/ui';
+  import { useT, type Locale, type MessageKey } from '../../i18n/ui';
   import { prefersReducedMotion } from '../../lib/webgl';
 
   let {
@@ -42,6 +42,8 @@
     countryIndex,
     idu,
     showIdu = false,
+    iduConflict = true,
+    iduDisaster = true,
     highlight = null,
     onselect,
     onhover,
@@ -66,6 +68,9 @@
     countryIndex: Map<string, CountryMeta>;
     idu: IduFile | null;
     showIdu?: boolean;
+    /** F6: conflict/disaster sub-toggles — event types the annual stock does not cover */
+    iduConflict?: boolean;
+    iduDisaster?: boolean;
     /** externally requested hover highlight (rank list / table rows) — same visual as map hover */
     highlight?: string | null;
     onselect: (iso3: string | null) => void;
@@ -177,7 +182,13 @@
     const fc: FeatureCollection = {
       type: 'FeatureCollection',
       features: idu.events
-        .filter((e) => e.lat !== null && e.lon !== null)
+        // #audit F5(a): events under 100 people are not drawn as individual points
+        .filter((e) => e.lat !== null && e.lon !== null && (e.figure ?? 0) >= 100)
+        // F6: conflict/disaster sub-toggles (unknown types always shown while the layer is on)
+        .filter((e) => {
+          const t = (e.type ?? '').toLowerCase();
+          return t === 'conflict' ? iduConflict : t === 'disaster' ? iduDisaster : true;
+        })
         .map((e) => ({
           type: 'Feature',
           id: e.id,
@@ -350,8 +361,10 @@
   onDestroy(() => {
     destroyed = true;
     if (basemapTimer) clearTimeout(basemapTimer);
+    if (prefetchTimer) clearTimeout(prefetchTimer);
     map?.remove();
     map = null;
+    delete (window as unknown as { __wtwMap?: unknown }).__wtwMap;
   });
 
   // repaint when the view changes
@@ -367,6 +380,8 @@
   $effect(() => {
     void idu;
     void showIdu;
+    void iduConflict;
+    void iduDisaster;
     if (!showIdu) iduPopup = null;
     applyIdu();
   });
@@ -398,7 +413,18 @@
   // external position request (popstate / URL)
   $effect(() => {
     const p = pos;
-    if (!map || !p) return;
+    if (!map) return;
+    if (!p) {
+      // back/forward to a URL without map= → default world camera (#audit F2)
+      const key = '1.4/20/10';
+      if (lastAppliedPos !== key) {
+        lastAppliedPos = key;
+        suppressMove = true;
+        map.jumpTo({ center: [10, 20], zoom: 1.4 });
+        setTimeout(() => (suppressMove = false), 50);
+      }
+      return;
+    }
     const key = `${p.z}/${p.lat}/${p.lon}`;
     if (key === lastAppliedPos) return;
     lastAppliedPos = key;
@@ -422,6 +448,10 @@
 
   const tipRow = $derived(tooltip ? view.byIso.get(tooltip.iso3) : undefined);
   const tipMeta = $derived(tooltip ? countryIndex.get(tooltip.iso3) : undefined);
+  const iduTypeLabel = (t: string) => {
+    const label = tr(('idu.type.' + t.toLowerCase()) as MessageKey);
+    return label.startsWith('idu.type.') ? t : label;
+  };
   const tipFootnotes = $derived(tooltip && footnoteCount ? footnoteCount(tooltip.iso3) : 0);
 </script>
 
@@ -448,16 +478,20 @@
       >
     </div>
     <div class="val">
-      {fmtValue(iduPopup.figure, 'abs', locale)} · {iduPopup.type} · {iduPopup.date}
+      {fmtValue(iduPopup.figure, 'abs', locale)} · {iduTypeLabel(iduPopup.type)} · {iduPopup.date}
     </div>
-    <div class="muted note">{iduPopup.text}</div>
+    {#if iduPopup.url}
+      <div class="note">
+        <a href={iduPopup.url} target="_blank" rel="noopener">{tr('idu.readReport')}</a>
+      </div>
+    {/if}
     <div class="muted note">IDMC IDU — {tr('map.idu.body')}</div>
   </div>
 {/if}
 {#if tooltip}
   <div class="map-tooltip" style="left:{tooltip.x + 12}px; top:{tooltip.y + 12}px" role="tooltip">
     {#if tooltip.iso3.startsWith('_')}
-      <strong>{tooltip.iso3 === '_NCY' ? 'Northern Cyprus' : 'Somaliland'}</strong>
+      <strong>{tooltip.iso3 === '_NCY' ? tr('geo.northernCyprus') : tr('geo.somaliland')}</strong>
       <div class="muted">{tr('map.tooltip.noFill')}</div>
     {:else}
       <strong>{displayName(tipMeta, locale, tooltip.iso3)}</strong>

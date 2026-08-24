@@ -15,6 +15,7 @@ import type {
   DisputedNotes,
   NowcastFile,
   IduFile,
+  WorldTotalsFile,
 } from './types';
 
 const ROOT = join(process.cwd(), 'public', 'data', 'v1');
@@ -36,6 +37,7 @@ export const getCountries = () => readJson<CountriesFile>('countries.json');
 export const getDisputedNotes = () => readJson<DisputedNotes>('geo/disputed-notes.json');
 export const getNowcast = () => readJson<NowcastFile>('live/nowcast.json');
 export const getIdu = () => readJson<IduFile>('live/idu-latest.json');
+export const getWorldTotals = () => readJson<WorldTotalsFile>('world-totals.json');
 export const getCountry = (iso3: string) => readJson<CountryFile>(`country/${iso3}.json`);
 
 export function getStockRecent(): StockFile | null {

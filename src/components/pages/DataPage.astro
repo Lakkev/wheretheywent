@@ -1,7 +1,7 @@
 ---
 /** /data — download centre: bulk CSVs, JSON API-like files, sources & licenses, datapackage. */
 import DocPage from './DocPage.astro';
-import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
 import {
   getManifest,
   getSources,
@@ -16,27 +16,45 @@ interface Props {
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
+const zh = locale === 'zh-Hant';
 const manifest = getManifest();
 const sources = getSources() ?? {};
 const metrics = getMetrics();
 const downloads = listDownloads();
 const countries = getCountries();
-const DESC: Record<string, string> = {
-  'unhcr-population-all-years.csv':
-    'Long format: one row per country × view × year × metric (non-null only). Best for pandas/R.',
-  'unhcr-population-by-asylum.csv':
-    'Wide format by country of asylum: one row per country × year, one column per metric.',
-  'unhcr-population-by-origin.csv':
-    'Wide format by country of origin: one row per country × year, one column per metric.',
-  'countries.csv': 'Entity list: ISO3, UNHCR name, display name, region, coverage flags, centroid.',
-  'wpp-total-population.csv': 'UN WPP 2024 mid-year total population (per-1,000 denominator).',
+const DESC: Record<string, { en: string; zh: string }> = {
+  'unhcr-population-all-years.csv': {
+    en: 'Long format: one row per country × view × year × metric (non-null only). Best for pandas/R.',
+    zh: '長格式:每列為國家 × 視角 × 年份 × 指標(僅含非空值)。最適合 pandas/R。',
+  },
+  'unhcr-population-by-asylum.csv': {
+    en: 'Wide format by country of asylum: one row per country × year, one column per metric.',
+    zh: '寬格式(庇護國視角):每列為國家 × 年份,每個指標一欄。',
+  },
+  'unhcr-population-by-origin.csv': {
+    en: 'Wide format by country of origin: one row per country × year, one column per metric.',
+    zh: '寬格式(來源國視角):每列為國家 × 年份,每個指標一欄。',
+  },
+  'countries.csv': {
+    en: 'Entity list: ISO3, UNHCR name, display name, region, coverage flags, centroid.',
+    zh: '統計對象清單:ISO3、UNHCR 名稱、顯示名稱、區域、涵蓋旗標、質心座標。',
+  },
+  'wpp-total-population.csv': {
+    en: 'UN WPP 2024 mid-year total population (per-1,000 denominator).',
+    zh: 'UN WPP 2024 年中總人口(每千人比率的分母)。',
+  },
 };
-const zh = locale === 'zh-Hant';
+const statusText = (st: string) => {
+  const key = ('status.' + st) as MessageKey;
+  const label = tr(key);
+  return label.startsWith('status.') ? st : label;
+};
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'DataCatalog',
-  name: 'Where They Went — data downloads',
-  url: `${SITE_URL}/data`,
+  name: zh ? '他們去了哪裡 — 資料下載' : 'Where They Went — data downloads',
+  url: `${SITE_URL}${localizePath('/data', locale)}`,
+  inLanguage: locale,
   dataset: downloads.map((d) => ({
     '@type': 'Dataset',
     name: d.name,
@@ -45,6 +63,7 @@ const jsonLd = {
         '@type': 'DataDownload',
         contentUrl: `${SITE_URL}/data/v1/downloads/${d.name}`,
         encodingFormat: 'text/csv',
+        contentSize: `${d.bytes}`,
       },
     ],
   })),
@@ -55,19 +74,29 @@ const jsonLd = {
   locale={locale}
   title={tr('page.data.title')}
   lede={zh
-    ? '所有圖表背後的數字皆可下載;每列都帶來源、資料截止日與擷取日。'
+    ? '本站的每一個數字都可下載;每一列都帶有來源、資料截止日與擷取日。'
     : 'Every number on this site is downloadable. Each row carries its source, as-of date and retrieval date.'}
   wide
   jsonLd={jsonLd}
 >
   <section>
-    <h2>Bulk CSV</h2>
+    <h2>{zh ? '大宗 CSV' : 'Bulk CSV'}</h2>
     <p class="small muted">
-      RFC 4180, UTF-8, LF line endings, no comment lines. Empty field = not reported (distinct from
-      0). {tr('source.snapshot', { id: manifest?.snapshot_id ?? '—' })}.
+      {
+        zh
+          ? 'RFC 4180、UTF-8、LF 換行。空欄位 = 未報告(與 0 有別)。'
+          : 'RFC 4180, UTF-8, LF line endings. Empty field = not reported (distinct from 0).'
+      }
+      {tr('source.snapshot', { id: manifest?.snapshot_id ?? '—' })}.
     </p>
     <table>
-      <thead><tr><th>File</th><th>Description</th><th class="num">Size</th></tr></thead>
+      <thead
+        ><tr
+          ><th>{zh ? '檔案' : 'File'}</th><th>{zh ? '說明' : 'Description'}</th><th class="num"
+            >{zh ? '大小' : 'Size'}</th
+          ></tr
+        ></thead
+      >
       <tbody>
         {
           downloads.map((d) => (
@@ -78,7 +107,7 @@ const jsonLd = {
                     {d.name}
                   </a>
                 </td>
-                <td class="small">{DESC[d.name] ?? ''}</td>
+                <td class="small">{zh ? (DESC[d.name]?.zh ?? '') : (DESC[d.name]?.en ?? '')}</td>
                 <td class="num small">{fmtBytes(d.bytes)}</td>
               </>
             </tr>
@@ -87,65 +116,120 @@ const jsonLd = {
       </tbody>
     </table>
     <p class="small">
-      <a href="/data/v1/datapackage.json">datapackage.json</a> (Frictionless Data descriptor with table
-      schemas) · <a href="/data/v1/manifest.json">manifest.json</a> (file list, sha256, snapshot id)
+      <a href="/data/v1/datapackage.json">datapackage.json</a>
+      {
+        zh
+          ? '(Frictionless Data 描述檔,含表格結構)'
+          : '(Frictionless Data descriptor with table schemas)'
+      } ·
+      <a href="/data/v1/manifest.json">manifest.json</a>
+      {zh ? '(檔案清單、sha256、快照代碼)' : '(file list, sha256, snapshot id)'}
     </p>
   </section>
 
   <section>
-    <h2>JSON files (static, CORS-open, versioned)</h2>
+    <h2>
+      {zh ? 'JSON 檔案(靜態、開放 CORS、有版本)' : 'JSON files (static, CORS-open, versioned)'}
+    </h2>
     <p class="small">
-      There is no API server — everything is a static file under <code>/data/v1/</code>, regenerated
-      daily and cached immutably. Fetch with the <code>?v=</code> hash from <code
-        >manifest.json</code
-      > for instant updates, or without it for the latest.
+      {
+        zh ? (
+          <>
+            本站沒有 API 伺服器——一切都是 <code>/data/v1/</code> 下的靜態檔案,每日重新產生。以{' '}
+            <code>manifest.json</code> 中的 <code>?v=</code>{' '}
+            雜湊擷取可獲得不可變快取;不帶參數則取得最新版。
+          </>
+        ) : (
+          <>
+            There is no API server — everything is a static file under <code>/data/v1/</code>,
+            regenerated daily. Fetch with the <code>?v=</code> hash from <code>manifest.json</code>{' '}
+            for immutable caching, or without it for the latest.
+          </>
+        )
+      }
     </p>
     <table class="small">
-      <thead><tr><th>Path</th><th>Contents</th></tr></thead>
+      <thead><tr><th>{zh ? '路徑' : 'Path'}</th><th>{zh ? '內容' : 'Contents'}</th></tr></thead>
       <tbody>
         <tr
           ><td><code>/data/v1/countries.json</code></td><td
-            >{countries?.count ?? '—'} entities: ISO3, UNHCR name, display name, region, centroid/bbox,
-            coverage flags</td
+            >{
+              zh
+                ? `${countries?.count ?? '—'} 個統計對象:ISO3、UNHCR 名稱、顯示名稱、區域、質心/邊界框、涵蓋旗標`
+                : `${countries?.count ?? '—'} entities: ISO3, UNHCR name, display name, region, centroid/bbox, coverage flags`
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/stock/{'{from}-{to}'}.json</code></td><td
-            >Columnar stocks for all metrics × countries × years (both views), population, global
-            totals. Zero-runs packed as <code>["z",n]</code>, null-runs as <code>["n",n]</code> (see <code
-              >src/lib/columnar.ts</code
-            >)</td
+            >{
+              zh ? (
+                <>
+                  欄式存量:全部指標 × 國家 × 年份(兩種視角)、人口、全球總計。連續零壓為{' '}
+                  <code>["z",n]</code>、連續空值壓為 <code>["n",n]</code>
+                </>
+              ) : (
+                <>
+                  Columnar stocks for all metrics × countries × years (both views), population,
+                  global totals. Zero-runs packed as <code>["z",n]</code>, null-runs as{' '}
+                  <code>["n",n]</code>
+                </>
+              )
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/country/{'{ISO3}'}.json</code></td><td
-            >Everything for one country: series 1951–{manifest?.year_max}, demographics, top
-            partners, solutions, asylum applications, IDMC, footnotes</td
+            >{
+              zh
+                ? `單一國家的完整資料:1951–${manifest?.year_max} 序列、人口結構、主要往來國、持久解決方案、庇護申請、IDMC、註腳`
+                : `Everything for one country: series 1951–${manifest?.year_max}, demographics, top partners, solutions, asylum applications, IDMC, footnotes`
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/flows/{'{year}'}.json</code></td><td
-            >Bilateral refugee/asylum-seeker matrix (origin × asylum), 2015+</td
+            >{
+              zh
+                ? '雙邊難民/庇護申請者矩陣(來源 × 庇護),2015 起'
+                : 'Bilateral refugee/asylum-seeker matrix (origin × asylum), 2015+'
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/live/nowcast.json</code></td><td
-            >UNHCR nowcasting estimates (monthly, labelled as estimates)</td
+            >{
+              zh
+                ? 'UNHCR 即時推估(每月,明確標示為估計)'
+                : 'UNHCR nowcasting estimates (monthly, labelled as estimates)'
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/live/idu-latest.json</code></td><td
-            >IDMC Internal Displacement Updates, last 180 days (preliminary)</td
+            >{
+              zh
+                ? 'IDMC 境內流離失所即時更新,近 180 天(初步;衝突座標已對齊 25 公里網格)'
+                : 'IDMC Internal Displacement Updates, last 180 days (preliminary; conflict coordinates snapped to a 25 km grid)'
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/geo/world-50m.topo.json</code></td><td
-            >Natural Earth 1:50m boundaries (simplified), ISO3 ids</td
+            >{
+              zh
+                ? 'Natural Earth 1:50m 邊界(簡化),ISO3 代碼'
+                : 'Natural Earth 1:50m boundaries (simplified), ISO3 ids'
+            }</td
           ></tr
         >
         <tr
           ><td><code>/data/v1/sources.json</code> · <code>/data/v1/metrics.json</code></td><td
-            >Provenance, licenses, caveats; metric definitions</td
+            >{
+              zh
+                ? '出處、授權、注意事項;指標定義(中英)'
+                : 'Provenance, licenses, caveats; metric definitions (en+zh)'
+            }</td
           ></tr
         >
       </tbody>
@@ -153,12 +237,15 @@ const jsonLd = {
   </section>
 
   <section>
-    <h2>Sources & licenses</h2>
+    <h2>{zh ? '來源與授權' : 'Sources & licenses'}</h2>
     <table class="small">
       <thead
         ><tr
-          ><th>Source</th><th>License</th><th>Attribution required</th><th>{tr('cite.dataAsOf')}</th
-          ><th>{tr('cite.retrieved')}</th><th>Status</th></tr
+          ><th>{tr('common.source')}</th><th>{tr('common.license')}</th><th
+            >{zh ? '須標註' : 'Attribution required'}</th
+          ><th>{tr('cite.dataAsOf')}</th><th>{tr('cite.retrieved')}</th><th
+            >{tr('common.status')}</th
+          ></tr
         ></thead
       >
       <tbody>
@@ -181,35 +268,46 @@ const jsonLd = {
               <td>{s.attribution}</td>
               <td class="num">{fmtDateIso(s.data_as_of)}</td>
               <td class="num">{fmtDateIso(s.retrieved_at)}</td>
-              <td>{s.status === 'ok' ? 'ok' : <span class="chip stale">{s.status}</span>}</td>
+              <td>
+                {s.status === 'ok' ? (
+                  statusText('ok')
+                ) : (
+                  <span class="chip stale">{statusText(s.status)}</span>
+                )}
+              </td>
             </tr>
           ))
         }
       </tbody>
     </table>
     <p class="small">
-      Data licence details: <a
-        href="https://github.com/Lakkev/wheretheywent/blob/master/DATA-LICENSE.md"
-        rel="noopener">DATA-LICENSE.md</a
-      >. The site code is all rights reserved; the data remains under its original open licences.
+      {zh ? '資料授權詳情:' : 'Data licence details:'}
+      <a href="https://github.com/Lakkev/wheretheywent/blob/master/DATA-LICENSE.md" rel="noopener"
+        >DATA-LICENSE.md</a
+      >{
+        zh
+          ? '。本站程式碼保留所有權利;資料維持其原始開放授權。'
+          : '. The site code is all rights reserved; the data remains under its original open licences.'
+      }
     </p>
   </section>
 
   <section>
-    <h2>Metric definitions</h2>
+    <h2>{zh ? '指標定義' : 'Metric definitions'}</h2>
     <dl class="small">
       {
         Object.values(metrics?.metrics ?? {}).map((m) => (
           <>
             <dt>
-              <strong>{m.label}</strong> <code class="muted">{m.id}</code> · source{' '}
+              <strong>{tr(`metric.${m.id}` as MessageKey)}</strong>{' '}
+              <code class="muted">{m.id}</code> · {tr('common.source').toLowerCase()}{' '}
               <code>{m.source_id}</code>
             </dt>
             <dd>
-              {m.definition}
-              {m.caveats.length ? (
+              {zh && m.definition_zh ? m.definition_zh : m.definition}
+              {(zh && m.caveats_zh?.length ? m.caveats_zh : m.caveats).length ? (
                 <ul>
-                  {m.caveats.map((c) => (
+                  {(zh && m.caveats_zh?.length ? m.caveats_zh : m.caveats).map((c) => (
                     <li>{c}</li>
                   ))}
                 </ul>

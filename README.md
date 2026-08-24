@@ -18,8 +18,12 @@ npm run etl:validate && npm run etl:promote
 npm run dev                              # http://localhost:4321
 ```
 
-Quality gates: `npm run check` · `npm test` (60 unit tests) · `npm run build && npm run test:e2e`
-(19 Playwright specs incl. axe, share-link reproduction, WebGL/basemap fallbacks).
+Quality gates: `npm run check` · `npm test` (62 unit tests) · `npm run build && npm run test:e2e`
+(Playwright specs incl. axe, share-link reproduction, page-error tracking, WebGL/basemap
+fallbacks). Deploy with `npm run deploy` (dirty-tree guard + commit stamp).
+
+The site is fully bilingual (English / 繁體中文) — UI, methodology, metric definitions, caveats
+and downloads; terminology is locked in `docs/STYLE-zh.md`.
 
 ## Documents
 

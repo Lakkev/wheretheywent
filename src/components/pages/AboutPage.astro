@@ -8,33 +8,45 @@ interface Props {
 }
 const { locale } = Astro.props;
 const tr = useT(locale);
+const zh = locale === 'zh-Hant';
 const manifest = getManifest();
-const report = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Problem report')}&body=${encodeURIComponent('Page URL (paste the link from the Share button):\n\nWhat looks wrong:\n\nWhat you expected (with a source if possible):\n')}`;
+const report = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(tr('report.subject'))}&body=${encodeURIComponent(tr('report.body', { url: Astro.url.href }))}`;
 const ORGS = [
   {
     name: 'UNHCR, the UN Refugee Agency',
     url: 'https://donate.unhcr.org/',
     note: 'Mandated protection and assistance for refugees, asylum-seekers, stateless persons and many IDPs.',
+    note_zh: '受權責保護與協助難民、庇護申請者、無國籍者及許多境內流離失所者。',
   },
   {
-    name: 'Médecins Sans Frontières (MSF)',
+    name: 'Médecins Sans Frontières (MSF) 無國界醫生',
     url: 'https://www.msf.org/donate',
     note: 'Medical care in conflict zones and displacement sites.',
+    note_zh: '在衝突地區與流離失所營地提供醫療照護。',
   },
   {
     name: 'International Rescue Committee (IRC)',
     url: 'https://www.rescue.org/',
     note: 'Emergency response and long-term support for displaced people.',
+    note_zh: '為流離失所者提供緊急應變與長期支持。',
   },
   {
     name: 'Norwegian Refugee Council (NRC)',
     url: 'https://www.nrc.no/',
     note: 'Shelter, legal aid, education, food security for displaced people.',
+    note_zh: '提供庇護所、法律協助、教育與糧食安全。',
   },
   {
     name: 'Danish Refugee Council (DRC)',
     url: 'https://drc.ngo/',
     note: 'Protection and durable solutions in 40+ countries.',
+    note_zh: '在 40 多國推動保護與持久解決方案。',
+  },
+  {
+    name: 'Global Refugee-led Network (GRN)',
+    url: 'https://www.globalrefugeelednetwork.org/',
+    note: 'A network led by refugees themselves, advocating for refugee participation in the decisions that affect them.',
+    note_zh: '由難民自身領導的全球網絡,倡議讓難民參與影響他們的決策。',
   },
 ];
 ---
@@ -42,67 +54,190 @@ const ORGS = [
 <DocPage
   locale={locale}
   title={tr('page.about.title')}
-  lede="Where They Went is an independent, non-commercial data platform that makes the published statistics on forced displacement easy to see, check, cite and reuse."
+  lede={zh
+    ? '「他們去了哪裡」是一個獨立、非商業的資料平台,讓被迫流離失所的公開統計易於查看、檢驗、引用與再利用。'
+    : 'Where They Went is an independent, non-commercial data platform that makes the published statistics on forced displacement easy to see, check, cite and reuse.'}
 >
-  <h2>Who it is for</h2>
+  <h2>{zh ? '這是給誰用的' : 'Who it is for'}</h2>
   <p>
-    Journalists, researchers and NGO staff first; interested readers second. Success means being
-    cited and reused — not page views. That order drives every decision: citation accuracy first,
-    then a complete methodology, then data quality, then stable links, then visuals.
+    {
+      zh
+        ? '首要對象是記者、研究者與 NGO 工作者;其次是有興趣的一般讀者。成功的定義是被引用、被使用——而不是流量。這個順序決定了每一項設計:引用正確性優先,其次是方法論的完整、資料品質、連結的穩定,最後才是視覺效果。'
+        : 'Journalists, researchers and NGO staff first; interested readers second. Success means being cited and reused — not page views. That order drives every decision: citation accuracy first, then a complete methodology, then data quality, then stable links, then visuals.'
+    }
   </p>
 
-  <h2>What it is not</h2>
+  <h2>{zh ? '本站不是什麼' : 'What it is not'}</h2>
   <ul>
     <li>
-      <strong>It does not track people.</strong> Displaced people are a persecuted population; publishing
-      individual locations or identities can expose their families to reprisals or jeopardise asylum claims.
-      This site only ever handles group-level statistics published by UNHCR, IDMC and the UN — and that
-      is non-negotiable.
+      {
+        zh ? (
+          <>
+            <strong>本站不追蹤任何個人。</strong>
+            流離失所者是受迫害的人群;公開個別位置或身分可能使其家人遭到報復、或使庇護申請被駁回。本站只處理
+            UNHCR、IDMC 與聯合國發布的群體層級統計——這是不可協商的底線。
+          </>
+        ) : (
+          <>
+            <strong>It does not track people.</strong> Displaced people are a persecuted population;
+            publishing individual locations or identities can expose their families to reprisals or
+            jeopardise asylum claims. This site only ever handles group-level statistics published
+            by UNHCR, IDMC and the UN — and that is non-negotiable.
+          </>
+        )
+      }
     </li>
     <li>
-      <strong>It does not collect donations.</strong> No money passes through this site (see below).
+      {
+        zh ? (
+          <>
+            <strong>本站不收捐款。</strong>沒有任何金錢經過本站(見下)。
+          </>
+        ) : (
+          <>
+            <strong>It does not collect donations.</strong> No money passes through this site (see
+            below).
+          </>
+        )
+      }
     </li>
     <li>
-      <strong>It does not track you.</strong> No analytics, no cookies, no third-party scripts. The basemap
-      tiles come from OpenFreeMap; the data and code are served as static files.
+      {
+        zh ? (
+          <>
+            <strong>本站不追蹤你。</strong>沒有分析工具、沒有 Cookie、沒有第三方腳本。底圖瓦片來自
+            OpenFreeMap;資料與程式皆為靜態檔案。
+          </>
+        ) : (
+          <>
+            <strong>It does not track you.</strong> No analytics, no cookies, no third-party
+            scripts. The basemap tiles come from OpenFreeMap; the data and code are served as static
+            files.
+          </>
+        )
+      }
     </li>
   </ul>
 
-  <h2>Data, licences and code</h2>
+  <h2>{zh ? '是誰在做、怎麼維持' : 'Who makes this'}</h2>
   <p>
-    Data is reproduced under its original open licences (UNHCR CC BY 4.0, IDMC CC BY-IGO, UN WPP CC
-    BY 3.0 IGO, Natural Earth public domain); attribution travels inside every download. The site's
-    own code is published for transparency and audit (<a href={REPO_URL} rel="noopener"
-      >repository</a
-    >) but is <em>all rights reserved</em>. Current data snapshot: <code
-      >{manifest?.snapshot_id ?? '—'}</code
-    >.
-  </p>
-  <p>
-    Read the <a href={localizePath('/methodology', locale)}>methodology</a>, the <a
-      href={localizePath('/about/boundaries', locale)}>boundaries & names policy</a
-    >, and the <a href={localizePath('/data', locale)}>download centre</a>.
-  </p>
-
-  <h2>Report a problem</h2>
-  <p>
-    Every page has a "Report a problem" link that pre-fills the current view. Or write to <a
-      href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a
-    > — <a href={report}>open a pre-filled report</a>. Please include the share link of the view
-    and, if you can, the number you expected and where it is published. Data errors that trace back
-    to an upstream source are reported upstream; errors in our pipeline are fixed and logged in <code
-      >docs/data-verification.md</code
-    >.
+    {
+      zh ? (
+        <>
+          由 <strong>Lakkev</strong>(lakkev.com)獨立維護,無外部經費,營運成本為每月 0 元(靜態架站 +
+          免費層服務)。每一份發布的資料快照都提交至版本庫——即使本站有一天消失,所有數字仍可取回、仍可驗證。聯絡:
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>。
+        </>
+      ) : (
+        <>
+          Independently maintained by <strong>Lakkev</strong> (lakkev.com). No external funding;
+          hosting cost is $0/month (static site + free tiers). Every published data snapshot is
+          committed to a version-controlled repository — even if this site ever disappears, every
+          number remains retrievable and verifiable. Contact:{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        </>
+      )
+    }
   </p>
 
-  <h2>Want to help people who were displaced?</h2>
+  <h2>{zh ? '資料、授權與程式碼' : 'Data, licences and code'}</h2>
   <p>
-    This site does not take donations and does not route money. The organisations below work
-    directly with displaced people; each link goes to <em>their own</em> donation page, and each publishes
-    audited financial reports. Independent evaluations are available from <a
-      href="https://www.charitynavigator.org/"
-      rel="noopener">Charity Navigator</a
-    > and <a href="https://www.givewell.org/" rel="noopener">GiveWell</a>.
+    {
+      zh ? (
+        <>
+          <strong>資料是開放的</strong>:依原始開放授權轉載(UNHCR CC BY 4.0、IDMC CC BY-IGO、UN WPP
+          CC BY 3.0 IGO、Natural Earth
+          公有領域),出處標註隨每個下載檔內嵌。本站自身的程式碼保留所有權利(
+          <a href={REPO_URL} rel="noopener">
+            版本庫
+          </a>
+          )。目前資料快照:<code>{manifest?.snapshot_id ?? '—'}</code>。
+        </>
+      ) : (
+        <>
+          <strong>The data is open</strong>: reproduced under its original open licences (UNHCR CC
+          BY 4.0, IDMC CC BY-IGO, UN WPP CC BY 3.0 IGO, Natural Earth public domain), with
+          attribution embedded in every download. The site's own code is all rights reserved (
+          <a href={REPO_URL} rel="noopener">
+            repository
+          </a>
+          ). Current data snapshot: <code>{manifest?.snapshot_id ?? '—'}</code>.
+        </>
+      )
+    }
+  </p>
+  <p>
+    {zh ? '請參閱' : 'Read the'}
+    <a href={localizePath('/methodology', locale)}>{zh ? '方法論' : 'methodology'}</a>{
+      zh ? '、' : ', the '
+    }<a href={localizePath('/about/boundaries', locale)}
+      >{zh ? '邊界與名稱政策' : 'boundaries & names policy'}</a
+    >{zh ? '與' : ', and the '}<a href={localizePath('/data', locale)}
+      >{zh ? '資料下載中心' : 'download centre'}</a
+    >{zh ? '。' : '.'}
+  </p>
+
+  <h2>{zh ? '回報問題' : 'Report a problem'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          每個頁面都有「回報問題」連結,會自動帶入您當下的檢視網址。或直接寄信至{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> —{' '}
+          <a href={report}>開啟預填的回報信</a>
+          。請附上「分享」按鈕產生的連結,並盡可能附上您預期的數字與其出處。追溯到上游來源的錯誤會回報給上游;本站管線的錯誤會修正並記錄於{' '}
+          <code>docs/data-verification.md</code>。
+        </>
+      ) : (
+        <>
+          Every page has a "Report a problem" link that pre-fills the current view. Or write to{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> —{' '}
+          <a href={report}>open a pre-filled report</a>. Please include the share link of the view
+          and, if you can, the number you expected and where it is published. Data errors that trace
+          back to an upstream source are reported upstream; errors in our pipeline are fixed and
+          logged in <code>docs/data-verification.md</code>.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '與流離失所者同行的組織' : 'Organisations working with displaced people'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          本站不收捐款、不經手任何金錢,<strong>也不收取推薦費——並承諾永不收取</strong>
+          ;若此政策有任何改變,本頁會在任何連結變動之前先行說明。以下組織直接與流離失所者工作;每個連結都通往
+          <em>它們自己的</em>頁面,且各自公布經審計的財務報告。請注意:本站的主要資料來源即為
+          UNHCR。獨立評鑑可參考{' '}
+          <a href="https://www.charitynavigator.org/" rel="noopener">
+            Charity Navigator
+          </a>{' '}
+          與{' '}
+          <a href="https://www.givewell.org/" rel="noopener">
+            GiveWell
+          </a>
+          (兩者皆為美國評鑑機構,其方法對全球南方組織相對不利)。
+        </>
+      ) : (
+        <>
+          This site does not take donations, does not route money, and{' '}
+          <strong>receives no referral fees — and commits to never accepting them</strong>; if that
+          ever changes, this page will say so before any link changes. The organisations below work
+          directly with displaced people; each link goes to <em>their own</em> page, and each
+          publishes audited financial reports. Disclosure: UNHCR is also the primary source of the
+          data on this site. Independent evaluations:{' '}
+          <a href="https://www.charitynavigator.org/" rel="noopener">
+            Charity Navigator
+          </a>{' '}
+          and{' '}
+          <a href="https://www.givewell.org/" rel="noopener">
+            GiveWell
+          </a>{' '}
+          (both US-based raters whose methods can disadvantage Global-South organisations).
+        </>
+      )
+    }
   </p>
   <ul>
     {
@@ -111,22 +246,37 @@ const ORGS = [
           <a href={o.url} rel="noopener">
             {o.name}
           </a>{' '}
-          — <span class="small muted">{o.note}</span>
+          — <span class="small muted">{zh ? o.note_zh : o.note}</span>
         </li>
       ))
     }
   </ul>
   <p class="small muted">
-    Listing here is informational, not an endorsement or a partnership; no referral fees are
-    received.
+    {
+      zh
+        ? '列出僅供參考,不代表背書或合作關係。'
+        : 'Listing here is informational, not an endorsement or a partnership.'
+    }
   </p>
 
-  <h2>Maintenance</h2>
+  <h2>{zh ? '維運' : 'Maintenance'}</h2>
   <p>
-    The pipeline runs automatically every day and degrades gracefully: if a source is unavailable,
-    the previous snapshot stays online and a notice appears. The project is designed to run at zero
-    hosting cost and to be maintainable by a small team with AI assistance — see <code
-      >docs/RUNBOOK.md</code
-    > and <code>docs/ARCHITECTURE.md</code> in the repository.
+    {
+      zh ? (
+        <>
+          資料管線每日自動執行並具備優雅降級:任一來源故障時,前一份快照持續上線並顯示提示。本專案設計為零營運成本,並可由小團隊在
+          AI 協助下長期維護——詳見版本庫中的 <code>docs/RUNBOOK.md</code> 與{' '}
+          <code>docs/ARCHITECTURE.md</code>。
+        </>
+      ) : (
+        <>
+          The pipeline runs automatically every day and degrades gracefully: if a source is
+          unavailable, the previous snapshot stays online and a notice appears. The project is
+          designed to run at zero hosting cost and to be maintainable by a small team with AI
+          assistance — see <code>docs/RUNBOOK.md</code> and <code>docs/ARCHITECTURE.md</code> in the
+          repository.
+        </>
+      )
+    }
   </p>
 </DocPage>

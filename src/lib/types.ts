@@ -68,10 +68,15 @@ export interface MetricDef {
   id: AnyMetricId;
   label: string;
   definition: string;
+  /** zh-Hant rendering of definition/caveats (labels come from i18n metric.* keys). */
+  definition_zh?: string;
   unit: 'persons';
   source_id: string;
   views: ViewId[];
   caveats: string[];
+  caveats_zh?: string[];
+  /** #8: first year this series was collected at all (e.g. OIP 2018) — earlier years are structurally absent, not "not reported". */
+  coverage_from?: number;
   derived?: boolean;
   components?: MetricId[];
 }
@@ -245,6 +250,13 @@ export interface IduFile {
   by_country: Record<string, { events: number; figure: number }>;
   events: IduEvent[];
   source_id: string;
+}
+
+/** #14: global totals per year/metric/view — powers "share of world" lines. */
+export interface WorldTotalsFile {
+  schema: 1;
+  /** year → metric id (incl. derived total_poc) → global totals; null = nothing reported */
+  totals: Record<string, Record<string, { asylum: number | null; origin: number | null }>>;
 }
 
 export interface Datapackage {

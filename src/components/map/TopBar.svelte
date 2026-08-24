@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ui, session, staleSources } from '../../lib/state.svelte';
+  import { ui, data, session, staleSources } from '../../lib/state.svelte';
   import { URL_METRICS } from '../../lib/url';
   import { useT, localizePath, LOCALES, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtDateIso } from '../../lib/format';
@@ -20,20 +20,21 @@
   } = $props();
   const tr = $derived(useT(locale));
   const stale = $derived(staleSources());
+  /** Dead-man's switch (#audit S1): flag staleness from generated_at even if the ETL never runs. */
+  const AGED_DAYS = 10;
+  const agedDate = $derived.by(() => {
+    const g = data.manifest?.generated_at;
+    if (!g) return null;
+    const days = (Date.now() - Date.parse(g)) / 86_400_000;
+    return days > AGED_DAYS ? g.slice(0, 10) : null;
+  });
   const metricLabel = (m: string) => tr(`metric.${m}` as MessageKey);
   const pathWithQuery = () => (typeof location !== 'undefined' ? location.search : '');
   let menuOpen = $state(false);
   /** D17: contextual problem report — the mailto body carries the exact share URL of this view. */
   function report() {
-    const subject = encodeURIComponent('[Where They Went] Problem report');
-    const body = encodeURIComponent(
-      `Page: ${location.href}
-
-What looks wrong:
-
-What you expected (with a source if possible):
-`,
-    );
+    const subject = encodeURIComponent(tr('report.subject'));
+    const body = encodeURIComponent(tr('report.body', { url: location.href }));
     menuOpen = false;
     location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
   }
@@ -44,9 +45,9 @@ What you expected (with a source if possible):
 
 <svelte:window onclick={closeMenuOnOutside} />
 
-<header class="topbar" aria-label="Controls">
+<header class="topbar" aria-label={tr('a11y.controls')}>
   <a class="brand" href={localizePath('/', locale)}>{tr('site.name')}</a>
-  <span class="seg" role="group" aria-label="View">
+  <span class="seg" role="group" aria-label={tr('a11y.viewGroup')}>
     <button
       class="btn"
       type="button"
@@ -62,7 +63,7 @@ What you expected (with a source if possible):
       onclick={() => (ui.v = 'origin')}>{tr('view.origin.short')}</button
     >
   </span>
-  <label class="visually-hidden" for="metric-select">Metric</label>
+  <label class="visually-hidden" for="metric-select">{tr('a11y.metricSelect')}</label>
   <select id="metric-select" bind:value={ui.m}>
     {#each URL_METRICS as m (m)}
       {#if m !== 'hst' || ui.v === 'asylum'}
@@ -70,7 +71,7 @@ What you expected (with a source if possible):
       {/if}
     {/each}
   </select>
-  <span class="seg" role="group" aria-label="Normalisation">
+  <span class="seg" role="group" aria-label={tr('a11y.normGroup')}>
     <button class="btn" type="button" aria-pressed={ui.n === 'abs'} onclick={() => (ui.n = 'abs')}
       >{tr('scale.abs')}</button
     >
@@ -82,12 +83,17 @@ What you expected (with a source if possible):
       onclick={() => (ui.n = 'per1k')}>/1,000</button
     >
   </span>
-  <label class="visually-hidden" for="scale-select">Scale</label>
-  <select id="scale-select" bind:value={ui.sc} title="Colour scale">
+  <label class="visually-hidden" for="scale-select">{tr('a11y.scaleSelect')}</label>
+  <select id="scale-select" bind:value={ui.sc} title={tr('a11y.scaleSelect')}>
     <option value="quant">{tr('scale.quant')}</option>
     <option value="log">{tr('scale.log')}</option>
     <option value="lin">{tr('scale.lin')}</option>
   </select>
+  {#if agedDate && !stale.length}
+    <span class="chip stale" title={tr('source.aged', { date: agedDate })}>
+      ⚠ {tr('source.aged', { date: agedDate })}
+    </span>
+  {/if}
   {#if stale.length}
     <button
       class="chip stale stale-chip"
@@ -126,7 +132,7 @@ What you expected (with a source if possible):
     >
     {#if menuOpen}
       <div class="menu-panel">
-        <nav class="menu-nav" aria-label="Primary">
+        <nav class="menu-nav" aria-label={tr('a11y.primaryNav')}>
           <a
             href={localizePath('/compare', locale) +
               (ui.cmp.length ? `?cmp=${ui.cmp.join(',')}` : '')}>{tr('nav.compare')}</a

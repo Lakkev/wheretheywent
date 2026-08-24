@@ -21,13 +21,13 @@ const tr = useT(locale);
       <button class="btn is-active" type="button">{tr('view.asylum')}</button>
       <button class="btn" type="button">{tr('view.origin')}</button>
     </span>
-    <select aria-label="Metric"><option>{tr('metric.refugees')}</option></select>
+    <select aria-label={tr('a11y.metricSelect')}><option>{tr('metric.refugees')}</option></select>
     <span class="seg">
       <button class="btn is-active" type="button">{tr('scale.abs')}</button>
       <button class="btn" type="button">{tr('scale.per1k')}</button>
     </span>
     <span class="spacer"></span>
-    <nav class="site-nav" aria-label="Primary">
+    <nav class="site-nav" aria-label={tr('a11y.primaryNav')}>
       <a href={localizePath('/compare', locale)}>{tr('nav.compare')}</a>
       <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
       <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
@@ -66,6 +66,7 @@ const tr = useT(locale);
   </aside>
 
   <div class="center">
+    <div class="loading-note muted small">{tr('map.loadingData')}</div>
     <div class="map-controls">
       <button class="btn icon" type="button" aria-label={tr('map.zoomIn')}>+</button>
       <button class="btn icon" type="button" aria-label={tr('map.zoomOut')}>−</button>

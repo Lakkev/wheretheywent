@@ -8,6 +8,8 @@ import { fmtDateLong } from './format';
 
 export interface CitationInput {
   locale: Locale;
+  /** Dataset snapshot id — rendered as "(Version …)" / BibTeX version. */
+  version?: string;
   /** e.g. "Syria — internally displaced persons, 1951–2025" */
   title: string;
   /** absolute permalink to the view */
@@ -35,7 +37,7 @@ function year(iso: string): string {
   return iso.slice(0, 4);
 }
 
-function bibKey(title: string, accessed: string): string {
+function bibKey(title: string, url: string, pubYear: string): string {
   const slug = title
     .toLowerCase()
     .normalize('NFD')
@@ -45,7 +47,11 @@ function bibKey(title: string, accessed: string): string {
     .split('-')
     .slice(0, 3)
     .join('-');
-  return `wheretheywent-${slug || 'view'}-${year(accessed)}`;
+  // short content hash keeps keys unique across years/metrics sharing a 3-token prefix (#6)
+  let h = 0;
+  const src = title + '|' + url;
+  for (let i = 0; i < src.length; i++) h = (h * 31 + src.charCodeAt(i)) >>> 0;
+  return `wheretheywent-${slug || 'view'}-${h.toString(36).slice(0, 5)}-${pubYear}`;
 }
 
 function bibEscape(s: string): string {
@@ -63,19 +69,21 @@ export function buildCitations(inp: CitationInput): Citations {
   const retrieved = primary ? fmtDateLong(primary.retrieved_at, inp.locale) : '';
   const accessedLong = fmtDateLong(accessed, inp.locale);
   const srcList = inp.sources.map((s) => s.attribution).join('; ');
-  const y = year(accessed);
+  // Publication year = the year the DATA covers, not the year the reader clicked (#4).
+  const y = primary?.data_as_of ? year(primary.data_as_of) : year(accessed);
+  const ver = inp.version ? ` (Version ${inp.version})` : '';
 
   if (inp.locale === 'zh-Hant') {
-    const page = `${site}。「${inp.title}」。資料:${srcList}(資料截至 ${dataAsOf};擷取於 ${retrieved})。${inp.url} [存取日期 ${accessedLong}]。`;
-    const apa = `${site}. (${y}). ${inp.title} [資料集]. 資料:${srcList}(資料截至 ${dataAsOf}). ${inp.url}`;
+    const page = `${site}。「${inp.title}」。資料:${srcList}(資料截至 ${dataAsOf};擷取於 ${retrieved})。${inp.url} [存取日期 ${accessedLong}]。${inp.version ? `快照 ${inp.version}。` : ''}`;
+    const apa = `${site}. (${y}). ${inp.title}${ver} [資料集]. 資料:${srcList}(資料截至 ${dataAsOf}). 讀取日期 ${accessedLong},取自 ${inp.url}`;
     const chicago = `${site}. ${y}. 「${inp.title}」. 資料:${srcList}(資料截至 ${dataAsOf}). 存取於 ${accessedLong}. ${inp.url}.`;
-    const bibtex = bib(inp, site, accessed, srcList, dataAsOf);
+    const bibtex = bib(inp, site, accessed, srcList, dataAsOf, String(y));
     return { apa, chicago, bibtex, page };
   }
-  const page = `${site}. "${inp.title}." Data: ${srcList} (data as of ${dataAsOf}; retrieved ${retrieved}). ${inp.url} [accessed ${accessedLong}].`;
-  const apa = `${site}. (${y}). ${inp.title} [Data set]. Data: ${srcList} (data as of ${dataAsOf}). ${inp.url}`;
+  const page = `${site}. "${inp.title}." Data: ${srcList} (data as of ${dataAsOf}; retrieved ${retrieved}). ${inp.url} [accessed ${accessedLong}].${inp.version ? ` Snapshot ${inp.version}.` : ''}`;
+  const apa = `${site}. (${y}). ${inp.title}${ver} [Data set]. Data: ${srcList} (data as of ${dataAsOf}). Retrieved ${accessedLong}, from ${inp.url}`;
   const chicago = `${site}. ${y}. "${inp.title}." Data: ${srcList} (data as of ${dataAsOf}). Accessed ${accessedLong}. ${inp.url}.`;
-  const bibtex = bib(inp, site, accessed, srcList, dataAsOf);
+  const bibtex = bib(inp, site, accessed, srcList, dataAsOf, String(y));
   return { apa, chicago, bibtex, page };
 }
 
@@ -85,16 +93,19 @@ function bib(
   accessed: string,
   srcList: string,
   dataAsOf: string,
+  pubYear: string,
 ): string {
-  const key = bibKey(inp.title, accessed);
+  const key = bibKey(inp.title, inp.url, pubYear);
   return [
-    `@misc{${key},`,
+    // biblatex @dataset (classic BibTeX users: treat as @misc; CJK titles need XeLaTeX)
+    `@dataset{${key},`,
     `  author = {${bibEscape(site)}},`,
     `  title = {${bibEscape(inp.title)}},`,
-    `  year = {${year(accessed)}},`,
-    `  howpublished = {\\url{${inp.url}}},`,
-    `  note = {Data: ${bibEscape(srcList)} (data as of ${bibEscape(dataAsOf)}). Accessed ${accessed}.},`,
-    `  urldate = {${accessed}}`,
+    `  year = {${pubYear}},`,
+    ...(inp.version ? [`  version = {${inp.version}},`] : []),
+    `  url = {${inp.url}},`,
+    `  urldate = {${accessed}},`,
+    `  note = {Data: ${bibEscape(srcList)} (data as of ${bibEscape(dataAsOf)}).}`,
     `}`,
   ].join('\n');
 }

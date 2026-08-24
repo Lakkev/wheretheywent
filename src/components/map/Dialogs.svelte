@@ -1,6 +1,6 @@
 <script lang="ts">
   /** Share / Cite / Download / Keys / Stale dialogs for the map page. */
-  import { ui, data, session, raw, staleSources } from '../../lib/state.svelte';
+  import { ui, data, session, raw, staleSources, toast } from '../../lib/state.svelte';
   import Modal from '../ui/Modal.svelte';
   import CopyField from '../ui/CopyField.svelte';
   import type { ViewResult } from '../../lib/view';
@@ -53,15 +53,24 @@
     );
     return list;
   });
-  const citations = $derived(buildCitations({ locale, title, url: permalink, sources }));
+  /** metric-level caveats travel with every export (#audit-2) */
+  const metricCaveats = $derived.by(() => {
+    const def = data.metrics?.metrics?.[ui.m];
+    if (!def) return [];
+    return locale === 'zh-Hant' && def.caveats_zh?.length ? def.caveats_zh : def.caveats;
+  });
+  const citations = $derived(
+    buildCitations({ locale, title, url: permalink, sources, version: snapshotId }),
+  );
   const snapshotId = $derived(data.manifest?.snapshot_id ?? 'local');
 
+  // #12: provenance comments ship by default — the stored flag records the OPT-OUT
   let withComments = $state(
-    typeof localStorage !== 'undefined' && localStorage.getItem('wtw.csvComments') === '1',
+    typeof localStorage === 'undefined' || localStorage.getItem('wtw.csvStrict') !== '1',
   );
   $effect(() => {
     if (typeof localStorage !== 'undefined')
-      localStorage.setItem('wtw.csvComments', withComments ? '1' : '0');
+      localStorage.setItem('wtw.csvStrict', withComments ? '0' : '1');
   });
 
   function exportRows(): ViewExportRow[] {
@@ -75,6 +84,10 @@
         metric: ui.m,
         view: ui.v,
         value: r.abs,
+        yoy_delta: (() => {
+          const prev = raw.stock.value(ui.v, r.iso3, ui.m, ui.y - 1);
+          return r.abs !== null && prev !== null ? r.abs - prev : null;
+        })(),
         per_1000: r.per1k,
         population: raw.stock.pop(r.iso3, ui.y),
         rank: r.rank || null,
@@ -91,35 +104,54 @@
     };
   }
   function downloadCsv() {
-    const csv = viewRowsToCsv(exportRows(), prov(), {
-      comments: withComments ? provenanceComments(prov(), permalink, title) : undefined,
-    });
-    saveFile(`wtw-${safeFilename(title)}.csv`, csv, 'text/csv');
+    try {
+      const csv = viewRowsToCsv(exportRows(), prov(), {
+        comments: withComments
+          ? provenanceComments(prov(), permalink, title, [
+              ...(ui.r.length ? [`region_filter: ${ui.r.join(',')}`] : []),
+              ...(ui.min ? [`min_filter: ${ui.min}`] : []),
+              ...metricCaveats.map((c) => `note: ${c}`),
+            ])
+          : undefined,
+      });
+      saveFile(`wtw-${safeFilename(title)}.csv`, csv, 'text/csv');
+    } catch {
+      toast(tr('toast.downloadError'));
+    }
   }
   function downloadJson() {
-    const j = buildJsonExport({
-      title,
-      permalink,
-      snapshotId,
-      sources: Object.fromEntries(
-        sources.map((s, i) => [i === 0 ? sourceId : 'wpp_population', s]),
-      ),
-      citations,
-      notes: sources.flatMap((s) => s.caveats),
-      data: exportRows(),
-    });
-    saveFile(`wtw-${safeFilename(title)}.json`, JSON.stringify(j, null, 2), 'application/json');
+    try {
+      const j = buildJsonExport({
+        title,
+        permalink,
+        snapshotId,
+        sources: Object.fromEntries(
+          sources.map((s, i) => [i === 0 ? sourceId : 'wpp_population', s]),
+        ),
+        citations,
+        notes: [
+          ...metricCaveats,
+          ...sources.flatMap((s) =>
+            locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats,
+          ),
+        ],
+        data: exportRows(),
+      });
+      saveFile(`wtw-${safeFilename(title)}.json`, JSON.stringify(j, null, 2), 'application/json');
+    } catch {
+      toast(tr('toast.downloadError'));
+    }
   }
   const stale = $derived(staleSources());
 </script>
 
 {#if session.dialog === 'share'}
-  <Modal title={tr('share.title')} onclose={close}>
+  <Modal title={tr('share.title')} onclose={close} closeLabel={tr('common.close')}>
     <p class="small muted">{tr('share.help')}</p>
     <CopyField {locale} label="URL" value={permalink} rows={2} />
   </Modal>
 {:else if session.dialog === 'cite'}
-  <Modal title={tr('cite.title')} onclose={close}>
+  <Modal title={tr('cite.title')} onclose={close} closeLabel={tr('common.close')}>
     <p class="small muted">{title}</p>
     <CopyField {locale} label={tr('cite.page')} value={citations.page} mono={false} />
     <CopyField {locale} label={tr('cite.apa')} value={citations.apa} mono={false} rows={2} />
@@ -133,11 +165,11 @@
     <CopyField {locale} label={tr('cite.bibtex')} value={citations.bibtex} rows={8} />
   </Modal>
 {:else if session.dialog === 'download'}
-  <Modal title={tr('download.title')} onclose={close}>
+  <Modal title={tr('download.title')} onclose={close} closeLabel={tr('common.close')}>
     <p class="small muted">
-      {tr('download.thisView')}: {title} — {view.rows.filter((r) => r.abs !== null && r.visible)
-        .length}
-      {tr('common.country').toLowerCase()} rows
+      {tr('download.thisView')}: {title} — {tr('download.rowCount', {
+        n: view.rows.filter((r) => r.abs !== null && r.visible).length,
+      })}
     </p>
     <div class="dl-actions">
       <button class="btn primary" type="button" onclick={downloadCsv}>⬇ {tr('download.csv')}</button
@@ -156,7 +188,7 @@
     <p class="small"><a href="/data">{tr('download.allYears')} →</a></p>
   </Modal>
 {:else if session.dialog === 'keys'}
-  <Modal title={tr('keys.title')} onclose={close}>
+  <Modal title={tr('keys.title')} onclose={close} closeLabel={tr('common.close')}>
     <table class="keys">
       <tbody>
         <tr><td><kbd>/</kbd></td><td>{tr('keys.search')}</td></tr>
@@ -171,7 +203,7 @@
     </table>
   </Modal>
 {:else if session.dialog === 'boundaries'}
-  <Modal title={tr('page.boundaries.title')} onclose={close} wide>
+  <Modal title={tr('page.boundaries.title')} onclose={close} closeLabel={tr('common.close')} wide>
     {#if disputed}
       <blockquote class="callout small">
         {locale === 'zh-Hant' ? disputed.disclaimer_zh : disputed.disclaimer_en}
@@ -203,6 +235,7 @@
   <Modal
     title={tr('source.stale', { since: fmtDateIso(stale[0]?.[1].stale_since ?? '') })}
     onclose={close}
+    closeLabel={tr('common.close')}
   >
     <ul class="small">
       {#each stale as [id, s] (id)}

@@ -2,7 +2,7 @@
  * Single shared reactive state for the map application (Svelte 5 runes, zero state libs).
  * Big immutable payloads live in $state.raw + a version counter; UI state is a deep $state.
  */
-import type { Locale } from '../i18n/ui';
+import { t, type Locale } from '../i18n/ui';
 import { DataClient, StockStore, indexCountries, type DataClient as DC } from './data';
 import type {
   CountriesFile,
@@ -90,7 +90,7 @@ export function toggleCompare(iso3: string) {
   const i = ui.cmp.indexOf(iso3);
   if (i >= 0) ui.cmp.splice(i, 1);
   else if (ui.cmp.length < MAX_COMPARE) ui.cmp = [...ui.cmp, iso3].sort();
-  else toast(`Up to ${MAX_COMPARE} countries can be compared.`);
+  else toast(t(session.locale, 'toast.compareLimit', { n: MAX_COMPARE }));
 }
 
 export function setYear(y: number) {
@@ -141,17 +141,25 @@ export async function loadGeo(): Promise<Topology | null> {
   return raw.geo;
 }
 
+let historyPromise: Promise<void> | null = null;
 export async function loadHistory(): Promise<void> {
   if (data.historyLoaded || !data.manifest) return;
-  const rest = data.manifest.stock_files.slice(1);
-  await Promise.all(
-    rest.map(async (f) => {
-      const s = await raw.client.stock(f);
-      raw.stock.add(s, f);
-    }),
-  );
-  data.stockVersion++;
-  data.historyLoaded = true;
+  // F5(sw): dedupe concurrent callers (idle prefetch + year-scrub can race)
+  historyPromise ??= (async () => {
+    const rest = data.manifest!.stock_files.slice(1);
+    await Promise.all(
+      rest.map(async (f) => {
+        const s = await raw.client.stock(f);
+        raw.stock.add(s, f);
+      }),
+    );
+    data.stockVersion++;
+    data.historyLoaded = true;
+  })().catch((e) => {
+    historyPromise = null; // allow a retry after a network failure
+    throw e;
+  });
+  return historyPromise;
 }
 
 export async function loadLive(): Promise<void> {
@@ -175,7 +183,7 @@ export async function loadDetail(iso3: string | null) {
     const f = await raw.client.country(iso3);
     if (ui.c === iso3) session.detailCountry = f;
   } catch (e) {
-    toast('Could not load country details.');
+    toast(t(session.locale, 'toast.detailError'));
   } finally {
     session.detailLoading = false;
   }

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, waitForMap, mapState, uiSnapshot } from './helpers';
+import { waitForApp, waitForMap, mapState, uiSnapshot, trackPageErrors } from './helpers';
 
 /**
  * ★ The permalink must reproduce the view byte-for-byte (spec §13.4 share-link):
@@ -8,12 +8,20 @@ import { waitForApp, waitForMap, mapState, uiSnapshot } from './helpers';
 test('share link reproduces the view in a fresh context', async ({ browser }) => {
   const ctx1 = await browser.newContext();
   const page = await ctx1.newPage();
+  const errors1 = trackPageErrors(page);
   await page.goto('/');
   await waitForApp(page);
   await waitForMap(page);
 
+  // F5: hovering a rank-list row prefetches that country's JSON (hover-intent §8.5)
+  const prefetched = page.waitForRequest(/\/data\/v1\/country\/[A-Z0-9_]+\.json/, {
+    timeout: 8000,
+  });
+  await page.locator('.ranklist li').first().hover();
+  await prefetched;
+
   // interactions: origin view, IDPs, year 2016, select Syria via search, open table, collapse rail
-  await page.getByRole('button', { name: 'Origin', exact: true }).click();
+  await page.getByRole('button', { name: 'Fled from', exact: true }).click();
   await page.locator('#metric-select').selectOption('idps');
   await page.locator('.timeline input[type=range]').fill('2016');
   await page.locator('.rail input[type=search]').fill('syria');
@@ -37,11 +45,13 @@ test('share link reproduces the view in a fresh context', async ({ browser }) =>
   expect(url).toMatch(/map=4\.25\/35\/38\.5/);
   const snap1 = await uiSnapshot(page);
   const map1 = await mapState(page);
+  expect(errors1).toEqual([]); // F5: no uncaught runtime errors anywhere in the flow
   await ctx1.close();
 
   // fresh context: no cache, no storage
   const ctx2 = await browser.newContext();
   const page2 = await ctx2.newPage();
+  const errors2 = trackPageErrors(page2);
   await page2.goto(url);
   await waitForApp(page2);
   await waitForMap(page2);
@@ -61,6 +71,7 @@ test('share link reproduces the view in a fresh context', async ({ browser }) =>
   expect(Math.abs(map2!.lat - map1!.lat)).toBeLessThan(0.01);
   // Syria IDPs 2016 golden number visible in the detail panel
   expect(await page2.locator('.detail .kpi .value').first().textContent()).toBe('6,325,978');
+  expect(errors2).toEqual([]); // F5
   await ctx2.close();
 });
 
@@ -78,7 +89,7 @@ test('browser back/forward restores state (popstate)', async ({ page }) => {
   await waitForApp(page);
   await page.locator('#metric-select').selectOption('asylum_seekers');
   await page.waitForURL(/m=asylum_seekers/);
-  await page.getByRole('button', { name: 'Origin', exact: true }).click();
+  await page.getByRole('button', { name: 'Fled from', exact: true }).click();
   await page.waitForURL(/v=origin/);
   await page.goBack();
   await page.waitForURL((u) => !u.search.includes('v=origin'));

@@ -10,6 +10,7 @@
     MetricsFile,
     AnyMetricId,
     CountryMeta,
+    WorldTotalsFile,
   } from '../../lib/types';
   import { METRIC_IDS } from '../../lib/types';
   import { unpack } from '../../lib/columnar';
@@ -41,6 +42,7 @@
     names,
     siteUrl,
     snapshotId,
+    worldTotals = null,
   }: {
     file: CountryFile;
     sources: SourcesFile;
@@ -49,14 +51,19 @@
     names: Record<string, string>;
     siteUrl: string;
     snapshotId: string;
+    worldTotals?: WorldTotalsFile | null;
   } = $props();
   const tr = $derived(useT(locale));
+  const statusLabel = (st: string) => {
+    const label = tr(('status.' + st) as MessageKey);
+    return label.startsWith('status.') ? st : label;
+  };
   const yearMax = $derived(file.years[file.years.length - 1]!);
   const yearMin = $derived(file.years[0]!);
   let year = $state(0);
   let metric = $state<AnyMetricId>('refugees');
   let dialog = $state<null | 'cite' | 'download'>(null);
-  let withComments = $state(false);
+  let withComments = $state(true); // #12: provenance comments on by default
   const name = $derived(
     locale === 'zh-Hant' && file.meta.display_name_zh
       ? file.meta.display_name_zh
@@ -87,7 +94,7 @@
   }
   onMount(() => {
     readUrl();
-    withComments = localStorage.getItem('wtw.csvComments') === '1';
+    withComments = localStorage.getItem('wtw.csvStrict') !== '1';
     window.addEventListener('popstate', readUrl);
     return () => window.removeEventListener('popstate', readUrl);
   });
@@ -115,6 +122,13 @@
   const pop = $derived(yi >= 0 ? (unpack(file.population)[yi] ?? null) : null);
   const hosted = $derived(val('asylum', metric));
   const originating = $derived(val('origin', metric));
+  /** #14: share of the world total for this metric/year (world-totals.json; null = not computable) */
+  const worldShare = (view: 'asylum' | 'origin', v: number | null): string | null => {
+    const t = worldTotals?.totals?.[String(year)]?.[metric]?.[view] ?? null;
+    if (v === null || !t || t <= 0) return null;
+    const pct = (v / t) * 100;
+    return pct >= 0.1 ? `${pct.toFixed(1)}%` : pct >= 0.01 ? `${pct.toFixed(2)}%` : '<0.01%';
+  };
   const rows = $derived(
     METRIC_IDS.map((m) => ({ m, a: val('asylum', m), o: val('origin', m) })).filter(
       (r) => r.a !== null || r.o !== null,
@@ -140,6 +154,7 @@
       title,
       url: permalink,
       sources: [src, sources['wpp_population']].filter((s): s is NonNullable<typeof s> => !!s),
+      version: snapshotId,
     }),
   );
   const solutionsRow = $derived(file.solutions.find((s) => s.year === year));
@@ -149,45 +164,45 @@
 
   function exportRows(): ViewExportRow[] {
     const out: ViewExportRow[] = [];
+    const valAt = (view: 'asylum' | 'origin', i: number): number | null => {
+      if (metric === 'total_poc') {
+        let s: number | null = null;
+        for (const c of [
+          'refugees',
+          'asylum_seekers',
+          'idps',
+          'stateless',
+          'ooc',
+          'oip',
+        ] as const) {
+          const x = unpack(file[view].v[METRIC_IDS.indexOf(c)]!)[i] ?? null;
+          if (x !== null) s = (s ?? 0) + x;
+        }
+        return s;
+      }
+      return (
+        unpack(file[view].v[METRIC_IDS.indexOf(metric as (typeof METRIC_IDS)[number])] ?? [])[i] ??
+        null
+      );
+    };
     file.years.forEach((y, i) => {
       for (const view of ['asylum', 'origin'] as const) {
-        const v =
-          unpack(file[view].v[METRIC_IDS.indexOf(metric as (typeof METRIC_IDS)[number])] ?? [])[
-            i
-          ] ?? null;
-        if (metric === 'total_poc' || v !== null) {
-          const p = unpack(file.population)[i] ?? null;
-          const vv =
-            metric === 'total_poc'
-              ? (() => {
-                  let s: number | null = null;
-                  for (const c of [
-                    'refugees',
-                    'asylum_seekers',
-                    'idps',
-                    'stateless',
-                    'ooc',
-                    'oip',
-                  ] as const) {
-                    const x = unpack(file[view].v[METRIC_IDS.indexOf(c)]!)[i] ?? null;
-                    if (x !== null) s = (s ?? 0) + x;
-                  }
-                  return s;
-                })()
-              : v;
-          if (vv === null) continue;
-          out.push({
-            iso3: file.iso3,
-            country_name: file.meta.name,
-            year: y,
-            metric,
-            view,
-            value: vv,
-            per_1000: p ? (vv / p) * 1000 : null,
-            population: p,
-            rank: null,
-          });
-        }
+        const vv = valAt(view, i);
+        if (vv === null) continue;
+        const p = unpack(file.population)[i] ?? null;
+        const prev = i > 0 && file.years[i - 1] === y - 1 ? valAt(view, i - 1) : null;
+        out.push({
+          iso3: file.iso3,
+          country_name: file.meta.name,
+          year: y,
+          metric,
+          view,
+          value: vv,
+          yoy_delta: prev !== null ? vv - prev : null,
+          per_1000: p ? (vv / p) * 1000 : null,
+          population: p,
+          rank: null,
+        });
       }
     });
     return out;
@@ -200,7 +215,7 @@
     snapshot_id: snapshotId,
   });
   function dlCsv() {
-    localStorage.setItem('wtw.csvComments', withComments ? '1' : '0');
+    localStorage.setItem('wtw.csvStrict', withComments ? '0' : '1');
     saveFile(
       `wtw-${safeFilename(title)}.csv`,
       viewRowsToCsv(exportRows(), prov(), {
@@ -221,7 +236,7 @@
             Object.entries(sources).filter(([k]) => file.sources.includes(k)),
           ),
           citations,
-          notes: src?.caveats ?? [],
+          notes: (locale === 'zh-Hant' ? (src?.caveats_zh ?? src?.caveats) : src?.caveats) ?? [],
           data: file,
         }),
         null,
@@ -275,6 +290,11 @@
           ? `${fmtRate((hosted / pop) * 1000, locale)} ${tr('legend.per1k.unit')}`
           : ''}
       </div>
+      {#if worldShare('asylum', hosted)}
+        <div class="label">
+          {tr('country.shareOfWorld', { pct: worldShare('asylum', hosted)! })}
+        </div>
+      {/if}
     </div>
     <div class="kpi">
       <div class="label">
@@ -286,6 +306,11 @@
           ? `${fmtRate((originating / pop) * 1000, locale)} ${tr('legend.per1k.unit')}`
           : ''}
       </div>
+      {#if worldShare('origin', originating)}
+        <div class="label">
+          {tr('country.shareOfWorld', { pct: worldShare('origin', originating)! })}
+        </div>
+      {/if}
     </div>
     <div class="kpi">
       <div class="label">{tr('country.population')} · {year}</div>
@@ -326,8 +351,8 @@
             <li>
               {tr('metric.returned_refugees')}: {fmtInt(solutionsRow.returned_refugees, locale)}
             </li>
-            <li>Resettlement: {fmtInt(solutionsRow.resettlement, locale)}</li>
-            <li>Naturalisation: {fmtInt(solutionsRow.naturalisation, locale)}</li>
+            <li>{tr('solutions.resettlement')}: {fmtInt(solutionsRow.resettlement, locale)}</li>
+            <li>{tr('solutions.naturalisation')}: {fmtInt(solutionsRow.naturalisation, locale)}</li>
             <li>{tr('metric.returned_idps')}: {fmtInt(solutionsRow.returned_idps, locale)}</li>
           </ul>
         </div>
@@ -346,12 +371,12 @@
       {/if}
       {#if appsHost || appsOrigin}
         <div class="card small">
-          <strong>Asylum applications ({year})</strong>
+          <strong>{tr('country.asylumApplications', { year })}</strong>
           <ul class="plain">
             {#if appsHost}<li>
-                Lodged in {name}: {fmtInt(appsHost.applied, locale)}
+                {tr('country.lodgedIn', { name })}: {fmtInt(appsHost.applied, locale)}
               </li>{/if}{#if appsOrigin}<li>
-                By nationals of {name}: {fmtInt(appsOrigin.applied, locale)}
+                {tr('country.byNationals', { name })}: {fmtInt(appsOrigin.applied, locale)}
               </li>{/if}
           </ul>
         </div>
@@ -363,7 +388,11 @@
       <summary>{tr('country.footnotes')} ({footnotes.length})</summary>
       <ul>
         {#each footnotes as f, i (i)}<li>
-            <span class="muted">{f.year ?? tr('common.all')} · {f.population_type} · {f.view}</span>
+            <span class="muted"
+              >{f.year ?? tr('common.all')} · {f.population_type} · {f.view === 'asylum'
+                ? tr('view.asylum.short')
+                : tr('view.origin.short')}</span
+            >
             — {f.text}
           </li>{/each}
       </ul>
@@ -403,8 +432,8 @@
   <table class="small">
     <thead
       ><tr
-        ><th>Source</th><th>License</th><th>{tr('cite.dataAsOf')}</th><th>{tr('cite.retrieved')}</th
-        ><th>Status</th></tr
+        ><th>{tr('common.source')}</th><th>{tr('common.license')}</th><th>{tr('cite.dataAsOf')}</th
+        ><th>{tr('cite.retrieved')}</th><th>{tr('common.status')}</th></tr
       ></thead
     >
     <tbody>
@@ -414,7 +443,7 @@
               ><a href={s.landing_page} rel="noopener" target="_blank">{s.publisher}</a> — {s.title}</td
             ><td>{s.license.id}</td><td>{fmtDateIso(s.data_as_of)}</td><td
               >{fmtDateIso(s.retrieved_at)}</td
-            ><td>{s.status}</td></tr
+            ><td>{statusLabel(s.status)}</td></tr
           >
         {/if}{/each}
     </tbody>
@@ -426,7 +455,7 @@
   </p>
 
   {#if dialog === 'cite'}
-    <Modal title={tr('cite.title')} onclose={() => (dialog = null)}>
+    <Modal title={tr('cite.title')} onclose={() => (dialog = null)} closeLabel={tr('common.close')}>
       <p class="small muted">{title}</p>
       <CopyField {locale} label={tr('cite.page')} value={citations.page} mono={false} />
       <CopyField {locale} label={tr('cite.apa')} value={citations.apa} mono={false} rows={2} />
@@ -440,7 +469,11 @@
       <CopyField {locale} label={tr('cite.bibtex')} value={citations.bibtex} rows={8} />
     </Modal>
   {:else if dialog === 'download'}
-    <Modal title={tr('download.title')} onclose={() => (dialog = null)}>
+    <Modal
+      title={tr('download.title')}
+      onclose={() => (dialog = null)}
+      closeLabel={tr('common.close')}
+    >
       <p class="small muted">{title}</p>
       <div class="dl-actions">
         <button class="btn primary" type="button" onclick={dlCsv}>⬇ {tr('download.csv')}</button

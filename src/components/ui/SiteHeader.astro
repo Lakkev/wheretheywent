@@ -20,7 +20,7 @@ const isCurrent = (href: string) => (href === '/' ? here === '/' : here.startsWi
 <header class="site-header">
   <div class="inner">
     <a class="brand" href={localizePath('/', locale)}>{tr('site.name')}</a>
-    <nav class="site-nav" aria-label="Primary">
+    <nav class="site-nav" aria-label={tr('a11y.primaryNav')}>
       {
         items.map((it) => (
           <a

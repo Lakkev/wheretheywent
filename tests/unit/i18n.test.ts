@@ -26,8 +26,14 @@ describe('t / interpolate', () => {
   it('leaves unknown placeholders visible', () => {
     expect(interpolate('{a} {b}', { a: 1 })).toBe('1 {b}');
   });
-  it('falls back to en', () => {
-    expect(t('zh-Hant', 'nav.map')).toBe(t('en', 'nav.map'));
+  it('zh-Hant is genuinely translated (not an English copy)', () => {
+    expect(t('zh-Hant', 'nav.map')).toBe('地圖');
+    expect(t('zh-Hant', 'metric.refugees')).toBe('難民');
+    expect(t('zh-Hant', 'view.origin')).toBe('他們從哪裡逃離');
+    // at least 90 % of values must differ from English now
+    const keys = Object.keys(en) as (keyof typeof en)[];
+    const translated = keys.filter((k) => zh[k] !== en[k]).length;
+    expect(translated / keys.length).toBeGreaterThan(0.9);
   });
 });
 

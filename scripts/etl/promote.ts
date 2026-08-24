@@ -36,6 +36,7 @@ const GROUP_PATHS: Record<Group, string[]> = {
     'downloads',
     'datapackage.json',
     'metrics.json',
+    'world-totals.json',
     'unmatched-report.json',
   ],
   nowcast: ['live/nowcast.json'],
@@ -148,7 +149,7 @@ function main() {
   // health: stale durations
   let worst = 0;
   for (const [id, s] of Object.entries(final)) {
-    if (s.status !== 'stale') continue;
+    if (s.status === 'ok') continue;
     const days = s.stale_since ? (Date.parse(now) - Date.parse(s.stale_since)) / 86_400_000 : 0;
     worst = Math.max(worst, days);
     log.warn(`${id}: stale for ${days.toFixed(1)} days — ${s.last_error ?? ''}`);

@@ -31,7 +31,8 @@ const canonical = `${SITE_URL}${localizePath(base, locale)}`;
 const altEn = `${SITE_URL}${localizePath(base, 'en')}`;
 const altZh = `${SITE_URL}${localizePath(base, 'zh-Hant')}`;
 const htmlLang = locale === 'zh-Hant' ? 'zh-Hant' : 'en';
-const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
+const brand = tr('site.name');
+const fullTitle = title === brand || title === SITE_NAME ? brand : `${title} · ${brand}`;
 ---
 
 <!doctype html>
@@ -47,7 +48,7 @@ const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
     <link rel="alternate" hreflang="zh-Hant" href={altZh} />
     <link rel="alternate" hreflang="x-default" href={altEn} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:site_name" content={brand} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:url" content={canonical} />

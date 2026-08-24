@@ -44,6 +44,11 @@ export interface ViewParams {
   scale: ScaleKind;
   regions: string[];
   min: number;
+  /**
+   * When provided, class breaks are computed over ALL these years (not just the current one),
+   * so colours stay comparable while scrubbing/playing the timeline (fixed classing).
+   */
+  breakYears?: number[];
 }
 
 export function computeView(
@@ -72,11 +77,23 @@ export function computeView(
       drawable: meta.in_geo,
     });
   }
-  // breaks over visible, positive values
-  const breaks = computeBreaks(
-    rows.filter((r) => r.visible).map((r) => r.value),
-    p.scale,
-  );
+  // breaks over visible rows — across the whole year range when breakYears is given (#audit-1)
+  const breakValues: (number | null)[] = [];
+  if (p.breakYears && p.breakYears.length > 1) {
+    for (const r of rows) {
+      if (!r.visible) continue;
+      for (const y of p.breakYears) {
+        breakValues.push(
+          p.norm === 'per1k'
+            ? stock.per1k(p.view, r.iso3, p.metric, y)
+            : stock.value(p.view, r.iso3, p.metric, y),
+        );
+      }
+    }
+  } else {
+    for (const r of rows) if (r.visible) breakValues.push(r.value);
+  }
+  const breaks = computeBreaks(breakValues, p.scale);
   // colours + ranks
   const ranked = rows
     .filter((r) => r.visible && r.value !== null && r.value > 0)

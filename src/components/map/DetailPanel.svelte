@@ -19,6 +19,10 @@
     ondownload,
   }: { locale: Locale; view: ViewResult; oncite: () => void; ondownload: () => void } = $props();
   const tr = $derived(useT(locale));
+  const statusLabel = (st: string) => {
+    const label = tr(('status.' + st) as MessageKey);
+    return label.startsWith('status.') ? st : label;
+  };
   const iso3 = $derived(ui.c);
   const meta = $derived(iso3 ? raw.countryIndex.get(iso3) : undefined);
   const row = $derived(iso3 ? view.byIso.get(iso3) : undefined);
@@ -184,7 +188,7 @@
                   {s.data_as_of} · {tr('cite.retrieved')}
                   {s.retrieved_at.slice(0, 10)} · {s.license.id}</span
                 >
-                {#if s.status !== 'ok'}<span class="chip stale">{s.status}</span>{/if}
+                {#if s.status !== 'ok'}<span class="chip stale">{statusLabel(s.status)}</span>{/if}
                 {#if (locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats).length}
                   <ul class="muted">
                     {#each locale === 'zh-Hant' && s.caveats_zh ? s.caveats_zh : s.caveats as c, i (i)}<li

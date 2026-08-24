@@ -127,9 +127,9 @@
             "description": "When the data was fetched"
           },
           {
-            "name": "snapshot_id",
+            "name": "population_snapshot_id",
             "type": "string",
-            "description": "Content-addressed snapshot id"
+            "description": "First 8 hex of the population source content hash (resolve via sources.json)"
           }
         ],
         "primaryKey": [
@@ -226,9 +226,9 @@
             "description": "When the data was fetched"
           },
           {
-            "name": "snapshot_id",
+            "name": "population_snapshot_id",
             "type": "string",
-            "description": "Content-addressed snapshot id"
+            "description": "First 8 hex of the population source content hash (resolve via sources.json)"
           }
         ],
         "primaryKey": [
@@ -323,9 +323,9 @@
             "description": "When the data was fetched"
           },
           {
-            "name": "snapshot_id",
+            "name": "population_snapshot_id",
             "type": "string",
-            "description": "Content-addressed snapshot id"
+            "description": "First 8 hex of the population source content hash (resolve via sources.json)"
           }
         ],
         "primaryKey": [
@@ -429,9 +429,9 @@
             "description": "When the data was fetched"
           },
           {
-            "name": "snapshot_id",
+            "name": "population_snapshot_id",
             "type": "string",
-            "description": "Content-addressed snapshot id"
+            "description": "First 8 hex of the population source content hash (resolve via sources.json)"
           }
         ],
         "primaryKey": [

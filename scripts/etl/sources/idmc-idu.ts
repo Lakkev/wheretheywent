@@ -68,12 +68,16 @@ export async function fetchIdu(
     if (r.role && r.role !== 'Recommended figure') continue;
     const n = reg.normalize(r.iso3);
     const iso3 = n.key && n.matched ? n.key : (r.iso3 ?? '').toUpperCase();
+    // Dignity guard (#audit F5): conflict events are snapped to a 0.25° grid (~25 km) so the
+    // published map can never serve as a locating device for a named settlement in a war zone.
+    const conflict = (r.displacement_type ?? '') === 'Conflict';
+    const snap = (v: number) => (conflict ? Math.round(v * 4) / 4 : Math.round(v * 1000) / 1000);
     events.push({
       id: r.id,
       iso3,
       country: r.country ?? '',
-      lat: typeof r.latitude === 'number' ? Math.round(r.latitude * 1000) / 1000 : null,
-      lon: typeof r.longitude === 'number' ? Math.round(r.longitude * 1000) / 1000 : null,
+      lat: typeof r.latitude === 'number' ? snap(r.latitude) : null,
+      lon: typeof r.longitude === 'number' ? snap(r.longitude) : null,
       figure: typeof r.figure === 'number' ? r.figure : null,
       type: r.displacement_type ?? 'Other',
       displacement_date: (r.displacement_date ?? '').slice(0, 10),

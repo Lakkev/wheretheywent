@@ -1,5 +1,15 @@
 import type { Page } from '@playwright/test';
 
+/**
+ * F5: collect uncaught page errors (e.g. a missing import that only explodes at runtime).
+ * Attach right after creating the page; assert the returned array is empty at the end.
+ */
+export function trackPageErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  return errors;
+}
+
 /** Wait until the map app replaced the skeleton and the first view is computed. */
 export async function waitForApp(page: Page) {
   await page.waitForSelector('#map-skeleton', { state: 'detached', timeout: 30_000 });

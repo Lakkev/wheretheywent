@@ -10,7 +10,9 @@ const tr = useT(locale);
 const manifest = getManifest();
 const built = manifest?.generated_at ? manifest.generated_at.slice(0, 10) : '—';
 const snap = manifest?.snapshot_id ?? '—';
-const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Problem report')}&body=${encodeURIComponent('Page: ' + Astro.url.href + '\n\nWhat looks wrong:\n')}`;
+const reportSubject = tr('report.subject');
+const reportBody = (url: string) => tr('report.body', { url });
+const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody(Astro.url.href))}`;
 ---
 
 <footer class="site-footer">
@@ -23,7 +25,12 @@ const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where
       <span class="num">{tr('page.updated', { id: snap, date: built })}</span> ·
       <a href={localizePath('/data', locale)}>{tr('nav.data')}</a> ·
       <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a> ·
-      <a href={reportHref} data-report-email={CONTACT_EMAIL}>{tr('page.report')}</a>
+      <a
+        href={reportHref}
+        data-report-email={CONTACT_EMAIL}
+        data-report-subject={reportSubject}
+        data-report-body={reportBody('__URL__')}>{tr('page.report')}</a
+      >
     </div>
   </div>
 </footer>
@@ -31,12 +38,8 @@ const reportHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where
   // D17: pre-fill the report with the URL the reader is actually on (incl. query string).
   for (const a of document.querySelectorAll('a[data-report-email]')) {
     a.addEventListener('click', function () {
-      const subject = encodeURIComponent('[Where They Went] Problem report');
-      const body = encodeURIComponent(
-        'Page: ' +
-          location.href +
-          '\n\nWhat looks wrong:\n\nWhat you expected (with a source if possible):\n',
-      );
+      const subject = encodeURIComponent(this.dataset.reportSubject);
+      const body = encodeURIComponent(this.dataset.reportBody.replace('__URL__', location.href));
       this.href = 'mailto:' + this.dataset.reportEmail + '?subject=' + subject + '&body=' + body;
     });
   }

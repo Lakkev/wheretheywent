@@ -3,7 +3,8 @@
  * - en.json is the source of truth for the key set.
  * - zh-Hant.json must have exactly the same keys (type-checked below; a missing
  *   translation is a compile error, a stray key is a compile error).
- * - MVP ships English values in zh-Hant.json (spec D3); structure is complete.
+ * - zh-Hant.json is fully translated (2026-08-24); terminology is locked in docs/STYLE-zh.md,
+ *   and a unit test asserts the file is genuinely translated (sentinels + >90% of values differ).
  */
 import en from './en.json';
 import zhHant from './zh-Hant.json';

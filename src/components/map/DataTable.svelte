@@ -19,12 +19,21 @@
     ondownload,
   }: { locale: Locale; view: ViewResult; embedded?: boolean; ondownload?: () => void } = $props();
   const tr = $derived(useT(locale));
-  type Col = 'rank' | 'name' | 'value' | 'per1k' | 'share' | 'population' | MetricId;
+  type Col = 'rank' | 'name' | 'value' | 'per1k' | 'share' | 'yoy' | 'population' | MetricId;
   let sortCol = $state<Col>('rank');
   let sortDir = $state<1 | -1>(1);
-  let cols = $state<Set<Col>>(new Set(['rank', 'name', 'value', 'per1k', 'share']));
+  let cols = $state<Set<Col>>(new Set(['rank', 'name', 'value', 'per1k', 'share', 'yoy']));
   let showCols = $state(false);
-  const allCols: Col[] = ['rank', 'name', 'value', 'per1k', 'share', 'population', ...METRIC_IDS];
+  const allCols: Col[] = [
+    'rank',
+    'name',
+    'value',
+    'per1k',
+    'share',
+    'yoy',
+    'population',
+    ...METRIC_IDS,
+  ];
 
   const rows = $derived.by(() => {
     void data.stockVersion;
@@ -40,6 +49,11 @@
           name: displayName(r.meta, locale),
           population: raw.stock.pop(r.iso3, ui.y),
           share: r.abs !== null && total > 0 ? r.abs / total : null,
+          // #14: year-over-year change of the absolute value (null when either year unreported)
+          yoy: (() => {
+            const prev = raw.stock.value(ui.v, r.iso3, ui.m, ui.y - 1);
+            return r.abs !== null && prev !== null ? r.abs - prev : null;
+          })(),
           metrics,
         };
       });
@@ -55,6 +69,8 @@
           return x.per1k;
         case 'share':
           return x.share;
+        case 'yoy':
+          return x.yoy;
         case 'population':
           return x.population;
         default:
@@ -97,6 +113,8 @@
         return tr('scale.per1k');
       case 'share':
         return tr('table.share');
+      case 'yoy':
+        return tr('table.yoy');
       case 'population':
         return tr('country.population');
       default:
@@ -108,7 +126,7 @@
     const visible = allCols.filter((c) => cols.has(c));
     const header = [
       'iso3',
-      ...visible.map((c) => (c === 'name' ? 'country_name' : c)),
+      ...visible.map((c) => (c === 'name' ? 'country_name' : c === 'yoy' ? 'yoy_delta' : c)),
       'year',
       'view',
       'metric',
@@ -127,9 +145,11 @@
                 ? r.per1k
                 : c === 'share'
                   ? r.share
-                  : c === 'population'
-                    ? r.population
-                    : r.metrics[c],
+                  : c === 'yoy'
+                    ? r.yoy
+                    : c === 'population'
+                      ? r.population
+                      : r.metrics[c],
       ),
       ui.y,
       ui.v,
@@ -223,6 +243,9 @@
               {:else if c === 'per1k'}<td class="num">{fmtRate(r.per1k, locale)}</td>
               {:else if c === 'share'}<td class="num"
                   >{r.share === null ? '—' : (r.share * 100).toFixed(2) + '%'}</td
+                >
+              {:else if c === 'yoy'}<td class="num"
+                  >{r.yoy === null ? '—' : (r.yoy > 0 ? '+' : '') + fmtInt(r.yoy, locale)}</td
                 >
               {:else if c === 'population'}<td class="num">{fmtInt(r.population, locale)}</td>
               {:else}<td class="num">{fmtInt(r.metrics[c], locale)}</td>{/if}
