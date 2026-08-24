@@ -46,7 +46,7 @@ jobs:
           PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
         run: npm run build
 
-      - name: Output gates (Cloudflare Pages limits: 20,000 files, 25 MiB per file)
+      - name: "Output gates (Cloudflare Pages limits: 20,000 files, 25 MiB per file)"
         run: |
           COUNT=$(find dist -type f | wc -l)
           echo "files: $COUNT"
