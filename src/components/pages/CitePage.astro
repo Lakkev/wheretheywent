@@ -4,6 +4,7 @@
 import DocPage from './DocPage.astro';
 import { useT, localizePath, type Locale } from '../../i18n/ui';
 import { getManifest, getSources } from '../../lib/data-server';
+import { DATA_DOI } from '../../lib/site';
 interface Props {
   locale: Locale;
 }
@@ -54,6 +55,33 @@ const boiler = `Displacement figures are taken from Where They Went (snapshot ${
       </ul>
     )
   }
+
+  <h2>{zh ? '永久典藏（DOI）' : 'Permanent archive (DOI)'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          資料快照按季存放於 Zenodo（CERN 營運的永久典藏庫）。引用「最新版」請用 Concept DOI：
+          <a href={`https://doi.org/${DATA_DOI}`}>
+            <code>{DATA_DOI}</code>
+          </a>
+          ——它永遠解析到最新一季；每一季另有各自的版本 DOI，列於 Zenodo 紀錄頁。即使本站消失，DOI
+          與資料束仍在。
+        </>
+      ) : (
+        <>
+          Data snapshots are archived quarterly on Zenodo (the CERN-run permanent repository). To
+          cite "the latest version", use the concept DOI:{' '}
+          <a href={`https://doi.org/${DATA_DOI}`}>
+            <code>{DATA_DOI}</code>
+          </a>{' '}
+          — it always resolves to the newest quarter; each quarter also has its own version DOI,
+          listed on the Zenodo record. Even if this site disappears, the DOI and the data bundle
+          remain.
+        </>
+      )
+    }
+  </p>
 
   <h2>{zh ? '五條守則' : 'Five rules'}</h2>
   {

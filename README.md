@@ -1,5 +1,7 @@
 # Where They Went · 他們去了哪裡
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22087749.svg)](https://doi.org/10.5281/zenodo.22087749)
+
 Global forced-displacement data platform for journalists, researchers and NGOs: an interactive
 world map of refugees, asylum-seekers, internally displaced and stateless people by country and
 year (1951–latest), with sources, as-of dates, permanent links, citations and downloads for every
@@ -27,14 +29,14 @@ and downloads; terminology is locked in `docs/STYLE-zh.md`.
 
 ## Documents
 
-| | |
-|---|---|
-| `SPEC.md` | The frozen specification (requirements, data traps, architecture, delivery plan) |
-| `docs/ARCHITECTURE.md` | Every decision and *why*; budgets; how to change things |
-| `docs/RUNBOOK.md` | Non-engineering operations guide ("I received an alert") |
-| `docs/DATA-DICTIONARY.md` | Every field, unit, caveat |
-| `docs/data-verification.md` | Manual reconciliation log and golden numbers |
-| `DATA-LICENSE.md` | Upstream licences and required attribution |
+|                             |                                                                                  |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `SPEC.md`                   | The frozen specification (requirements, data traps, architecture, delivery plan) |
+| `docs/ARCHITECTURE.md`      | Every decision and _why_; budgets; how to change things                          |
+| `docs/RUNBOOK.md`           | Non-engineering operations guide ("I received an alert")                         |
+| `docs/DATA-DICTIONARY.md`   | Every field, unit, caveat                                                        |
+| `docs/data-verification.md` | Manual reconciliation log and golden numbers                                     |
+| `DATA-LICENSE.md`           | Upstream licences and required attribution                                       |
 
 ## Licence
 

@@ -11,7 +11,7 @@ import {
 } from '../../lib/data-server';
 import { fmtBytes, fmtDateIso } from '../../lib/format';
 import { metricDefinition, metricCaveats } from '../../lib/data';
-import { SITE_URL } from '../../lib/site';
+import { SITE_URL, DATA_DOI } from '../../lib/site';
 interface Props {
   locale: Locale;
 }
@@ -89,6 +89,9 @@ const jsonLd = {
           : 'RFC 4180, UTF-8, LF line endings. Empty field = not reported (distinct from 0).'
       }
       {tr('source.snapshot', { id: manifest?.snapshot_id ?? '—' })}.
+      {zh ? ' 長期典藏（Zenodo）DOI：' : ' Long-term archive (Zenodo) DOI: '}<a
+        href={`https://doi.org/${DATA_DOI}`}><code>{DATA_DOI}</code></a
+      >
     </p>
     <table>
       <thead

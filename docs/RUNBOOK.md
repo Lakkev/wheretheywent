@@ -158,6 +158,12 @@ suite on it.
    - _Deploy from Actions_: create a Cloudflare API token (Pages:Edit) and add it as the repo
      secret `CLOUDFLARE_API_TOKEN`; the AI can then add a deploy step to `etl-daily.yml`.
 6. Enable Renovate (GitHub app) for the monthly dependency PR.
+7. **Quarterly Zenodo deposit** (DOI archive). Concept DOI `10.5281/zenodo.22087749` always
+   resolves to the latest version. Each quarter: ensure `ZENODO_TOKEN` is in `.env` (never
+   committed), then ask the AI to run the deposit as a **new version** of the concept record
+   (Zenodo "newversion" flow off deposition 22087750) — NOT a fresh deposition, or the versions
+   won't chain under one concept DOI. `scripts/dev/zenodo-deposit.mjs` bundles
+   `public/data/v1` (minus `live/`) and uploads; publishing is permanent.
 
 ## 9. Things that are deliberately **not** possible
 

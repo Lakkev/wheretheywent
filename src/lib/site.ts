@@ -11,3 +11,5 @@ export const SITE_NAME = 'Where They Went';
 export const SITE_NAME_ZH = '他們去了哪裡';
 export const DATA_BASE = '/data/v1';
 export const REPO_URL = 'https://github.com/Lakkev/wheretheywent';
+/** Zenodo concept DOI — always resolves to the LATEST archived quarterly snapshot. */
+export const DATA_DOI = '10.5281/zenodo.22087749';
