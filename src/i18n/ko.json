@@ -313,5 +313,11 @@
   "home.q": "당신의 나라는 어디인가요?",
   "nav.insights": "기록",
   "nav.facts": "핵심 수치",
+  "menu.g.explore": "탐색",
+  "menu.g.cite": "인용과 데이터",
+  "menu.g.methods": "방법",
+  "menu.g.about": "소개",
+  "nav.definitions": "정의 연표",
+  "nav.review": "공개 리뷰",
   "insights.more": "모든 기록 →"
 }

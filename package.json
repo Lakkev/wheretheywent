@@ -25,7 +25,8 @@
     "validate:data": "node scripts/etl/validate.ts --in public/data/v1",
     "predev": "node scripts/dev/vendor-maplibre.mjs && node scripts/dev/copy-public-docs.mjs",
     "prebuild": "node scripts/dev/vendor-maplibre.mjs && node scripts/dev/copy-public-docs.mjs",
-    "postinstall": "node scripts/dev/vendor-maplibre.mjs || true"
+    "postinstall": "node scripts/dev/vendor-maplibre.mjs || true",
+    "postbuild": "node scripts/dev/csp-hashes.mjs"
   },
   "dependencies": {
     "@astrojs/svelte": "9.0.1",

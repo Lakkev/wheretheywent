@@ -29,7 +29,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - run: npm ci --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund --ignore-scripts
+      # postinstalls are skipped for supply-chain safety — run our own vendor step explicitly
+      - run: node scripts/dev/vendor-maplibre.mjs
 
       - name: Type-check (astro check + tsc)
         run: npm run check

@@ -313,5 +313,11 @@
   "home.q": "Où est votre pays ?",
   "nav.insights": "Records",
   "nav.facts": "L'essentiel",
+  "menu.g.explore": "Explorer",
+  "menu.g.cite": "Citer et données",
+  "menu.g.methods": "Méthodes",
+  "menu.g.about": "À propos",
+  "nav.definitions": "Chronologie des définitions",
+  "nav.review": "Évaluation ouverte",
   "insights.more": "Tous les records →"
 }

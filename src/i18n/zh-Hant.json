@@ -313,5 +313,11 @@
   "home.q": "你的國家在哪裡？",
   "nav.insights": "紀錄庫",
   "nav.facts": "快查",
+  "menu.g.explore": "探索",
+  "menu.g.cite": "引用與資料",
+  "menu.g.methods": "方法",
+  "menu.g.about": "關於",
+  "nav.definitions": "定義年表",
+  "nav.review": "外部評審",
   "insights.more": "全部紀錄 →"
 }

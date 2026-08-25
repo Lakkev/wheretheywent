@@ -140,19 +140,34 @@
     {#if menuOpen}
       <div class="menu-panel">
         <nav class="menu-nav" aria-label={tr('a11y.primaryNav')}>
-          <a
-            href={localizePath('/compare', locale) +
-              (ui.cmp.length ? `?cmp=${ui.cmp.join(',')}` : '')}>{tr('nav.compare')}</a
-          >
-          <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
-          <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
-          <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
-          <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
-          <a href={localizePath('/cite', locale)}>{tr('cite.responsibly')}</a>
-          <a href={localizePath('/insights', locale)}>{tr('nav.insights')}</a>
-          <a href={localizePath('/facts', locale)}>{tr('nav.facts')}</a>
-          <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
-          <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
+          <div class="menu-group">
+            <div class="menu-group-title">{tr('menu.g.explore')}</div>
+            <a
+              href={localizePath('/compare', locale) +
+                (ui.cmp.length ? `?cmp=${ui.cmp.join(',')}` : '')}>{tr('nav.compare')}</a
+            >
+            <a href={localizePath('/insights', locale)}>{tr('nav.insights')}</a>
+            <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
+          </div>
+          <div class="menu-group">
+            <div class="menu-group-title">{tr('menu.g.cite')}</div>
+            <a href={localizePath('/facts', locale)}>{tr('nav.facts')}</a>
+            <a href={localizePath('/data', locale)}>{tr('nav.data')}</a>
+            <a href={localizePath('/cite', locale)}>{tr('cite.responsibly')}</a>
+          </div>
+          <div class="menu-group">
+            <div class="menu-group-title">{tr('menu.g.methods')}</div>
+            <a href={localizePath('/methodology', locale)}>{tr('nav.methodology')}</a>
+            <a href={localizePath('/methodology/definitions', locale)}>{tr('nav.definitions')}</a>
+            <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
+            <a href={localizePath('/review', locale)}>{tr('nav.review')}</a>
+          </div>
+          <div class="menu-group">
+            <div class="menu-group-title">{tr('menu.g.about')}</div>
+            <a href={localizePath('/about', locale)}>{tr('nav.about')}</a>
+            <a href={localizePath('/support', locale)}>{tr('nav.support')}</a>
+            <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
+          </div>
         </nav>
         <nav class="lang-switch" aria-label={tr('nav.language')}>
           <select
@@ -191,10 +206,29 @@
   }
   .menu-nav {
     display: grid;
-    gap: 2px;
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    gap: var(--sp-3) var(--sp-4);
     margin-bottom: var(--sp-2);
     padding-bottom: var(--sp-2);
     border-bottom: 1px solid var(--c-border);
+  }
+  .menu-group {
+    display: grid;
+    gap: 2px;
+    align-content: start;
+  }
+  .menu-group-title {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    padding: 2px 8px 4px;
+  }
+  @media (max-width: 480px) {
+    .menu-nav {
+      grid-template-columns: 1fr;
+    }
   }
   .menu-nav a {
     text-decoration: none;

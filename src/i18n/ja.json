@@ -313,5 +313,11 @@
   "home.q": "あなたの国はどこですか？",
   "nav.insights": "記録",
   "nav.facts": "早見表",
+  "menu.g.explore": "探索",
+  "menu.g.cite": "引用とデータ",
+  "menu.g.methods": "方法",
+  "menu.g.about": "このサイト",
+  "nav.definitions": "定義の年表",
+  "nav.review": "公開レビュー",
   "insights.more": "すべての記録 →"
 }
