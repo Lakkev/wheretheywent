@@ -217,13 +217,23 @@
     gap: 2px;
     align-content: start;
   }
+  /* Section labels must NOT read as links (CJK has no uppercase to lean on):
+   * smaller, muted, hairline rule underneath, no hover, not selectable. */
   .menu-group-title {
     font-size: var(--fs-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--c-text-3);
-    padding: 2px 8px 4px;
+    margin: 0 8px 4px;
+    padding: 2px 0 5px;
+    border-bottom: 1px solid var(--c-border);
+    cursor: default;
+    user-select: none;
+  }
+  .menu-nav a,
+  .report-item {
+    font-size: var(--fs-md);
   }
   @media (max-width: 480px) {
     .menu-nav {
@@ -243,6 +253,7 @@
     border: 0;
     background: none;
     font: inherit;
+    font-size: var(--fs-md);
     color: var(--c-text);
     padding: 6px 8px;
     border-radius: var(--radius-sm);
