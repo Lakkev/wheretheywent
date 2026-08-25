@@ -292,5 +292,7 @@
   "tour.s3": "Passez à « D’où ils ont fui » pour inverser la carte.",
   "tour.s4": "Cliquez sur un pays pour les détails ; le survol prévisualise les flux.",
   "tour.skip": "Passer",
-  "tour.done": "Explorer"
+  "tour.done": "Explorer",
+  "nav.insights": "Records",
+  "insights.more": "Tous les records →"
 }

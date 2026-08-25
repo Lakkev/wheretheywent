@@ -1,0 +1,224 @@
+---
+/** /insights — the record library. Every row is mechanically computed and deep-links to the
+ *  view that proves it. For a journalist, each line is a ready-made story lead. */
+import DocPage from './DocPage.astro';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { getInsights, getCountries, getSources } from '../../lib/data-server';
+import { displayName } from '../../lib/data';
+import { fmtInt } from '../../lib/format';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const ins = getInsights();
+const src = getSources()?.['unhcr_population'];
+const countries = getCountries();
+const nameOf = (iso3: string) =>
+  displayName(
+    countries?.countries.find((c) => c.iso3 === iso3),
+    locale,
+    iso3,
+  );
+const cLink = (iso3: string) => localizePath(`/country/${iso3}`, locale);
+const mLink = (q: string) => `${localizePath('/', locale)}?${q}`;
+const R = ins?.records;
+---
+
+<DocPage
+  locale={locale}
+  title={zh ? '紀錄庫' : 'The record library'}
+  lede={zh
+    ? '七十五年資料裡的每一項極值——全部由管線機械計算，每一列都能點進地圖親眼驗證。對記者而言，每一行都是一條現成的報導線索。'
+    : 'Every extreme in seventy-five years of data — all mechanically computed, every row clickable into the map that proves it. For a journalist, each line is a ready-made lead.'}
+>
+  <p class="callout small">
+    {
+      zh ? (
+        <>
+          <strong>閱讀前的三件事</strong>：本頁以「難民」指標為準（委內瑞拉大出走主要計於 OIP，見
+          <a href={localizePath('/methodology/definitions', locale)}>定義年表</a>
+          ）；1967 年以前的定義較窄；<strong>「下降」不必然是回返</strong>
+          ——也可能是歸化、統計修正或定義變動。
+        </>
+      ) : (
+        <>
+          <strong>Three things before reading</strong>: this page uses the "refugees" metric (the
+          Venezuelan exodus is mostly under OIP — see the{' '}
+          <a href={localizePath('/methodology/definitions', locale)}>definitions timeline</a>);
+          pre-1967 definitions were narrower; and{' '}
+          <strong>a decline is not necessarily returns</strong> — it can be naturalisation,
+          revisions, or definition changes.
+        </>
+      )
+    }
+  </p>
+
+  {
+    R && (
+      <>
+        <h2>{zh ? '史上最大單年增幅（收容）' : 'Largest one-year rises in hosting, ever'}</h2>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{zh ? '國家' : 'Country'}</th>
+              <th>{zh ? '年份' : 'Year'}</th>
+              <th class="num">Δ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {R.host_jumps.map((r, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>
+                  <a href={cLink(r.iso3)}>{nameOf(r.iso3)}</a>
+                </td>
+                <td>
+                  <a href={mLink(`y=${r.year}&c=${r.iso3}`)}>{r.year}</a>
+                </td>
+                <td class="num">+{fmtInt(r.delta, locale)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2>{zh ? '史上最大單年增幅（來源）' : 'Largest one-year rises by origin, ever'}</h2>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{zh ? '國家' : 'Country'}</th>
+              <th>{zh ? '年份' : 'Year'}</th>
+              <th class="num">Δ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {R.origin_jumps.map((r, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>
+                  <a href={cLink(r.iso3)}>{nameOf(r.iso3)}</a>
+                </td>
+                <td>
+                  <a href={mLink(`y=${r.year}&v=origin&c=${r.iso3}`)}>{r.year}</a>
+                </td>
+                <td class="num">+{fmtInt(r.delta, locale)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2>{zh ? '史上最大單年下降（收容）' : 'Largest one-year declines in hosting, ever'}</h2>
+        <p class="small muted">
+          {zh
+            ? '再次提醒：下降可能是回返，也可能是歸化、修正或定義變動——點進當年的地圖與國家頁查證脈絡。'
+            : 'Again: a decline may be returns — or naturalisation, revisions, or definition changes. Click into the year and the country page for context.'}
+        </p>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{zh ? '國家' : 'Country'}</th>
+              <th>{zh ? '年份' : 'Year'}</th>
+              <th class="num">Δ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {R.host_drops.map((r, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>
+                  <a href={cLink(r.iso3)}>{nameOf(r.iso3)}</a>
+                </td>
+                <td>
+                  <a href={mLink(`y=${r.year}&c=${r.iso3}`)}>{r.year}</a>
+                </td>
+                <td class="num">{fmtInt(r.delta, locale)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2>{zh ? '史上人均收容峰值' : 'All-time per-capita hosting peaks'}</h2>
+        <p class="small muted">
+          {zh
+            ? '每千名居民收容的難民數（各國取其歷史峰值年；居民人口 ≥ 10 萬）。'
+            : 'Refugees per 1,000 residents (each country at its own all-time peak year; population ≥ 100k).'}
+        </p>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{zh ? '國家' : 'Country'}</th>
+              <th>{zh ? '年份' : 'Year'}</th>
+              <th class="num">{zh ? '每千人' : 'per 1,000'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {R.per1k_peaks.map((r, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>
+                  <a href={cLink(r.iso3)}>{nameOf(r.iso3)}</a>
+                </td>
+                <td>
+                  <a href={mLink(`y=${r.year}&c=${r.iso3}&n=per1k`)}>{r.year}</a>
+                </td>
+                <td class="num">{r.rate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2>{zh ? '最久的「世界第一大來源國」' : 'Longest-running #1 origin in the world'}</h2>
+        <p class="small muted">
+          {zh
+            ? '在 75 年裡，作為全球最大難民來源國的年數。'
+            : 'Number of years spent as the world’s largest origin of refugees, across 75 years.'}
+        </p>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{zh ? '國家' : 'Country'}</th>
+              <th class="num">{zh ? '年數' : 'Years'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {R.top_origin_years.map((r, i) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>
+                  <a href={cLink(r.iso3)}>{nameOf(r.iso3)}</a>
+                </td>
+                <td class="num">{r.years}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>
+    )
+  }
+
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          全部數字由每日管線自資料計算（來源：{src?.attribution ?? 'UNHCR'}，資料截至{' '}
+          {src?.data_as_of ?? '—'}）。方法與限制見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；引用請見
+          <a href={localizePath('/cite', locale)}>負責任引用</a>。
+        </>
+      ) : (
+        <>
+          All figures computed daily from the data (source: {src?.attribution ?? 'UNHCR'}, data as
+          of {src?.data_as_of ?? '—'}). Methods and limits:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; citing:{' '}
+          <a href={localizePath('/cite', locale)}>cite responsibly</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

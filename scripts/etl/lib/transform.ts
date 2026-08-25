@@ -192,21 +192,48 @@ export function buildInsights(
   }
   per1kList.sort((x, y) => y.rate - x.rate);
   const per1kRank = new Map(per1kList.map((p, i) => [p.iso3, { rank: i + 1, rate: p.rate }]));
-  // records: largest single-year jumps ever
-  let recH: { iso3: string; year: number; delta: number } | null = null;
-  let recO: { iso3: string; year: number; delta: number } | null = null;
+  // record library: every consecutive-year delta, plus all-time per-capita peaks
+  const jumpsH: { iso3: string; year: number; delta: number }[] = [];
+  const jumpsO: { iso3: string; year: number; delta: number }[] = [];
+  const per1kAll: { iso3: string; year: number; rate: number }[] = [];
+  const yearTopOrigin = new Map<number, { iso3: string; value: number }>();
   for (const [k, e] of series) {
     if (k.startsWith('_')) continue;
-    for (let i = 1; i < e.years.length; i++) {
-      if (e.years[i]! !== e.years[i - 1]! + 1) continue;
-      const da = e.a[i] !== null && e.a[i - 1] !== null ? e.a[i]! - e.a[i - 1]! : null;
-      const dOr = e.o[i] !== null && e.o[i - 1] !== null ? e.o[i]! - e.o[i - 1]! : null;
-      if (da !== null && (!recH || da > recH.delta))
-        recH = { iso3: k, year: e.years[i]!, delta: da };
-      if (dOr !== null && (!recO || dOr > recO.delta))
-        recO = { iso3: k, year: e.years[i]!, delta: dOr };
+    for (let i = 0; i < e.years.length; i++) {
+      const y = e.years[i]!;
+      const a = e.a[i];
+      const o = e.o[i];
+      if (o !== null && o !== undefined && o > 0) {
+        const t = yearTopOrigin.get(y);
+        if (!t || o > t.value) yearTopOrigin.set(y, { iso3: k, value: o });
+      }
+      if (a !== null && a !== undefined && a > 0) {
+        const pop = inp.population?.get(k)?.get(y) ?? null;
+        if (pop && pop >= 100_000)
+          per1kAll.push({ iso3: k, year: y, rate: Math.round((a / pop) * 10000) / 10 });
+      }
+      if (i === 0 || e.years[i]! !== e.years[i - 1]! + 1) continue;
+      if (e.a[i] !== null && e.a[i - 1] !== null)
+        jumpsH.push({ iso3: k, year: y, delta: e.a[i]! - e.a[i - 1]! });
+      if (e.o[i] !== null && e.o[i - 1] !== null)
+        jumpsO.push({ iso3: k, year: y, delta: e.o[i]! - e.o[i - 1]! });
     }
   }
+  jumpsH.sort((x, y) => y.delta - x.delta);
+  jumpsO.sort((x, y) => y.delta - x.delta);
+  per1kAll.sort((x, y) => y.rate - x.rate);
+  // one per-capita row per country (its own all-time peak), then top 10
+  const per1kSeen = new Set<string>();
+  const per1kPeaks = per1kAll.filter((r) => !per1kSeen.has(r.iso3) && per1kSeen.add(r.iso3));
+  const originYearCount = new Map<string, number>();
+  for (const t of yearTopOrigin.values())
+    originYearCount.set(t.iso3, (originYearCount.get(t.iso3) ?? 0) + 1);
+  const topOriginYears = [...originYearCount]
+    .map(([iso3, years]) => ({ iso3, years }))
+    .sort((x, y) => y.years - x.years)
+    .slice(0, 5);
+  const recH = jumpsH[0] ?? null;
+  const recO = jumpsO[0] ?? null;
   // flows partners (latest year)
   const topPartner = new Map<string, { iso3: string; value: number }>();
   const topDest = new Map<string, { iso3: string; value: number }>();
@@ -272,6 +299,13 @@ export function buildInsights(
         : null,
       record_host_jump: recH,
       record_origin_jump: recO,
+    },
+    records: {
+      host_jumps: jumpsH.slice(0, 10),
+      origin_jumps: jumpsO.slice(0, 10),
+      host_drops: jumpsH.slice(-10).reverse(),
+      per1k_peaks: per1kPeaks.slice(0, 10),
+      top_origin_years: topOriginYears,
     },
     countries,
   };

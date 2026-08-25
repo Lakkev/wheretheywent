@@ -282,6 +282,16 @@ export interface InsightsFile {
     record_host_jump: { iso3: string; year: number; delta: number } | null;
     record_origin_jump: { iso3: string; year: number; delta: number } | null;
   };
+  /** The record library (/insights): all-time extremes, each row deep-linkable. */
+  records: {
+    host_jumps: { iso3: string; year: number; delta: number }[];
+    origin_jumps: { iso3: string; year: number; delta: number }[];
+    /** most negative one-year changes — may reflect returns, naturalisation or revisions */
+    host_drops: { iso3: string; year: number; delta: number }[];
+    per1k_peaks: { iso3: string; year: number; rate: number }[];
+    /** countries with the most years spent as the world's #1 origin */
+    top_origin_years: { iso3: string; years: number }[];
+  };
   countries: Record<
     string,
     {

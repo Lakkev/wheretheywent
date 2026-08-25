@@ -292,5 +292,7 @@
   "tour.s3": "切换到「他们从哪里逃离」，整张地图换一种视角。",
   "tour.s4": "点任何国家看详情；滑过即可预览流向。",
   "tour.skip": "跳过",
-  "tour.done": "开始探索"
+  "tour.done": "开始探索",
+  "nav.insights": "纪录库",
+  "insights.more": "全部纪录 →"
 }

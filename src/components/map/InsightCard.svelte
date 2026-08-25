@@ -78,6 +78,7 @@
     <p>{fact.text}</p>
     <div class="row small">
       {#if fact.href}<a href={fact.href}>{tr('insight.see')}</a>{/if}
+      <a href={localizePath('/insights', locale)}>{tr('insights.more')}</a>
       <span class="spacer"></span>
       <button class="btn ghost" type="button" onclick={() => (idx = idx + 1)}
         >{tr('insight.next')}</button
@@ -89,9 +90,10 @@
 <style>
   .insight {
     position: absolute;
-    right: var(--overlay-gap);
-    bottom: 112px;
-    max-width: 320px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: var(--overlay-gap);
+    max-width: 380px;
     font-size: var(--fs-xs);
     background: color-mix(in srgb, var(--c-surface) 94%, transparent);
     border: 1px solid var(--c-border);

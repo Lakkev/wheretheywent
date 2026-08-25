@@ -292,5 +292,7 @@
   "tour.s3": "Cambie a «De dónde huyeron» para invertir el mapa.",
   "tour.s4": "Haga clic en un país para los detalles; al pasar el cursor verá los flujos.",
   "tour.skip": "Omitir",
-  "tour.done": "Explorar"
+  "tour.done": "Explorar",
+  "nav.insights": "Récords",
+  "insights.more": "Todos los récords →"
 }

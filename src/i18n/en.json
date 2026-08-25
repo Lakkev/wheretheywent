@@ -292,5 +292,7 @@
   "tour.s3": "Switch to “Where they fled from” to flip the whole map.",
   "tour.s4": "Click any country for details; hovering previews where its people went.",
   "tour.skip": "Skip",
-  "tour.done": "Start exploring"
+  "tour.done": "Start exploring",
+  "nav.insights": "Records",
+  "insights.more": "All records →"
 }
