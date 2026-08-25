@@ -17,4 +17,5 @@ public/data/v1/_*
 # The audit trail covers the annual statistics; IDMC/UNHCR retain the live source data.
 public/data/v1/live/
 public/vendor/
+public/docs/
 wheretheywent-data-*.tar.gz

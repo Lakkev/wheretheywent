@@ -10,6 +10,7 @@ interface Props {
   wide?: boolean;
   jsonLd?: unknown;
   ogImage?: string;
+  noindex?: boolean;
   /** Locales this page's long-form CONTENT exists in. Locales outside the list fall back to
    *  English content behind an explicit banner — honest, never silently half-translated. */
   translated?: readonly Locale[];
@@ -22,6 +23,7 @@ const {
   wide = false,
   jsonLd,
   ogImage,
+  noindex = false,
   translated = ['en', 'zh-Hant'],
 } = Astro.props;
 const tr = useT(locale);
@@ -39,6 +41,7 @@ const bannerKey =
   locale={locale}
   jsonLd={jsonLd}
   ogImage={ogImage}
+  noindex={noindex}
 >
   <article class:list={['doc', { wide }]}>
     <header class="doc-header">

@@ -127,7 +127,10 @@ const jsonLd = {
           : '(Frictionless Data descriptor with table schemas)'
       } ·
       <a href="/data/v1/manifest.json">manifest.json</a>
-      {zh ? '（檔案清單、sha256、快照代碼）' : '(file list, sha256, snapshot id)'}
+      {zh ? '（檔案清單、sha256、快照代碼）' : '(file list, sha256, snapshot id)'} ·
+      <a href="/docs/DATA-DICTIONARY.md"
+        >{zh ? '代碼簿（每個欄位的定義）' : 'codebook (every field defined)'}</a
+      >
     </p>
   </section>
 
@@ -286,9 +289,7 @@ const jsonLd = {
     </table>
     <p class="small">
       {zh ? '資料授權詳情：' : 'Data licence details:'}
-      <a href="https://github.com/Lakkev/wheretheywent/blob/master/DATA-LICENSE.md" rel="noopener"
-        >DATA-LICENSE.md</a
-      >{
+      <a href="/docs/DATA-LICENSE.md">DATA-LICENSE.md</a>{
         zh
           ? '。本站程式碼保留所有權利；資料維持其原始開放授權。'
           : '. The site code is all rights reserved; the data remains under its original open licences.'

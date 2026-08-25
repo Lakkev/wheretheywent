@@ -1,6 +1,6 @@
 ---
 import DocPage from './DocPage.astro';
-import { localizePath, useT, type Locale } from '../../i18n/ui';
+import { LOCALES, localizePath, useT, type Locale } from '../../i18n/ui';
 interface Props {
   locale: Locale;
 }
@@ -8,7 +8,7 @@ const { locale } = Astro.props;
 const tr = useT(locale);
 ---
 
-<DocPage locale={locale} title={tr('page.notFound.title')}>
+<DocPage locale={locale} title={tr('page.notFound.title')} noindex translated={LOCALES}>
   <p>{tr('page.notFound.body')}</p>
   <p><a href={localizePath('/', locale)}>{tr('nav.map')}</a></p>
 </DocPage>

@@ -23,8 +23,8 @@
     "deploy": "node scripts/dev/predeploy.mjs check && npm run build && node scripts/dev/predeploy.mjs stamp && npx wrangler pages deploy dist --project-name wheretheywent",
     "geo": "node scripts/etl/geo/build-geo.ts",
     "validate:data": "node scripts/etl/validate.ts --in public/data/v1",
-    "predev": "node scripts/dev/vendor-maplibre.mjs",
-    "prebuild": "node scripts/dev/vendor-maplibre.mjs",
+    "predev": "node scripts/dev/vendor-maplibre.mjs && node scripts/dev/copy-public-docs.mjs",
+    "prebuild": "node scripts/dev/vendor-maplibre.mjs && node scripts/dev/copy-public-docs.mjs",
     "postinstall": "node scripts/dev/vendor-maplibre.mjs || true"
   },
   "dependencies": {

@@ -67,8 +67,11 @@ const ogImage = `${SITE_URL}${ogImagePath ?? '/og/default.png'}`;
     <meta name="description" content={desc} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
-    {alternates.map((a) => <link rel="alternate" hreflang={a.l} href={a.href} />)}
-    <link rel="alternate" hreflang="x-default" href={alternates[0]!.href} />
+    {
+      /* noindex pages (404) have no per-locale variants — advertising alternates would 404 */
+      !noindex && alternates.map((a) => <link rel="alternate" hreflang={a.l} href={a.href} />)
+    }
+    {!noindex && <link rel="alternate" hreflang="x-default" href={alternates[0]!.href} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:site_name" content={brand} />
     <meta property="og:title" content={fullTitle} />

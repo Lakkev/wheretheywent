@@ -250,9 +250,8 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           各來源獨立晉升。任一來源失敗即保留其前一份快照，網站顯示「部分資料更新延遲」；連續三天失敗會寄送告警。
         </li>
         <li>
-          <strong>發布</strong> — 資料檔提交至版本庫（永久稽核軌跡：
-          <code>git log -- public/data/v1/country/SYR.json</code>{' '}
-          能回答「這個數字在某日的快照是多少」），再以靜態檔案部署。瀏覽器永不直接呼叫上游 API。
+          <strong>發布</strong> — 資料檔提交至版本控制（逐日稽核軌跡），並按季以束包存入 Zenodo（DOI
+          永久公開，任何人可逐位元組驗證歷史快照），再以靜態檔案部署。瀏覽器永不直接呼叫上游 API。
         </li>
       </ol>
     ) : (
@@ -285,9 +284,10 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           after three consecutive days the maintainer is e-mailed.
         </li>
         <li>
-          <strong>Publish</strong> — the data files are committed to the repository (a permanent
-          audit trail: <code>git log -- public/data/v1/country/SYR.json</code> answers "what did
-          this number say on day X") and deployed as static files. The browser never calls UNHCR.
+          <strong>Publish</strong> — the data files are committed to version control (a day-by-day
+          audit trail) and archived quarterly to Zenodo, where the DOI-addressed bundles let anyone
+          verify historical snapshots byte-for-byte; the site is then deployed as static files. The
+          browser never calls UNHCR.
         </li>
       </ol>
     )
