@@ -1,0 +1,260 @@
+---
+/** /press — quick facts for journalists on deadline. Every number is computed at build time
+ *  from the published data, every row deep-links to the view that reproduces it, and the
+ *  attribution boilerplate is ready to paste. */
+import DocPage from './DocPage.astro';
+import { localizePath, type Locale } from '../../i18n/ui';
+import { getInsights, getCountries, getSources } from '../../lib/data-server';
+import { displayName } from '../../lib/data';
+import { fmtInt } from '../../lib/format';
+import { SITE_URL, CONTACT_EMAIL, DATA_DOI } from '../../lib/site';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const ins = getInsights();
+const src = getSources()?.['unhcr_population'];
+const asOf = src?.data_as_of ?? '—';
+const countries = getCountries();
+const nameOf = (iso3: string) =>
+  displayName(
+    countries?.countries.find((c) => c.iso3 === iso3),
+    locale,
+    iso3,
+  );
+const cLink = (iso3: string) => localizePath(`/country/${iso3}`, locale);
+const mLink = (q: string) => `${localizePath('/', locale)}?${q}`;
+const G = ins?.global;
+const R = ins?.records;
+const year = ins?.year;
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const hostsList = (G?.top_hosts ?? []).map((h) => nameOf(h.iso3)).join(zh ? '、' : ', ');
+const originsList = (G?.top_origins ?? []).map((h) => nameOf(h.iso3)).join(zh ? '、' : ', ');
+const boiler = zh
+  ? `資料來源：UNHCR 難民人口統計資料庫（資料截至 ${asOf}），經 Where They Went（${SITE_URL}）匯整，DOI: ${DATA_DOI}。`
+  : `Source: UNHCR Refugee Population Statistics Database (data as of ${asOf}), via Where They Went (${SITE_URL}), DOI: ${DATA_DOI}.`;
+---
+
+<DocPage
+  locale={locale}
+  title={zh ? '記者快查' : 'Press quick facts'}
+  lede={zh
+    ? `截稿前需要一個可查證的數字？這一頁的每個數字都由每日管線自資料計算、可點進地圖重現、附現成的出處寫法。最後更新：資料截至 ${asOf}。`
+    : `Need a checkable number before deadline? Every figure on this page is computed daily from the data, reproducible on the map in one click, with ready-to-paste attribution. Data as of ${asOf}.`}
+>
+  <h2>{zh ? `今晚就能用的數字（${year} 年）` : `Numbers you can use tonight (${year})`}</h2>
+  {
+    G && (
+      <table class="small">
+        <thead>
+          <tr>
+            <th>{zh ? '事實' : 'Fact'}</th>
+            <th class="num">{zh ? '數字' : 'Figure'}</th>
+            <th>{zh ? '驗證' : 'Verify'}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{zh ? '全球受關注人口總數' : 'People of concern worldwide'}</td>
+            <td class="num">{n(G.total_poc)}</td>
+            <td>
+              <a href={mLink(`y=${year}`)}>{zh ? '地圖 →' : 'map →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '地球上每 N 人中有 1 人流離失所' : 'One person in N on Earth is displaced'}</td>
+            <td class="num">{zh ? `每 ${n(G.one_in_n)} 人` : `1 in ${n(G.one_in_n)}`}</td>
+            <td>
+              <a href={localizePath('/methodology', locale)}>{zh ? '方法 →' : 'method →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '難民（跨越國界）' : 'Refugees (crossed a border)'}</td>
+            <td class="num">{n(G.refugees)}</td>
+            <td>
+              <a href={mLink(`m=refugees&y=${year}`)}>{zh ? '地圖 →' : 'map →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '境內流離失所者（未跨越國界）' : 'Internally displaced (never crossed)'}</td>
+            <td class="num">{n(G.idps)}</td>
+            <td>
+              <a href={mLink(`m=idps&y=${year}`)}>{zh ? '地圖 →' : 'map →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '最大收容國（前三）' : 'Largest hosts (top 3)'}</td>
+            <td class="num">{hostsList}</td>
+            <td>
+              <a href={mLink(`m=refugees&y=${year}`)}>{zh ? '地圖 →' : 'map →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '最大來源國（前三）' : 'Largest origins (top 3)'}</td>
+            <td class="num">{originsList}</td>
+            <td>
+              <a href={mLink(`m=refugees&v=origin&y=${year}`)}>{zh ? '地圖 →' : 'map →'}</a>
+            </td>
+          </tr>
+          {G.top5_host_share !== null && (
+            <tr>
+              <td>{zh ? '前五收容國承擔的難民比例' : 'Share of refugees in the top-5 hosts'}</td>
+              <td class="num">{Math.round((G.top5_host_share ?? 0) * 100)}%</td>
+              <td>
+                <a href={localizePath('/insights', locale)}>{zh ? '紀錄庫 →' : 'records →'}</a>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    )
+  }
+
+  <h2>{zh ? '現成的報導線索' : 'Ready-made leads'}</h2>
+  {
+    R && G && (
+      <ul>
+        {G.record_host_jump && (
+          <li>
+            {zh ? (
+              <>
+                史上最大單年收容增幅：<a href={cLink(G.record_host_jump.iso3)}>{nameOf(G.record_host_jump.iso3)}</a>
+                ，{G.record_host_jump.year} 年，+{n(G.record_host_jump.delta)}。
+              </>
+            ) : (
+              <>
+                Largest one-year rise in hosting ever:{' '}
+                <a href={cLink(G.record_host_jump.iso3)}>{nameOf(G.record_host_jump.iso3)}</a>,{' '}
+                {G.record_host_jump.year}, +{n(G.record_host_jump.delta)}.
+              </>
+            )}
+          </li>
+        )}
+        {R.host_drops[0] && (
+          <li>
+            {zh ? (
+              <>
+                史上最大單年下降：<a href={cLink(R.host_drops[0].iso3)}>{nameOf(R.host_drops[0].iso3)}</a>
+                ，{R.host_drops[0].year} 年，{n(R.host_drops[0].delta)}
+                （下降不必然是回返——見<a href={localizePath('/insights', locale)}>紀錄庫</a>的閱讀提醒）。
+              </>
+            ) : (
+              <>
+                Largest one-year decline ever:{' '}
+                <a href={cLink(R.host_drops[0].iso3)}>{nameOf(R.host_drops[0].iso3)}</a>,{' '}
+                {R.host_drops[0].year}, {n(R.host_drops[0].delta)} (a decline is not necessarily
+                returns — see the reading notes in <a href={localizePath('/insights', locale)}>the record library</a>).
+              </>
+            )}
+          </li>
+        )}
+        {R.per1k_peaks[0] && (
+          <li>
+            {zh ? (
+              <>
+                史上人均收容之最：<a href={cLink(R.per1k_peaks[0].iso3)}>{nameOf(R.per1k_peaks[0].iso3)}</a>
+                ，{R.per1k_peaks[0].year} 年，每千名居民 {R.per1k_peaks[0].rate} 人（
+                <a href={localizePath('/stories/hongkong', locale)}>{zh ? '導讀' : 'story'}</a>）。
+              </>
+            ) : (
+              <>
+                All-time per-capita hosting record:{' '}
+                <a href={cLink(R.per1k_peaks[0].iso3)}>{nameOf(R.per1k_peaks[0].iso3)}</a>,{' '}
+                {R.per1k_peaks[0].year}, {R.per1k_peaks[0].rate} per 1,000 residents (
+                <a href={localizePath('/stories/hongkong', locale)}>story</a>).
+              </>
+            )}
+          </li>
+        )}
+        {R.top_origin_years[0] && (
+          <li>
+            {zh ? (
+              <>
+                最久的世界第一大來源國：<a href={cLink(R.top_origin_years[0].iso3)}>{nameOf(R.top_origin_years[0].iso3)}</a>
+                ，共 {R.top_origin_years[0].years} 年（
+                <a href={localizePath('/stories/afghanistan', locale)}>{zh ? '導讀' : 'story'}</a>）。
+              </>
+            ) : (
+              <>
+                Longest-running #1 origin:{' '}
+                <a href={cLink(R.top_origin_years[0].iso3)}>{nameOf(R.top_origin_years[0].iso3)}</a>
+                , {R.top_origin_years[0].years} years (
+                <a href={localizePath('/stories/afghanistan', locale)}>story</a>).
+              </>
+            )}
+          </li>
+        )}
+      </ul>
+    )
+  }
+  <p class="small muted">
+    {zh
+      ? '更多極值（增幅、下降、人均、年數五張總表）見'
+      : 'For the full tables of extremes, see '}<a href={localizePath('/insights', locale)}
+      >{zh ? '紀錄庫' : 'the record library'}</a
+    >{zh ? '。' : '.'}
+  </p>
+
+  <h2>{zh ? '出處這樣寫（直接貼上）' : 'Attribution (paste as-is)'}</h2>
+  <p class="callout small"><code>{boiler}</code></p>
+
+  <h2>{zh ? '三十秒的三條規則' : 'Three rules in thirty seconds'}</h2>
+  <ul>
+    <li>
+      {zh
+        ? '寫「人」，不寫「潮水」：避免 flood/wave/surge 一類的比喻——數的是人。'
+        : 'People, not water: avoid flood/wave/surge metaphors — these count people.'}
+    </li>
+    <li>
+      {zh ? (
+        <>
+          「下降」不必然是回返：也可能是歸化、統計修正或定義變動（見
+          <a href={localizePath('/methodology/definitions', locale)}>定義年表</a>）。
+        </>
+      ) : (
+        <>
+          A decline is not necessarily returns: it can be naturalisation, revisions, or definition
+          changes (see the{' '}
+          <a href={localizePath('/methodology/definitions', locale)}>definitions timeline</a>).
+        </>
+      )}
+    </li>
+    <li>
+      {zh ? (
+        <>
+          跨年代比較要小心：「難民」的法律定義在 1967 年前較窄，委內瑞拉大出走主要計於
+          OIP（2018 年新設類別）。完整規則見
+          <a href={localizePath('/cite', locale)}>負責任引用</a>。
+        </>
+      ) : (
+        <>
+          Compare across decades with care: the legal definition of "refugee" was narrower before
+          1967, and the Venezuelan exodus sits mostly under OIP (a category created in 2018). Full
+          rules: <a href={localizePath('/cite', locale)}>cite responsibly</a>.
+        </>
+      )}
+    </li>
+  </ul>
+
+  <h2>{zh ? '聯絡與再利用' : 'Contact and reuse'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          資料可自由再利用（
+          <a href={`${localizePath('/data', locale)}`}>下載與授權</a>
+          ）。查證協助、更正、或需要特定切面的數字：{CONTACT_EMAIL}
+          。本頁數字每日隨資料更新——引用時請一併寫明「資料截至」日期。
+        </>
+      ) : (
+        <>
+          The data is free to reuse (<a href={`${localizePath('/data', locale)}`}>downloads and licence</a>).
+          For verification help, corrections, or a specific cut of the numbers: {CONTACT_EMAIL}. This
+          page updates daily with the data — always quote the "data as of" date.
+        </>
+      )
+    }
+  </p>
+</DocPage>
