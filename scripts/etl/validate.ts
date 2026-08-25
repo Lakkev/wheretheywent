@@ -227,7 +227,15 @@ function main() {
   });
   guard('#12 manifest sha256 matches files', 'meta', () => {
     assert(manifest, 'manifest missing');
-    const onDisk = listFiles(IN).filter((f) => f !== 'manifest.json' && !f.startsWith('_'));
+    // live/* is ephemeral and deliberately outside the snapshot's content address (S9):
+    // it may exist on disk (fresh ETL run) or be absent (fresh git checkout) — both are fine.
+    const onDisk = listFiles(IN).filter(
+      (f) =>
+        f !== 'manifest.json' &&
+        !f.startsWith('_') &&
+        !f.startsWith('live/') &&
+        !f.startsWith('live\\'),
+    );
     const listed = Object.keys(manifest.files).sort();
     const missing = listed.filter((f) => !onDisk.includes(f));
     const extra = onDisk.filter((f) => !listed.includes(f));

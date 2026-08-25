@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "d5c5217d",
-  "git_commit": "94c3b35",
-  "generated_at": "2026-08-24T23:40:38Z",
+  "snapshot_id": "5d68179f",
+  "git_commit": null,
+  "generated_at": "2026-08-25T00:16:58Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1086,20 +1086,12 @@
       "sha256": "05cca7cfe478051cd50ad0f21cf3c0a00ee855afb767342f95667cdbd9ac33fe",
       "bytes": 169416
     },
-    "live/idu-latest.json": {
-      "sha256": "427bfea8379739b07db48f5ae6736ba8e47cce80470daf5f9ece1f6b9ed3ddb1",
-      "bytes": 1495598
-    },
-    "live/nowcast.json": {
-      "sha256": "97a82dfbee97c2029233a837755fcddac945e324678f0d877c6237209c670f96",
-      "bytes": 15586
-    },
     "metrics.json": {
       "sha256": "34a80ae1dd143db67ae65535ddd6c51c9470367cf007b5afc31c9f4ccf964fd7",
       "bytes": 24542
     },
     "sources.json": {
-      "sha256": "82b602e15d8302a3926cdfe57375f1ed4d498b4091375c1b182d1cb107ee425c",
+      "sha256": "4d44ed21fcd89bd7e3f2b5992e953cfbc10bd9c6ef0fea22146d7340a2c20bfe",
       "bytes": 29976
     },
     "stock/1951-2014.json": {
