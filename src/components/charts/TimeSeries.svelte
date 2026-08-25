@@ -68,10 +68,10 @@
           fill: (d: { view: 'asylum' | 'origin' }) => SERIES_COLORS[d.view],
         }),
       );
-      if (y) marks.push(Plot.ruleX([y], { stroke: '#0b3a6e', strokeOpacity: 0.5 }));
+      if (y) marks.push(Plot.ruleX([y], { stroke: '#3b2a16', strokeOpacity: 0.5 }));
       const bk = BREAKS[metric];
       if (bk && pts.some((p) => p.year < bk)) {
-        marks.push(Plot.ruleX([bk], { stroke: '#8a94a6', strokeDasharray: '2,3' }));
+        marks.push(Plot.ruleX([bk], { stroke: '#9a9184', strokeDasharray: '2,3' }));
         marks.push(
           Plot.text([{ year: bk }], {
             x: 'year',
@@ -79,7 +79,7 @@
             dy: 8,
             dx: 4,
             textAnchor: 'start',
-            fill: '#57708c',
+            fill: '#7a6a55',
             fontSize: 10,
             text: () => tr('chart.seriesBegins', { year: bk }),
           }),

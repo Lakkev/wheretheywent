@@ -1,37 +1,39 @@
 /**
- * Choropleth colour scales (spec D6): single-hue ColorBrewer Blues, never warm.
- * Pure functions: break computation + classification. Tested in tests/unit/colors.test.ts.
+ * Choropleth colour scales — earth palette「荒漠與土壤」(owner directive 2026-08-25,
+ * supersedes spec D6 blues): ColorBrewer YlOrBr, desert sand → tilled soil. Sequential,
+ * CVD-safe, never alarm-red. Pure functions: break computation + classification.
+ * Tested in tests/unit/colors.test.ts.
  *
- *   null  → NODATA grey (not reported)
- *   0     → ZERO (lightest ramp step) — visually distinct from grey
+ *   null  → NODATA warm grey (not reported)
+ *   0     → ZERO (lightest sand) — visually distinct from grey
  *   >0    → classes 1..K of the ramp
  */
 export type ScaleKind = 'lin' | 'log' | 'quant';
 
-export const BLUES_9 = [
-  '#f7fbff',
-  '#deebf7',
-  '#c6dbef',
-  '#9ecae1',
-  '#6baed6',
-  '#4292c6',
-  '#2171b5',
-  '#08519c',
-  '#08306b',
+export const EARTH_9 = [
+  '#ffffe5',
+  '#fff7bc',
+  '#fee391',
+  '#fec44f',
+  '#fe9929',
+  '#ec7014',
+  '#cc4c02',
+  '#993404',
+  '#662506',
 ] as const;
 /** 7-class ramp used for positive values (skip the two lightest, reserved for zero/near-zero). */
 export const RAMP = [
-  '#deebf7',
-  '#c6dbef',
-  '#9ecae1',
-  '#6baed6',
-  '#4292c6',
-  '#2171b5',
-  '#08519c',
+  '#fff7bc',
+  '#fee391',
+  '#fec44f',
+  '#fe9929',
+  '#ec7014',
+  '#cc4c02',
+  '#993404',
 ] as const;
-export const ZERO_COLOR = '#f7fbff';
-export const NODATA_COLOR = '#cfd4da';
-export const NOFILL_COLOR = '#e9ecef';
+export const ZERO_COLOR = '#ffffe5';
+export const NODATA_COLOR = '#d3cec5';
+export const NOFILL_COLOR = '#ece7dd';
 export const K = RAMP.length;
 
 export interface Breaks {

@@ -42,7 +42,7 @@
   let dialog = $state<null | 'cite' | 'download'>(null);
   let query = $state('');
   let plotEl: HTMLDivElement;
-  const COLORS = ['#08519c', '#4292c6', '#9ecae1'];
+  const COLORS = ['#993404', '#ec7014', '#fec44f'];
   const idx = $derived(countries ? indexCountries(countries) : new Map());
   const yearMax = $derived(files[0]?.years[files[0].years.length - 1] ?? 2025);
   const yearMin = $derived(files[0]?.years[0] ?? 1951);
@@ -206,7 +206,7 @@
       for (let i = 0; i < fs.length; i++)
         for (const seg of segments(pts.filter((p) => p.i === i)))
           marks.push(Plot.line(seg, { x: 'year', y: 'value', stroke: COLORS[i], strokeWidth: 2 }));
-      if (y) marks.push(Plot.ruleX([y], { stroke: '#0b3a6e', strokeOpacity: 0.4 }));
+      if (y) marks.push(Plot.ruleX([y], { stroke: '#3b2a16', strokeOpacity: 0.4 }));
       marks.push(
         Plot.tip(
           pts.filter((p) => p.value !== null),

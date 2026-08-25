@@ -60,13 +60,19 @@ describe('colors', () => {
     expect(e.map((x) => x.color)).toEqual([...RAMP]);
     expect(e[K - 1]!.to).toBeNull();
   });
-  it('ramp is cool-toned only (no warm hues)', () => {
+  it('ramp is warm earth (sand→soil), never blue, and darkens monotonically', () => {
+    // Owner directive 2026-08-25 (supersedes spec D6 blues): the palette is desert & soil.
+    let prevLum = Infinity;
     for (const hex of RAMP) {
       const r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
         b = parseInt(hex.slice(5, 7), 16);
-      expect(b).toBeGreaterThanOrEqual(r); // blue dominates red
-      expect(b).toBeGreaterThanOrEqual(g * 0.9);
+      expect(r).toBeGreaterThanOrEqual(b); // red/earth dominates blue
+      expect(g).toBeGreaterThanOrEqual(b); // never a purple/blue cast
+      // sequential ramps must darken step by step or classes become unreadable
+      const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      expect(lum).toBeLessThan(prevLum);
+      prevLum = lum;
     }
   });
   it('niceNumber', () => {

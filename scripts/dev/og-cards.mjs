@@ -52,17 +52,17 @@ function cardHtml({ title, zhTitle, lines, foot }) {
     .join('');
   return `<!doctype html><meta charset="utf-8"><style>
   *{margin:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,'Noto Sans TC',sans-serif}
-  body{width:1200px;height:630px;background:linear-gradient(135deg,#f5f9fd 0%,#dceaf7 100%);
-    padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between;color:#10253c}
-  .brand{font-size:28px;font-weight:600;color:#1f5fa8;letter-spacing:.5px}
+  body{width:1200px;height:630px;background:linear-gradient(135deg,#fbf7ee 0%,#f0e4cf 100%);
+    padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between;color:#241c12}
+  .brand{font-size:28px;font-weight:600;color:#7c4408;letter-spacing:.5px}
   h1{font-size:64px;line-height:1.1;font-weight:700;max-width:1000px}
-  .zh{font-size:34px;color:#3d5a7a;margin-top:10px;font-weight:500}
+  .zh{font-size:34px;color:#6b5c48;margin-top:10px;font-weight:500}
   .rows{display:flex;flex-direction:column;gap:14px;margin-top:8px}
   .row{display:flex;justify-content:space-between;max-width:820px;font-size:31px}
-  .lab{color:#3d5a7a}.val{font-weight:700;font-variant-numeric:tabular-nums}
-  .foot{font-size:22px;color:#57708c;display:flex;justify-content:space-between}
+  .lab{color:#6b5c48}.val{font-weight:700;font-variant-numeric:tabular-nums}
+  .foot{font-size:22px;color:#7a6a55;display:flex;justify-content:space-between}
   .bar{position:fixed;left:0;top:0;width:100%;height:10px;
-    background:linear-gradient(90deg,#c6dbef,#6baed6,#2171b5,#08306b)}
+    background:linear-gradient(90deg,#fee391,#fe9929,#cc4c02,#662506)}
   </style><div class="bar"></div>
   <div><div class="brand">WHERE THEY WENT · 他們去了哪裡</div>
   <h1>${title}</h1>${zhTitle ? `<div class="zh">${zhTitle}</div>` : ''}</div>

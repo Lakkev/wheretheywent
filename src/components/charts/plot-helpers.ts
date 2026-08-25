@@ -10,7 +10,7 @@ export function loadPlot(): Promise<PlotModule> {
   return plotPromise;
 }
 
-export const SERIES_COLORS = { asylum: '#2171b5', origin: '#6baed6', selected: '#08306b' } as const;
+export const SERIES_COLORS = { asylum: '#993404', origin: '#ec7014', selected: '#662506' } as const;
 
 export interface SeriesPoint {
   year: number;

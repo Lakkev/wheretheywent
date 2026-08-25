@@ -133,7 +133,7 @@
       {#if spark.d}<path
           d={spark.d}
           fill="none"
-          stroke="var(--ramp-blues-5)"
+          stroke="var(--ramp-7)"
           stroke-width="1.5"
           vector-effect="non-scaling-stroke"
         />{/if}

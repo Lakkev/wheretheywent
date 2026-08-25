@@ -231,7 +231,7 @@ button {
 .chip.estimate {
   background: var(--c-estimate-bg);
   color: var(--c-estimate-fg);
-  border-color: #b7cfe8;
+  border-color: #e2cfa8;
 }
 
 /* Document pages */

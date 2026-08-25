@@ -23,7 +23,7 @@ export function fallbackStyle(): Record<string, unknown> {
     version: 8,
     name: 'wtw-fallback',
     sources: {},
-    layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#dfe9f3' } }],
+    layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#dbe4ea' } }],
   };
 }
 
@@ -57,7 +57,7 @@ export function choroplethLayers(
         type: 'line',
         source: SRC_COUNTRIES,
         filter: ['has', 'nofill'],
-        paint: { 'line-color': '#8a97a6', 'line-width': 1, 'line-dasharray': [2, 2] },
+        paint: { 'line-color': '#9a9184', 'line-width': 1, 'line-dasharray': [2, 2] },
       },
       before: beforeId,
     },
@@ -67,7 +67,7 @@ export function choroplethLayers(
         type: 'line',
         source: SRC_COUNTRIES,
         paint: {
-          'line-color': '#7d8a99',
+          'line-color': '#8a8172',
           'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.4, 5, 1],
         },
       },
@@ -79,7 +79,7 @@ export function choroplethLayers(
         type: 'line',
         source: SRC_COUNTRIES,
         paint: {
-          'line-color': '#1f5fa8',
+          'line-color': '#7c4408',
           'line-width': 2,
           'line-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0],
         },
@@ -92,7 +92,7 @@ export function choroplethLayers(
         type: 'line',
         source: SRC_COUNTRIES,
         paint: {
-          'line-color': '#1f5fa8',
+          'line-color': '#7c4408',
           'line-width': 2.5,
           'line-dasharray': [2, 1.5],
           'line-opacity': ['case', ['boolean', ['feature-state', 'compare'], false], 1, 0],
@@ -106,7 +106,7 @@ export function choroplethLayers(
         type: 'line',
         source: SRC_COUNTRIES,
         paint: {
-          'line-color': '#0b3a6e',
+          'line-color': '#3b2a16',
           'line-width': 3,
           'line-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0],
         },
@@ -141,7 +141,7 @@ export function iduLayer(): Record<string, unknown> {
         316,
         24,
       ],
-      'circle-color': '#0b3a6e',
+      'circle-color': '#4a3220',
       'circle-opacity': 0.55,
       'circle-stroke-color': '#ffffff',
       'circle-stroke-width': 1,
@@ -157,7 +157,7 @@ export function flowsLayer(): Record<string, unknown> {
     source: SRC_FLOWS,
     layout: { 'line-cap': 'round' },
     paint: {
-      'line-color': '#0b3a6e',
+      'line-color': '#4a3220',
       // hover previews are lighter than committed selection arcs
       'line-opacity': ['case', ['==', ['coalesce', ['get', 'preview'], 0], 1], 0.28, 0.55],
       'line-width': ['coalesce', ['get', 'width'], 2],
@@ -175,7 +175,7 @@ export function flowsAnimLayer(): Record<string, unknown> {
     filter: ['!=', ['coalesce', ['get', 'preview'], 0], 1],
     layout: { 'line-cap': 'round' },
     paint: {
-      'line-color': '#c6dbef',
+      'line-color': '#fec44f',
       'line-opacity': 0.9,
       'line-width': ['*', 0.55, ['coalesce', ['get', 'width'], 2]],
       'line-dasharray': [0, 4, 3],

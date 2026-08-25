@@ -55,7 +55,7 @@
             Math.abs(d) >= 1000 ? `${Math.round(Math.abs(d) / 1000)}k` : String(Math.abs(d)),
         },
         y: { domain: AGES, label: null },
-        color: { domain: [SEX_F, SEX_M], range: ['#9ecae1', '#2171b5'], legend: true },
+        color: { domain: [SEX_F, SEX_M], range: ['#fec44f', '#993404'], legend: true },
         marks: [
           Plot.barX(data, {
             x: 'value',

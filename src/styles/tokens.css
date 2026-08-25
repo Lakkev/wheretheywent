@@ -1,54 +1,56 @@
 /* Design tokens — Where They Went
- * Neutral, single-hue palette (spec D6): blues / teal only. No warm red/orange ramps.
+ * Earth palette「荒漠與土壤」(owner directive 2026-08-25, supersedes spec D6 blues):
+ * desert sand → ochre → tilled soil. Sequential ramp is ColorBrewer YlOrBr (CVD-safe,
+ * print-safe). Warm, dignified, never alarm-red. Water stays cool so land reads as land.
  * Contrast targets WCAG 2.2 AA (text ≥ 4.5:1, UI ≥ 3:1).
  */
 :root {
   color-scheme: light;
 
-  /* Neutrals */
-  --c-bg: #f7f9fb;
+  /* Neutrals (warm bone / soil) */
+  --c-bg: #faf7f1;
   --c-surface: #ffffff;
-  --c-surface-2: #eef2f6;
-  --c-border: #d4dbe3;
-  --c-border-strong: #9aa7b5;
-  --c-text: #16212e;
-  --c-text-2: #46556a;
-  --c-text-3: #56677c; /* ≥5.3:1 on white, ≥4.6:1 on surface-2 */
+  --c-surface-2: #f3ede2;
+  --c-border: #e0d7c8;
+  --c-border-strong: #a3947e;
+  --c-text: #241c12;
+  --c-text-2: #55483a;
+  --c-text-3: #6b5c48; /* ≥5.4:1 on white, ≥4.6:1 on surface-2 */
   --c-inverse: #ffffff;
 
-  /* Brand / interactive (Blues) */
-  --c-primary: #1f5fa8; /* 6.3:1 on white */
-  --c-primary-hover: #174a85;
-  --c-primary-soft: #dbe8f6;
-  --c-focus: #0b5cad;
+  /* Brand / interactive (deep ochre) */
+  --c-primary: #7c4408; /* 7.8:1 on white */
+  --c-primary-hover: #613506;
+  --c-primary-soft: #f5e7d2;
+  --c-focus: #8a4a12;
 
-  /* Status (still cool-toned; amber reserved for "stale" chip only, never for data) */
-  --c-ok: #1d7a6a;
+  /* Status (amber reserved for "stale" chip only, never for data) */
+  --c-ok: #4a6318;
   --c-stale-bg: #fff3cd;
   --c-stale-fg: #5f4a00;
-  --c-estimate-bg: #e6f0fa;
-  --c-estimate-fg: #1f4b7a;
+  --c-estimate-bg: #f3ead9;
+  --c-estimate-fg: #5f461d;
 
   /* Map */
-  --c-nodata: #cfd4da; /* grey for "not reported" — visually distinct from the ramp's lightest blue */
-  --c-nofill: #e9ecef; /* boundary-only (no data join) */
-  --c-nofill-pattern: #b8c0c9;
-  --c-water: #dfe9f3; /* no-basemap fallback background */
-  --c-land: #f4f6f8;
-  --c-outline: #7d8a99;
-  --c-outline-selected: #0b3a6e;
-  --c-outline-compare: #1f5fa8;
+  --c-nodata: #d3cec5; /* warm grey for "not reported" — distinct from the ramp's lightest sand */
+  --c-nofill: #ece7dd; /* boundary-only (no data join) */
+  --c-nofill-pattern: #b9b0a0;
+  --c-water: #dbe4ea; /* water stays cool — land reads as land against it */
+  --c-land: #f6f1e7;
+  --c-outline: #8a8172;
+  --c-outline-selected: #3b2a16;
+  --c-outline-compare: #7c4408;
 
-  /* Choropleth ramps (ColorBrewer). Exposed as CSS for legend swatches; JS reads colors.ts. */
-  --ramp-blues-1: #f7fbff;
-  --ramp-blues-2: #deebf7;
-  --ramp-blues-3: #c6dbef;
-  --ramp-blues-4: #9ecae1;
-  --ramp-blues-5: #6baed6;
-  --ramp-blues-6: #4292c6;
-  --ramp-blues-7: #2171b5;
-  --ramp-blues-8: #08519c;
-  --ramp-blues-9: #08306b;
+  /* Choropleth ramp (ColorBrewer YlOrBr). Exposed as CSS for legend swatches; JS reads colors.ts. */
+  --ramp-1: #ffffe5;
+  --ramp-2: #fff7bc;
+  --ramp-3: #fee391;
+  --ramp-4: #fec44f;
+  --ramp-5: #fe9929;
+  --ramp-6: #ec7014;
+  --ramp-7: #cc4c02;
+  --ramp-8: #993404;
+  --ramp-9: #662506;
 
   /* Typography */
   --font-sans:

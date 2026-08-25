@@ -58,7 +58,7 @@
         y: { label: null, domain: r.map((x) => nameOf(x.p)) },
         color: {
           domain: [tr('metric.refugees'), tr('metric.asylum_seekers')],
-          range: ['#2171b5', '#9ecae1'],
+          range: ['#cc4c02', '#fec44f'],
           legend: true,
         },
         marks: [
