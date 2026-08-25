@@ -48,6 +48,7 @@ import { buildSourceEntry, markStale } from './lib/provenance.ts';
 import {
   buildStock,
   buildWorldTotals,
+  buildInsights,
   buildCountryFiles,
   buildFlows,
   writeDownloads,
@@ -512,7 +513,19 @@ async function main() {
       const countryFiles = buildCountryFiles(inp, allYears, used);
       writeCountryFiles(OUT, countryFiles);
       // flows (Phase 2 data)
-      for (const [y, f] of buildFlows(inp)) writeJsonAtomic(join(OUT, 'flows', `${y}.json`), f);
+      const flowsAll = buildFlows(inp);
+      for (const [y, f] of flowsAll) writeJsonAtomic(join(OUT, 'flows', `${y}.json`), f);
+      // insight engine — mechanically derived facts, all deep-linkable (see InsightsFile)
+      const latestFlowYear = [...flowsAll.keys()].sort((a, b) => b - a)[0];
+      writeJsonAtomic(
+        join(OUT, 'insights.json'),
+        buildInsights(
+          stocksForTotals,
+          latestFlowYear ? (flowsAll.get(latestFlowYear) ?? null) : null,
+          inp,
+          maxYear,
+        ),
+      );
       // downloads + datapackage (snapshot id is finalised in manifest; CSVs carry the data stamp)
       writeDownloads(inp, allYears, csvSnapshotId);
       writeJsonAtomic(join(OUT, 'datapackage.json'), buildDatapackage(inp, csvSnapshotId), true);

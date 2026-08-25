@@ -17,6 +17,7 @@ import {
   getWorldTotals,
   listDownloads,
   hasOgCard,
+  getInsights,
 } from '../../lib/data-server';
 import { displayName, metricDefinition, zhData } from '../../lib/data';
 import { SITE_URL, SITE_NAME } from '../../lib/site';
@@ -56,6 +57,46 @@ const description =
       : `${name}: refugees, asylum-seekers, IDPs and stateless persons hosted and originating, ${data.years[0]}–${yearMax}. Source: UNHCR (data as of ${src?.data_as_of ?? ''}). Downloadable, citable.`;
 const bulkCsvBytes =
   listDownloads().find((d) => d.name === 'unhcr-population-all-years.csv')?.bytes ?? null;
+// Insight engine: up to three context sentences — each mechanically computed, none hand-written.
+const insights = getInsights();
+const fx = insights?.countries?.[iso3];
+const factChips: { text: string; href?: string }[] = [];
+if (fx && insights) {
+  const iy = insights.year;
+  if (fx.per1k_rank && fx.per1k_rank <= 20 && fx.per1k)
+    factChips.push({
+      text: tr('fact.per1k', { rate: String(fx.per1k), rank: fx.per1k_rank }),
+    });
+  if (fx.share_of_world_origin && fx.share_of_world_origin >= 0.02)
+    factChips.push({
+      text: tr('fact.shareOrigin', { pct: `${(fx.share_of_world_origin * 100).toFixed(1)}%` }),
+    });
+  if (factChips.length < 3 && fx.host_rank && fx.host_rank <= 20)
+    factChips.push({ text: tr('fact.hostRank', { rank: fx.host_rank, year: iy }) });
+  if (factChips.length < 3 && fx.decade_host_ratio && fx.decade_host_ratio >= 2)
+    factChips.push({ text: tr('fact.decadeUp', { x: String(fx.decade_host_ratio) }) });
+  else if (factChips.length < 3 && fx.decade_host_ratio && fx.decade_host_ratio <= 0.5)
+    factChips.push({
+      text: tr('fact.decadeDown', { pct: `${Math.round(fx.decade_host_ratio * 100)}%` }),
+    });
+  if (factChips.length < 3 && fx.top_dest)
+    factChips.push({
+      text: tr('fact.topDest', { name: names[fx.top_dest.iso3] ?? fx.top_dest.iso3 }),
+      href: localizePath(`/country/${fx.top_dest.iso3}`, locale),
+    });
+  if (factChips.length < 3 && fx.top_partner)
+    factChips.push({
+      text: tr('fact.topPartner', { name: names[fx.top_partner.iso3] ?? fx.top_partner.iso3 }),
+      href: localizePath(`/country/${fx.top_partner.iso3}`, locale),
+    });
+  if (factChips.length < 3 && fx.peak_host && fx.peak_host.year !== iy)
+    factChips.push({
+      text: tr('fact.peak', {
+        value: fmtInt(fx.peak_host.value, locale),
+        year: fx.peak_host.year,
+      }),
+    });
+}
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
@@ -163,6 +204,21 @@ const jsonLd = {
         )
       }
       <p class="lede">{tr('country.title', { name })} — {data.years[0]}–{yearMax}.</p>
+      {
+        factChips.length > 0 && (
+          <p class="fact-chips">
+            {factChips.map((f) =>
+              f.href ? (
+                <a class="chip" href={f.href}>
+                  {f.text}
+                </a>
+              ) : (
+                <span class="chip">{f.text}</span>
+              ),
+            )}
+          </p>
+        )
+      }
     </header>
 
     {/* Static (no-JS) summary for the latest year — crawlers, print, and citation fidelity */}

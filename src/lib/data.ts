@@ -79,6 +79,9 @@ export class DataClient {
   idu() {
     return this.json<IduFile>('live/idu-latest.json');
   }
+  insights(): Promise<import('./types').InsightsFile> {
+    return this.json('insights.json');
+  }
   private flowsCache = new Map<number, Promise<FlowsFile>>();
   /** Bilateral matrix for a year (2015+), cached per year. */
   flows(year: number): Promise<FlowsFile> {

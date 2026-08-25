@@ -263,6 +263,44 @@ export interface FlowsFile {
   rows: [string, string, number | null, number | null][];
 }
 
+/** Insight engine: mechanically computed, verifiable facts — every one deep-links to a
+ *  reproducible view. Numbers only; wording comes from i18n templates. */
+export interface InsightsFile {
+  schema: 1;
+  year: number;
+  global: {
+    total_poc: number | null;
+    refugees: number | null;
+    idps: number | null;
+    /** world population ÷ total people of concern */
+    one_in_n: number | null;
+    top_hosts: { iso3: string; value: number }[];
+    top_origins: { iso3: string; value: number }[];
+    /** share (0–1) of all refugees hosted by the top-5 host countries */
+    top5_host_share: number | null;
+    /** largest single-year increase in refugees hosted, ever recorded */
+    record_host_jump: { iso3: string; year: number; delta: number } | null;
+    record_origin_jump: { iso3: string; year: number; delta: number } | null;
+  };
+  countries: Record<
+    string,
+    {
+      host_rank: number | null;
+      origin_rank: number | null;
+      per1k: number | null;
+      per1k_rank: number | null;
+      peak_host: { year: number; value: number } | null;
+      /** refugees hosted now ÷ ten years ago (both > 0) */
+      decade_host_ratio: number | null;
+      /** largest origin of refugees hosted here (latest flows) */
+      top_partner: { iso3: string; value: number } | null;
+      /** largest destination of refugees from here (latest flows) */
+      top_dest: { iso3: string; value: number } | null;
+      share_of_world_origin: number | null;
+    }
+  >;
+}
+
 /** #14: global totals per year/metric/view — powers "share of world" lines. */
 export interface WorldTotalsFile {
   schema: 1;

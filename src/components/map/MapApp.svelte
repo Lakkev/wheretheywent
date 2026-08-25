@@ -44,6 +44,8 @@
   import NoWebGLFallback from './NoWebGLFallback.svelte';
   import AttributionBar from './AttributionBar.svelte';
   import NowcastCard from './NowcastCard.svelte';
+  import InsightCard from './InsightCard.svelte';
+  import TourCard from './TourCard.svelte';
   import Toasts from '../ui/Toasts.svelte';
 
   let {
@@ -461,6 +463,8 @@
           {/if}
         {/if}
         <NowcastCard {locale} />
+        <InsightCard {locale} />
+        <TourCard {locale} />
       {/if}
       <Legend {locale} {view} {worldPop} {metricCaveats} />
     </div>

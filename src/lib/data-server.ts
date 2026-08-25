@@ -16,6 +16,7 @@ import type {
   NowcastFile,
   IduFile,
   WorldTotalsFile,
+  InsightsFile,
 } from './types';
 
 const ROOT = join(process.cwd(), 'public', 'data', 'v1');
@@ -38,6 +39,7 @@ export const getDisputedNotes = () => readJson<DisputedNotes>('geo/disputed-note
 export const getNowcast = () => readJson<NowcastFile>('live/nowcast.json');
 export const getIdu = () => readJson<IduFile>('live/idu-latest.json');
 export const getWorldTotals = () => readJson<WorldTotalsFile>('world-totals.json');
+export const getInsights = () => readJson<InsightsFile>('insights.json');
 /** True when a pre-generated og card exists for this country (scripts/dev/og-cards.mjs). */
 export const hasOgCard = (iso3: string) =>
   existsSync(join(process.cwd(), 'public', 'og', 'country', `${iso3}.jpg`));

@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "5d68179f",
+  "snapshot_id": "9f88b32d",
   "git_commit": null,
-  "generated_at": "2026-08-25T00:16:58Z",
+  "generated_at": "2026-08-25T01:32:24Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1085,6 +1085,10 @@
     "geo/world-50m.topo.json": {
       "sha256": "05cca7cfe478051cd50ad0f21cf3c0a00ee855afb767342f95667cdbd9ac33fe",
       "bytes": 169416
+    },
+    "insights.json": {
+      "sha256": "064ba9b4500ec7777d6187e27082433c2df7f28a6db98818b906aa1bc1ff6282",
+      "bytes": 51020
     },
     "metrics.json": {
       "sha256": "34a80ae1dd143db67ae65535ddd6c51c9470367cf007b5afc31c9f4ccf964fd7",

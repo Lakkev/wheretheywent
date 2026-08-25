@@ -37,6 +37,7 @@ const GROUP_PATHS: Record<Group, string[]> = {
     'datapackage.json',
     'metrics.json',
     'world-totals.json',
+    'insights.json',
     'unmatched-report.json',
   ],
   nowcast: ['live/nowcast.json'],

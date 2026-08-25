@@ -144,6 +144,139 @@ export function buildWorldTotals(stocks: StockFile[]): WorldTotalsFile {
   return { schema: 1, totals };
 }
 
+/** Insight engine — every fact is mechanically derived and deep-linkable. */
+export function buildInsights(
+  stocks: StockFile[],
+  latestFlows: { year: number; rows: [string, string, number | null, number | null][] } | null,
+  inp: TransformInput,
+  year: number,
+): import('../../../src/lib/types.ts').InsightsFile {
+  const REF = METRIC_IDS.indexOf('refugees');
+  // merged per-country refugee series across stock windows
+  const series = new Map<string, { years: number[]; a: (number | null)[]; o: (number | null)[] }>();
+  for (const s of [...stocks].sort((x, y) => x.years[0]! - y.years[0]!)) {
+    const keys = new Set([...Object.keys(s.asylum), ...Object.keys(s.origin)]);
+    for (const k of keys) {
+      const e = series.get(k) ?? { years: [], a: [], o: [] };
+      const a = s.asylum[k] ? unpack(s.asylum[k]!.v[REF]!) : s.years.map(() => null);
+      const o = s.origin[k] ? unpack(s.origin[k]!.v[REF]!) : s.years.map(() => null);
+      e.years.push(...s.years);
+      e.a.push(...a.map((v) => v ?? null));
+      e.o.push(...o.map((v) => v ?? null));
+      series.set(k, e);
+    }
+  }
+  const at = (e: { years: number[]; a: (number | null)[]; o: (number | null)[] }, y: number) => {
+    const i = e.years.indexOf(y);
+    return i < 0 ? { a: null, o: null } : { a: e.a[i] ?? null, o: e.o[i] ?? null };
+  };
+  // latest values + ranks
+  const hosts: { iso3: string; value: number }[] = [];
+  const origins: { iso3: string; value: number }[] = [];
+  for (const [k, e] of series) {
+    if (k.startsWith('_')) continue;
+    const { a, o } = at(e, year);
+    if (a && a > 0) hosts.push({ iso3: k, value: a });
+    if (o && o > 0) origins.push({ iso3: k, value: o });
+  }
+  hosts.sort((x, y) => y.value - x.value);
+  origins.sort((x, y) => y.value - x.value);
+  const hostRank = new Map(hosts.map((h, i) => [h.iso3, i + 1]));
+  const originRank = new Map(origins.map((h, i) => [h.iso3, i + 1]));
+  const worldRef = hosts.reduce((s, h) => s + h.value, 0) || null;
+  // per-1k (population ≥ 100k)
+  const per1kList: { iso3: string; rate: number }[] = [];
+  for (const h of hosts) {
+    const pop = inp.population?.get(h.iso3)?.get(year) ?? null;
+    if (pop && pop >= 100_000) per1kList.push({ iso3: h.iso3, rate: (h.value / pop) * 1000 });
+  }
+  per1kList.sort((x, y) => y.rate - x.rate);
+  const per1kRank = new Map(per1kList.map((p, i) => [p.iso3, { rank: i + 1, rate: p.rate }]));
+  // records: largest single-year jumps ever
+  let recH: { iso3: string; year: number; delta: number } | null = null;
+  let recO: { iso3: string; year: number; delta: number } | null = null;
+  for (const [k, e] of series) {
+    if (k.startsWith('_')) continue;
+    for (let i = 1; i < e.years.length; i++) {
+      if (e.years[i]! !== e.years[i - 1]! + 1) continue;
+      const da = e.a[i] !== null && e.a[i - 1] !== null ? e.a[i]! - e.a[i - 1]! : null;
+      const dOr = e.o[i] !== null && e.o[i - 1] !== null ? e.o[i]! - e.o[i - 1]! : null;
+      if (da !== null && (!recH || da > recH.delta))
+        recH = { iso3: k, year: e.years[i]!, delta: da };
+      if (dOr !== null && (!recO || dOr > recO.delta))
+        recO = { iso3: k, year: e.years[i]!, delta: dOr };
+    }
+  }
+  // flows partners (latest year)
+  const topPartner = new Map<string, { iso3: string; value: number }>();
+  const topDest = new Map<string, { iso3: string; value: number }>();
+  if (latestFlows) {
+    for (const [coo, coa, r, a] of latestFlows.rows) {
+      const v = (r ?? 0) + (a ?? 0);
+      if (v <= 0) continue;
+      const p = topPartner.get(coa);
+      if (!p || v > p.value) topPartner.set(coa, { iso3: coo, value: v });
+      const d = topDest.get(coo);
+      if (!d || v > d.value) topDest.set(coo, { iso3: coa, value: v });
+    }
+  }
+  // world population + poc/idps from totals of the recent stock
+  const recent = stocks.find((s) => s.years.includes(year))!;
+  const yi = recent.years.indexOf(year);
+  const totA = recent.totals.asylum.map((p) => unpack(p)[yi] ?? null);
+  const POC = ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'] as const;
+  const totalPoc = POC.reduce<number | null>((s, m) => {
+    const v = totA[METRIC_IDS.indexOf(m)] ?? null;
+    return v === null ? s : (s ?? 0) + v;
+  }, null);
+  let worldPop = 0;
+  if (inp.population) for (const m of inp.population.values()) worldPop += m.get(year) ?? 0;
+  const countries: import('../../../src/lib/types.ts').InsightsFile['countries'] = {};
+  for (const [k, e] of series) {
+    if (k.startsWith('_')) continue;
+    const now = at(e, year);
+    let peak: { year: number; value: number } | null = null;
+    e.years.forEach((y, i) => {
+      const v = e.a[i];
+      if (v !== null && v !== undefined && (!peak || v > peak.value)) peak = { year: y, value: v };
+    });
+    const tenAgo = at(e, year - 10).a;
+    const p1 = per1kRank.get(k);
+    const entry = {
+      host_rank: hostRank.get(k) ?? null,
+      origin_rank: originRank.get(k) ?? null,
+      per1k: p1 ? Math.round(p1.rate * 10) / 10 : null,
+      per1k_rank: p1?.rank ?? null,
+      peak_host: peak,
+      decade_host_ratio:
+        now.a && tenAgo && tenAgo > 0 ? Math.round((now.a / tenAgo) * 100) / 100 : null,
+      top_partner: topPartner.get(k) ?? null,
+      top_dest: topDest.get(k) ?? null,
+      share_of_world_origin:
+        now.o && worldRef ? Math.round((now.o / worldRef) * 1000) / 1000 : null,
+    };
+    if (Object.values(entry).some((v) => v !== null)) countries[k] = entry;
+  }
+  return {
+    schema: 1,
+    year,
+    global: {
+      total_poc: totalPoc,
+      refugees: worldRef,
+      idps: totA[METRIC_IDS.indexOf('idps')] ?? null,
+      one_in_n: totalPoc && worldPop > 0 ? Math.round(worldPop / totalPoc) : null,
+      top_hosts: hosts.slice(0, 3),
+      top_origins: origins.slice(0, 3),
+      top5_host_share: worldRef
+        ? Math.round((hosts.slice(0, 5).reduce((s, h) => s + h.value, 0) / worldRef) * 1000) / 1000
+        : null,
+      record_host_jump: recH,
+      record_origin_jump: recO,
+    },
+    countries,
+  };
+}
+
 const TOP_N = 10;
 const TOP_FROM = 2000;
 
