@@ -50,6 +50,22 @@ export function firstReported(
   return null;
 }
 
+/** First year a series exceeds a threshold (default: first non-zero). */
+export function firstAbove(
+  file: CountryFile,
+  view: ViewId,
+  metric: MetricId,
+  threshold = 0,
+): { year: number; value: number } | null {
+  const mi = METRIC_IDS.indexOf(metric);
+  const series = unpack(file[view].v[mi] ?? []);
+  for (let i = 0; i < file.years.length; i++) {
+    const v = series[i];
+    if (v !== null && v !== undefined && v > threshold) return { year: file.years[i]!, value: v };
+  }
+  return null;
+}
+
 export function latestReported(
   file: CountryFile,
   view: ViewId,

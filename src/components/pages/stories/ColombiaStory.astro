@@ -1,0 +1,136 @@
+---
+/** Story: Colombia — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { peak, firstAbove, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const col = getCountry('COL');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const idpFirst = col ? firstAbove(col, 'asylum', 'idps') : null;
+const idpPeak = col ? peak(col, 'asylum', 'idps') : null;
+const idpNow = col ? latestReported(col, 'asylum', 'idps') : null;
+const refPeak = col ? peak(col, 'origin', 'refugees') : null;
+const refNow = col ? latestReported(col, 'origin', 'refugees') : null;
+const ratio =
+  idpNow?.value && refNow?.value && refNow.value > 0
+    ? Math.round(idpNow.value / refNow.value)
+    : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/colombia.jpg"
+  title={zh ? '哥倫比亞：沒有跨過國界的最大數字' : 'Colombia: the largest number never crossed a border'}
+  lede={zh
+    ? '談到流離失所，人們想到的是難民營與邊界。哥倫比亞半個多世紀的武裝衝突給出另一種答案：絕大多數人留在國內——七百多萬人，幾乎不出現在國際新聞裡。'
+    : 'Displacement brings to mind camps and borders. Colombia’s half-century of armed conflict gives a different answer: the vast majority stayed inside the country — over seven million people, nearly invisible in international news.'}
+>
+  <h2>{zh ? '國內與國外，兩個數量級' : 'Inside and outside: two orders of magnitude'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          最新資料（{idpNow?.year} 年）中，哥倫比亞的境內流離失所者為{' '}
+          <strong>{n(idpNow?.value)}</strong> 人；境外的哥倫比亞籍難民為{' '}
+          <strong>{n(refNow?.value)}</strong> 人——前者約為後者的{' '}
+          <strong>{ratio === null ? '—' : fmtInt(ratio, locale)}</strong>{' '}
+          倍。若只看「難民」一欄，哥倫比亞幾乎隱形；受衝突驅離的人，多數從未離開國境。
+        </>
+      ) : (
+        <>
+          In the latest data ({idpNow?.year}), Colombia counts <strong>{n(idpNow?.value)}</strong>{' '}
+          internally displaced people — against <strong>{n(refNow?.value)}</strong> Colombian
+          refugees abroad, roughly{' '}
+          <strong>{ratio === null ? '—' : fmtInt(ratio, locale)}×</strong> fewer. Read only the
+          "refugees" column and Colombia is nearly invisible; most people driven out by the conflict
+          never left the country.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=idps&v=origin&c=COL&y=${idpNow?.year ?? 2025}`)}
+      >{zh ? '在地圖上檢視（IDP 指標）→' : 'See it on the map (IDP metric) →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '峰值，與序列的起點' : 'The peak — and where the series begins'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          哥倫比亞的 IDP 存量在 {idpPeak?.year} 年達到峰值：<strong>{n(idpPeak?.value)}</strong>{' '}
+          人，多年位居世界最前列。但要誠實地讀這條線：本資料集中第一筆非零的 IDP 記錄出現在{' '}
+          {idpFirst?.year} 年（一出現就是 <strong>{n(idpFirst?.value)}</strong>
+          人）——不是流離失所從那年才發生，而是統計從那年才開始。峰值也包含政府登記制度的累積特性：哥倫比亞的官方登記冊很少移除人。
+        </>
+      ) : (
+        <>
+          Colombia's IDP stock peaked in {idpPeak?.year} at <strong>{n(idpPeak?.value)}</strong>,
+          for years among the world's largest. But read the line honestly: the first non-zero IDP
+          record in this dataset appears in {idpFirst?.year} — and it appears at{' '}
+          <strong>{n(idpFirst?.value)}</strong> at once. Displacement did not begin then; the
+          counting did. The peak also reflects a cumulative government registry that rarely removes
+          anyone.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=idps&v=origin&c=COL&y=${idpPeak?.year ?? 2020}`)}
+      >{zh ? `在地圖上檢視 ${idpPeak?.year} 年 →` : `See ${idpPeak?.year} on the map →`}</a
+    >
+  </p>
+
+  <h2>{zh ? '難民欄的另一段歷史' : 'The refugee column has its own history'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          境外難民的峰值出現在 {refPeak?.year} 年：<strong>{n(refPeak?.value)}</strong>{' '}
+          人，主要在鄰國厄瓜多與委內瑞拉。十餘年後，人潮方向反轉——委內瑞拉大出走使哥倫比亞成為主要收容國。同一條邊界，兩個方向的故事（見
+          <a href={localizePath('/stories/venezuela', locale)}>委內瑞拉篇</a>）。
+        </>
+      ) : (
+        <>
+          Colombian refugees abroad peaked in {refPeak?.year} at <strong>{n(refPeak?.value)}</strong>,
+          mostly in neighbouring Ecuador and Venezuela. A decade later the flow reversed — the
+          Venezuelan exodus made Colombia a major host. One border, stories in both directions (see{' '}
+          <a href={localizePath('/stories/venezuela', locale)}>the Venezuela story</a>).
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}
+          ），不由編輯手寫，會隨每次資料更新自動修正。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/COL', locale)}>哥倫比亞國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}) — never
+          hand-written, and corrected automatically with every data update. Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/COL', locale)}>the Colombia country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

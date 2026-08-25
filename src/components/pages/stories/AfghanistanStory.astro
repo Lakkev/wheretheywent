@@ -1,0 +1,144 @@
+---
+/** Story: Afghanistan — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getInsights, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, peak, firstReported, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const afg = getCountry('AFG');
+const irn = getCountry('IRN');
+const pak = getCountry('PAK');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const first = afg ? firstReported(afg, 'origin', 'refugees') : null;
+const refPeak = afg ? peak(afg, 'origin', 'refugees') : null;
+const refNow = afg ? latestReported(afg, 'origin', 'refugees') : null;
+const ref2021 = afg ? metricAt(afg, 'origin', 'refugees', 2021) : null;
+const retPeak = afg ? peak(afg, 'origin', 'returned_refugees') : null;
+const retNow = afg ? latestReported(afg, 'origin', 'returned_refugees') : null;
+const idpNow = afg ? latestReported(afg, 'asylum', 'idps') : null;
+const irnPeak = irn ? peak(irn, 'asylum', 'refugees') : null;
+const pakPeak = pak ? peak(pak, 'asylum', 'refugees') : null;
+const topYears = getInsights()?.records?.top_origin_years.find((r) => r.iso3 === 'AFG')?.years;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/afghanistan.jpg"
+  title={zh ? '阿富汗：四十六年，尚未結束' : 'Afghanistan: forty-six years, and counting'}
+  lede={zh
+    ? '這份資料集裡，沒有任何國家像阿富汗一樣：自 1979 年起，累計數十年位居全球最大難民來源國——而 2025 年的故事，是規模空前的回返與遣返。'
+    : 'No country in this dataset compares: since 1979 Afghanistan has spent decades as the world’s largest origin of refugees — and the 2025 story is returns and deportations on an unprecedented scale.'}
+>
+  <h2>{zh ? '一條從 1979 年開始的線' : 'A line that begins in 1979'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          UNHCR 對阿富汗籍難民的第一筆記錄出現在 <strong>{first?.year}</strong> 年：
+          <strong>{n(first?.value)}</strong> 人——蘇聯入侵的那一年。此後的 75 年資料中，阿富汗有{' '}
+          <strong>{topYears ?? '—'}</strong> 年位居全球最大來源國，比任何國家都久。峰值出現在{' '}
+          {refPeak?.year} 年：<strong>{n(refPeak?.value)}</strong> 人。
+        </>
+      ) : (
+        <>
+          UNHCR's first record of Afghan refugees appears in <strong>{first?.year}</strong>:{' '}
+          <strong>{n(first?.value)}</strong> people — the year of the Soviet invasion. Across the 75
+          years of data, Afghanistan has spent <strong>{topYears ?? '—'}</strong> years as the
+          world's largest origin — longer than any other country. The peak came in {refPeak?.year}:{' '}
+          <strong>{n(refPeak?.value)}</strong>.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&v=origin&c=AFG&y=${refPeak?.year ?? 2023}`)}
+      >{zh ? '在地圖上檢視 →' : 'See it on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '承擔最多的是鄰國' : 'The neighbours carried most of it'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          阿富汗人絕大多數逃往兩個鄰國。伊朗的收容量在 {irnPeak?.year} 年達到{' '}
+          <strong>{n(irnPeak?.value)}</strong> 人、巴基斯坦在 {pakPeak?.year} 年達到{' '}
+          <strong>{n(pakPeak?.value)}</strong>
+          ——這兩個峰值至今仍是全球收容史的最前列。庇護，主要是鄰國之間的事。
+        </>
+      ) : (
+        <>
+          Most Afghans fled to two neighbours. Iran's hosting peaked in {irnPeak?.year} at{' '}
+          <strong>{n(irnPeak?.value)}</strong>; Pakistan's in {pakPeak?.year} at{' '}
+          <strong>{n(pakPeak?.value)}</strong> — both still among the largest hosting figures ever
+          recorded. Asylum is, above all, something neighbours do.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&c=IRN&y=${irnPeak?.year ?? 1991}`)}
+      >{zh ? `在地圖上檢視伊朗 ${irnPeak?.year} 年 →` : `See Iran in ${irnPeak?.year} →`}</a
+    >
+  </p>
+
+  <h2>{zh ? '2025 年：回返，與遣返' : '2025: returns — and deportations'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          回返的最大單年紀錄長期是 {retPeak?.year} 年的 <strong>{n(retPeak?.value)}</strong>{' '}
+          人。而最新資料（{retNow?.year} 年）記錄了 <strong>{n(retNow?.value)}</strong>{' '}
+          名回返者——幾乎追平歷史紀錄。回返不必然出於自願：這一年的數字包含大規模遣返。與此同時，阿富汗境內仍有{' '}
+          <strong>{n(idpNow?.value)}</strong> 名境內流離失所者，境外仍有{' '}
+          <strong>{n(refNow?.value)}</strong> 名難民（2021 年為 {n(ref2021)}）。
+        </>
+      ) : (
+        <>
+          The largest return year had long been {retPeak?.year}, with{' '}
+          <strong>{n(retPeak?.value)}</strong> people. The latest data ({retNow?.year}) records{' '}
+          <strong>{n(retNow?.value)}</strong> returnees — nearly matching that record. Return is not
+          necessarily voluntary: this year's figure includes large-scale deportations. Meanwhile{' '}
+          <strong>{n(idpNow?.value)}</strong> people remain displaced inside Afghanistan, and{' '}
+          <strong>{n(refNow?.value)}</strong> remain refugees abroad ({n(ref2021)} in 2021).
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=returned_refugees&v=origin&c=AFG&y=${retNow?.year ?? 2025}`)}
+      >{zh ? '在地圖上檢視回返 →' : 'See returns on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}
+          ），不由編輯手寫，會隨每次資料更新自動修正。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/AFG', locale)}>阿富汗國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}) — never
+          hand-written, and corrected automatically with every data update. Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/AFG', locale)}>the Afghanistan country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

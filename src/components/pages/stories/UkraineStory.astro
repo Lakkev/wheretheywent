@@ -1,0 +1,132 @@
+---
+/** Story: Ukraine — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, peak, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const ukr = getCountry('UKR');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const ref2021 = ukr ? metricAt(ukr, 'origin', 'refugees', 2021) : null;
+const ref2022 = ukr ? metricAt(ukr, 'origin', 'refugees', 2022) : null;
+const refPeak = ukr ? peak(ukr, 'origin', 'refugees') : null;
+const refNow = ukr ? latestReported(ukr, 'origin', 'refugees') : null;
+const idp2022 = ukr ? metricAt(ukr, 'asylum', 'idps', 2022) : null;
+const idpNow = ukr ? latestReported(ukr, 'asylum', 'idps') : null;
+const ratio =
+  ref2021 && ref2022 && ref2021 > 0 ? Math.round(ref2022 / ref2021) : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/ukraine.jpg"
+  title={zh ? '烏克蘭：速度的紀錄' : 'Ukraine: a record of speed'}
+  lede={zh
+    ? '流離失所通常以年為單位累積。2022 年的烏克蘭不是：一年之內，難民數字放大了兩百倍——二戰以來歐洲從未見過這種速度。'
+    : 'Displacement usually accumulates over years. Ukraine in 2022 did not: within one year the refugee figure multiplied two-hundred-fold — a speed Europe had not seen since the Second World War.'}
+>
+  <h2>{zh ? '一年，兩個數量級' : 'One year, two orders of magnitude'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          2021 年年末，UNHCR 記錄的烏克蘭籍難民為 <strong>{n(ref2021)}</strong> 人。2022 年年末：
+          <strong>{n(ref2022)}</strong> 人——一年之內變為約{' '}
+          <strong>{ratio === null ? '—' : fmtInt(ratio, locale)}</strong>{' '}
+          倍。這份資料以年末存量為單位，75 年來沒有任何國家出現過這樣的單年倍率。
+        </>
+      ) : (
+        <>
+          At the end of 2021, UNHCR recorded <strong>{n(ref2021)}</strong> Ukrainian refugees. At
+          the end of 2022: <strong>{n(ref2022)}</strong> — roughly{' '}
+          <strong>{ratio === null ? '—' : fmtInt(ratio, locale)}×</strong> in a single year. In 75
+          years of year-end stocks, no country shows a one-year multiple like it.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink('?m=refugees&v=origin&c=UKR&y=2022')}
+      >{zh ? '在地圖上檢視 2022 年 →' : 'See 2022 on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '境內，同樣的規模' : 'Inside the country, the same scale'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          同一年，烏克蘭境內流離失所者達 <strong>{n(idp2022)}</strong> 人——與越過國界的人數相當。
+          最新資料（{idpNow?.year} 年）為 <strong>{n(idpNow?.value)}</strong>{' '}
+          人：下降不等於回家，也可能是統計口徑與可及性的變化。
+        </>
+      ) : (
+        <>
+          In the same year, internal displacement inside Ukraine reached{' '}
+          <strong>{n(idp2022)}</strong> people — comparable to the number who crossed a border. The
+          latest figure ({idpNow?.year}) is <strong>{n(idpNow?.value)}</strong>: a decline does not
+          equal going home — it can also reflect changes in methodology and access.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink('?m=idps&v=origin&c=UKR&y=2022')}
+      >{zh ? '在地圖上檢視境內流離 →' : 'See internal displacement →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '之後' : 'Since then'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          難民數字的峰值出現在 {refPeak?.year} 年：<strong>{n(refPeak?.value)}</strong>{' '}
+          人。最新資料（{refNow?.year} 年）為 <strong>{n(refNow?.value)}</strong>{' '}
+          人。歐洲多數收容國以「臨時保護」身分接納烏克蘭人——這是 1951 年公約之外的另一條法律路徑，
+          統計上仍計入難民類別（詳見
+          <a href={localizePath('/methodology/definitions', locale)}>定義年表</a>）。
+        </>
+      ) : (
+        <>
+          The refugee figure peaked in {refPeak?.year} at <strong>{n(refPeak?.value)}</strong>. The
+          latest figure ({refNow?.year}) is <strong>{n(refNow?.value)}</strong>. Most European hosts
+          received Ukrainians under temporary protection — a legal route outside the 1951
+          Convention, still counted under the refugee category here (see the{' '}
+          <a href={localizePath('/methodology/definitions', locale)}>definitions timeline</a>).
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}
+          ），不由編輯手寫，會隨每次資料更新自動修正。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/UKR', locale)}>烏克蘭國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}) — never
+          hand-written, and corrected automatically with every data update. Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/UKR', locale)}>the Ukraine country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

@@ -1,0 +1,132 @@
+---
+/** Story: Hong Kong & Macau — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getInsights, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, peak, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const hkg = getCountry('HKG');
+const mac = getCountry('MAC');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const hkPeak = hkg ? peak(hkg, 'asylum', 'refugees') : null;
+const hk1954 = hkg ? metricAt(hkg, 'asylum', 'refugees', 1954) : null;
+const hkNow = hkg ? latestReported(hkg, 'asylum', 'refugees') : null;
+const macPeak = mac ? peak(mac, 'asylum', 'refugees') : null;
+const per1k = getInsights()?.records?.per1k_peaks ?? [];
+const hkRate = per1k.find((r) => r.iso3 === 'HKG');
+const macRate = per1k.find((r) => r.iso3 === 'MAC');
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/hongkong.jpg"
+  title={zh ? '香港與澳門：史上人均之最' : 'Hong Kong and Macau: the per-capita record'}
+  lede={zh
+    ? '在 75 年的資料裡，「相對於自身人口，誰收容得最多」這個問題的答案不在今天，而在 1964 年的香港與澳門——每一千名居民中有超過三百五十名難民。'
+    : 'Across 75 years of data, the answer to "who hosted the most, relative to its own population" is not found today — it is Hong Kong and Macau in 1964, with over 350 refugees per 1,000 residents.'}
+>
+  <h2>{zh ? '大約每三人中有一人' : 'Roughly one person in three'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          1950–60 年代，大量人口自中國大陸遷入香港（史稱「大逃港」）。到 {hkRate?.year ?? 1964}{' '}
+          年，UNHCR 的記錄相當於每一千名香港居民中有{' '}
+          <strong>{hkRate?.rate ?? '—'}</strong> 名難民——本資料集 75 年裡的人均最高值。同一年的澳門：每千人{' '}
+          <strong>{macRate?.rate ?? '—'}</strong> 名，居史上第二。
+        </>
+      ) : (
+        <>
+          Through the 1950s and 60s, large numbers of people crossed from mainland China into Hong
+          Kong. By {hkRate?.year ?? 1964}, UNHCR's records amount to{' '}
+          <strong>{hkRate?.rate ?? '—'}</strong> refugees per 1,000 Hong Kong residents — the
+          highest per-capita figure in the 75 years of this dataset. Macau, the same year:{' '}
+          <strong>{macRate?.rate ?? '—'}</strong> per 1,000 — the second-highest ever.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&c=HKG&y=${hkRate?.year ?? 1964}&n=per1k`)}
+      >{zh ? '在地圖上檢視（人均視圖）→' : 'See it on the map (per-capita view) →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '絕對數字' : 'The absolute numbers'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          絕對數字同樣可觀：1954 年為 <strong>{n(hk1954)}</strong> 人，峰值出現在 {hkPeak?.year}{' '}
+          年：<strong>{n(hkPeak?.value)}</strong> 人。澳門的峰值在 {macPeak?.year} 年：
+          <strong>{n(macPeak?.value)}</strong>{' '}
+          人。這些早年數字是當時的行政估計，精確度低於現代登記制度——我們如實呈現，不加修飾。
+        </>
+      ) : (
+        <>
+          The absolute numbers are striking too: <strong>{n(hk1954)}</strong> in 1954, peaking in{' '}
+          {hkPeak?.year} at <strong>{n(hkPeak?.value)}</strong>. Macau peaked in {macPeak?.year} at{' '}
+          <strong>{n(macPeak?.value)}</strong>. These early figures are administrative estimates of
+          their era, less precise than modern registration — we show them as recorded, unpolished.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&c=HKG&y=${hkPeak?.year ?? 1965}`)}
+      >{zh ? `在地圖上檢視 ${hkPeak?.year} 年 →` : `See ${hkPeak?.year} on the map →`}</a
+    >
+  </p>
+
+  <h2>{zh ? '數字如何歸零' : 'How the number went to nearly zero'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          最新資料（{hkNow?.year} 年）中，香港收容的難民為 <strong>{n(hkNow?.value)}</strong>{' '}
+          人。中間發生的不是回返，而是身分的消失：絕大多數人落地生根，成為香港人口本身。統計裡的「難民」是一種法律身分——身分終止，數字就離開序列，人並沒有離開。
+        </>
+      ) : (
+        <>
+          In the latest data ({hkNow?.year}), Hong Kong hosts <strong>{n(hkNow?.value)}</strong>{' '}
+          refugees. What happened in between was mostly not return but the end of a status: the vast
+          majority settled and became Hong Kong's population itself. "Refugee" in these statistics
+          is a legal status — when the status ends, the number leaves the series; the people did
+          not.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}；人均比率使用聯合國 WPP 人口）。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/HKG', locale)}>香港頁</a>與
+          <a href={localizePath('/country/MAC', locale)}>澳門頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}; per-capita
+          rates use UN WPP population). Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; full series:{' '}
+          <a href={localizePath('/country/HKG', locale)}>Hong Kong</a> and{' '}
+          <a href={localizePath('/country/MAC', locale)}>Macau</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>

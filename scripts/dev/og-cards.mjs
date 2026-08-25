@@ -4,6 +4,7 @@
  *
  *   node scripts/dev/og-cards.mjs            # all country cards + story cards
  *   node scripts/dev/og-cards.mjs SYR VEN    # just these countries
+ *   node scripts/dev/og-cards.mjs --stories  # story cards only (skip the 231 country cards)
  *
  * Output: public/og/country/{ISO3}.jpg and public/og/story/{slug}.jpg — commit them.
  * Regenerate after a data year rolls over (numbers on the cards are year-stamped).
@@ -17,7 +18,9 @@ const read = (rel) => JSON.parse(readFileSync(join(ROOT, rel), 'utf8'));
 const countries = read('countries.json').countries.filter((c) => c.in_unhcr);
 const sources = read('sources.json');
 const asOf = sources.unhcr_population?.data_as_of ?? '';
-const only = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const storiesOnly = argv.includes('--stories');
+const only = argv.filter((a) => a !== '--stories');
 
 const METRICS = ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'returned_refugees', 'returned_idps', 'oip', 'hst'];
 const mi = (m) => METRICS.indexOf(m);
@@ -74,6 +77,7 @@ const page = await b.newPage({ viewport: { width: 1200, height: 630 }, deviceSca
 mkdirSync('public/og/country', { recursive: true });
 let done = 0;
 for (const c of countries) {
+  if (storiesOnly) break;
   if (only.length && !only.includes(c.iso3)) continue;
   let file;
   try {
@@ -111,6 +115,11 @@ if (!only.length) {
     { slug: 'syria', title: 'Syria: fourteen years displaced', zh: '敘利亞：十四年的流離' },
     { slug: 'venezuela', title: 'Venezuela: how a new category was born', zh: '委內瑞拉：一個新類別的誕生' },
     { slug: 'bangladesh', title: 'Bangladesh: within a single year', zh: '孟加拉：一年之間' },
+    { slug: 'afghanistan', title: 'Afghanistan: forty-six years, and counting', zh: '阿富汗：四十六年，尚未結束' },
+    { slug: 'ukraine', title: 'Ukraine: a record of speed', zh: '烏克蘭：速度的紀錄' },
+    { slug: 'hongkong', title: 'Hong Kong and Macau: the per-capita record', zh: '香港與澳門：史上人均之最' },
+    { slug: 'rwanda', title: 'Rwanda: within weeks', zh: '盧安達：數週之內' },
+    { slug: 'colombia', title: 'Colombia: the largest number never crossed a border', zh: '哥倫比亞：沒有跨過國界的最大數字' },
   ];
   for (const s of stories) {
     await page.setContent(
@@ -124,6 +133,6 @@ if (!only.length) {
     );
     await page.screenshot({ path: `public/og/story/${s.slug}.jpg`, type: 'jpeg', quality: 78 });
   }
-  console.log('story cards: 4');
+  console.log(`story cards: ${stories.length}`);
 }
 await b.close();

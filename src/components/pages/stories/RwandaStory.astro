@@ -1,0 +1,125 @@
+---
+/** Story: Rwanda — every figure is computed from the current snapshot at build time. */
+import DocPage from '../DocPage.astro';
+import { localizePath, type Locale } from '../../../i18n/ui';
+import { getCountry, getSources } from '../../../lib/data-server';
+import { fmtInt } from '../../../lib/format';
+import { metricAt, peak, latestReported } from './story-utils';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const rwa = getCountry('RWA');
+const src = getSources()?.['unhcr_population'];
+const n = (v: number | null | undefined) =>
+  v === null || v === undefined ? '—' : fmtInt(v, locale);
+const ref1993 = rwa ? metricAt(rwa, 'origin', 'refugees', 1993) : null;
+const refPeak = rwa ? peak(rwa, 'origin', 'refugees') : null;
+const refNow = rwa ? latestReported(rwa, 'origin', 'refugees') : null;
+const retPeak = rwa ? peak(rwa, 'origin', 'returned_refugees') : null;
+const ret1997 = rwa ? metricAt(rwa, 'origin', 'returned_refugees', 1997) : null;
+const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
+---
+
+<DocPage
+  locale={locale}
+  ogImage="/og/story/rwanda.jpg"
+  title={zh ? '盧安達：數週之內' : 'Rwanda: within weeks'}
+  lede={zh
+    ? '1994 年的大屠殺以百日計。年度統計只有一格：那一格裡，難民數字從四十五萬變成兩百多萬。'
+    : 'The 1994 genocide is measured in a hundred days. Annual statistics have only one cell for it — and in that cell, the refugee figure goes from 450 thousand to over two million.'}
+>
+  <h2>{zh ? '一格之內' : 'Inside a single cell'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          1993 年年末，UNHCR 記錄的盧安達籍難民為 <strong>{n(ref1993)}</strong> 人。{refPeak?.year}{' '}
+          年年末：<strong>{n(refPeak?.value)}</strong>
+          ——絕大多數逃往薩伊（今剛果民主共和國）與坦尚尼亞。年度資料看不見四月到七月之間發生的事；它只能記下年底還在境外的人。
+        </>
+      ) : (
+        <>
+          At the end of 1993, UNHCR recorded <strong>{n(ref1993)}</strong> Rwandan refugees. At the
+          end of {refPeak?.year}: <strong>{n(refPeak?.value)}</strong> — most fled to Zaire (today's
+          Democratic Republic of the Congo) and Tanzania. Annual data cannot see what happened
+          between April and July; it can only record who was still abroad at year's end.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=refugees&v=origin&c=RWA&y=${refPeak?.year ?? 1994}`)}
+      >{zh ? '在地圖上檢視 1994 年 →' : 'See 1994 on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '回返同樣迅速——並且混亂' : 'Returns were just as fast — and chaotic'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          {retPeak?.year} 年記錄了 <strong>{n(retPeak?.value)}</strong> 名回返者，1997 年再有{' '}
+          <strong>{n(ret1997)}</strong>
+          名——難民營在戰火中解散，人潮在數週內折返。這段時期的大湖區統計出自極端混亂的現場，各方估計差異大；這裡呈現的是
+          UNHCR 的官方序列，其不確定性應誠實記住。
+        </>
+      ) : (
+        <>
+          {retPeak?.year} records <strong>{n(retPeak?.value)}</strong> returnees, and 1997 another{' '}
+          <strong>{n(ret1997)}</strong> — camps dissolved amid war and the flows reversed within
+          weeks. Great Lakes statistics from this period were produced in extreme chaos and
+          estimates diverged; what you see is UNHCR's official series, whose uncertainty deserves
+          honest remembering.
+        </>
+      )
+    }
+  </p>
+  <p>
+    <a href={mapLink(`?m=returned_refugees&v=origin&c=RWA&y=${retPeak?.year ?? 1996}`)}
+      >{zh ? '在地圖上檢視回返 →' : 'See returns on the map →'}</a
+    >
+  </p>
+
+  <h2>{zh ? '三十年後' : 'Thirty years on'}</h2>
+  <p>
+    {
+      zh ? (
+        <>
+          最新資料（{refNow?.year} 年）中，境外的盧安達籍難民為 <strong>{n(refNow?.value)}</strong>{' '}
+          人。數字回落，歷史沒有：1994 年那一格，是這份資料集裡增速最快的來源國紀錄之一。
+        </>
+      ) : (
+        <>
+          In the latest data ({refNow?.year}), <strong>{n(refNow?.value)}</strong> Rwandan refugees
+          remain abroad. The number receded; the history did not: that single 1994 cell remains one
+          of the fastest origin-side surges in this dataset.
+        </>
+      )
+    }
+  </p>
+
+  <h2>{zh ? '這些數字從哪裡來' : 'Where these numbers come from'}</h2>
+  <p class="small muted">
+    {
+      zh ? (
+        <>
+          本頁每個數字都在建置時由本站發布的資料計算而得（來源：{src?.attribution ?? 'UNHCR'}
+          ，資料截至 {src?.data_as_of ?? '—'}
+          ），不由編輯手寫，會隨每次資料更新自動修正。定義與注意事項見
+          <a href={localizePath('/methodology', locale)}>方法論</a>；完整序列見
+          <a href={localizePath('/country/RWA', locale)}>盧安達國家頁</a>。
+        </>
+      ) : (
+        <>
+          Every figure on this page is computed at build time from the data this site publishes
+          (source: {src?.attribution ?? 'UNHCR'}, data as of {src?.data_as_of ?? '—'}) — never
+          hand-written, and corrected automatically with every data update. Definitions and caveats:{' '}
+          <a href={localizePath('/methodology', locale)}>methodology</a>; the full series:{' '}
+          <a href={localizePath('/country/RWA', locale)}>the Rwanda country page</a>.
+        </>
+      )
+    }
+  </p>
+</DocPage>
