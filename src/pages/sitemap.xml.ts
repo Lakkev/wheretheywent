@@ -10,6 +10,7 @@ const STATIC = [
   '/methodology',
   '/methodology/definitions',
   '/cite',
+  '/review',
   '/about',
   '/about/boundaries',
   '/stories',

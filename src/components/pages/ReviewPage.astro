@@ -1,0 +1,142 @@
+---
+/** /review — open call for methodological review. The landing point for outreach letters:
+ *  a reviewer should understand the ask, the artifact and the rules within five minutes. */
+import DocPage from './DocPage.astro';
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { getManifest, getSources } from '../../lib/data-server';
+import { CONTACT_EMAIL, DATA_DOI } from '../../lib/site';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
+const manifest = getManifest();
+const src = getSources()?.['unhcr_population'];
+---
+
+<DocPage
+  locale={locale}
+  title={zh ? '公開徵求方法論審查' : 'Open call: review our methodology'}
+  lede={zh
+    ? '在向全世界的研究者與記者推薦本站之前，我們想先被熟悉這些資料陷阱的人批評。所有意見與我們的回應都將全文公開。'
+    : 'Before recommending this site to researchers and journalists worldwide, we want it criticised by people who know this data’s traps. Every comment and our response will be published in full.'}
+>
+  <h2>{zh ? '請求是什麼' : 'The ask'}</h2>
+  {
+    zh ? (
+      <ul>
+        <li>
+          <strong>一到兩小時</strong>，未來六週內任何時間。
+        </li>
+        <li>
+          讀<a href={localizePath('/methodology', locale)}>方法論</a>與
+          <a href={localizePath('/methodology/definitions', locale)}>定義變遷年表</a>
+          ，隨意戳資料，把「哪裡錯了、哪裡缺了、哪裡會誤導」寄給我們。
+        </li>
+        <li>
+          意見與回應全文公開於本頁；<strong>具名或匿名由您決定</strong>。
+        </li>
+        <li>沒有報酬——只有公開的致謝，與一個會被您的學生引用的資源因您而變好。</li>
+      </ul>
+    ) : (
+      <ul>
+        <li>
+          <strong>One to two hours</strong>, any time in the next six weeks.
+        </li>
+        <li>
+          Read the <a href={localizePath('/methodology', locale)}>methodology</a> and the{' '}
+          <a href={localizePath('/methodology/definitions', locale)}>definitions timeline</a>, poke
+          the data, and send us what is wrong, missing, or misleading.
+        </li>
+        <li>
+          Comments and our responses are published in full on this page —{' '}
+          <strong>attributed or anonymous, your choice</strong>.
+        </li>
+        <li>
+          No payment — only public acknowledgement, and a resource your students may cite made
+          better by you.
+        </li>
+      </ul>
+    )
+  }
+
+  <h2>{zh ? '五分鐘審查包' : 'The five-minute reviewer pack'}</h2>
+  {
+    zh ? (
+      <ol>
+        <li>
+          <strong>它是什麼</strong>：UNHCR／IDMC／UN WPP 公開統計的可驗證轉載層——內容位址快照、季度
+          DOI（
+          <a href={`https://doi.org/${DATA_DOI}`}>
+            <code>{DATA_DOI}</code>
+          </a>
+          ）、每日公開驗證、七種語言的指標定義。不生產數據，生產引用所需的嚴謹性。
+        </li>
+        <li>
+          <strong>自我檢驗</strong>：每日 21
+          項不變量（含「可上色總和＋無法顯示總和＝全球總計」對全部指標×75 年成立；三個黃金數字容差
+          1%）。目前快照 <code>{manifest?.snapshot_id}</code>
+          ，資料截至 {src?.data_as_of}。
+        </li>
+        <li>
+          <strong>已知限制（先自首）</strong>：未報告≠零的全鏈路呈現仰賴上游 "-" 記號的正確性；IDP
+          僅衝突與暴力；OIP 造成 2018 斷點；即時層為估計；涵蓋度分層記分尚未實作。
+        </li>
+        <li>
+          <strong>最歡迎的批評</strong>：定義表述的法律準確性（七語）、注意事項是否有遺漏、
+          「負責任引用」守則是否站得住、視覺化是否有無意的誤導。
+        </li>
+      </ol>
+    ) : (
+      <ol>
+        <li>
+          <strong>What it is</strong>: a verifiable republication layer over UNHCR / IDMC / UN WPP
+          statistics — content-addressed snapshots, a quarterly DOI (
+          <a href={`https://doi.org/${DATA_DOI}`}>
+            <code>{DATA_DOI}</code>
+          </a>
+          ), daily public validation, metric definitions in seven languages. It produces no data; it
+          produces the rigour needed to cite data.
+        </li>
+        <li>
+          <strong>Self-checks</strong>: 21 daily invariants (incl. mapped + unmappable = global
+          total for every metric × 75 years; three golden numbers within 1%). Current snapshot{' '}
+          <code>{manifest?.snapshot_id}</code>, data as of {src?.data_as_of}.
+        </li>
+        <li>
+          <strong>Known limits (we confess first)</strong>: the null≠zero chain trusts the upstream
+          "-" convention; IDPs cover conflict/violence only; OIP creates a 2018 break; the live
+          layer is estimates; per-country coverage scoring is not yet implemented.
+        </li>
+        <li>
+          <strong>Criticism we most want</strong>: legal accuracy of the definitions (in all seven
+          languages), missing caveats, whether the responsible-citation rules hold up, and any
+          unintentionally misleading visualisation.
+        </li>
+      </ol>
+    )
+  }
+
+  <h2>{zh ? '如何回覆' : 'How to respond'}</h2>
+  <p>
+    {zh ? '寄至 ' : 'Write to '}
+    <a
+      href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('[Where They Went] Methodology review')}`}
+      >{CONTACT_EMAIL}</a
+    >{
+      zh
+        ? '，格式不拘——條列、批注過的截圖、一封長信都好。收到後我們會逐點回應，並詢問您希望的署名方式後才公開。'
+        : ' — any format: bullet points, annotated screenshots, one long e-mail. We will respond point by point, and ask how you wish to be credited before anything is published.'
+    }
+  </p>
+
+  <h2>{zh ? '已收到的審查' : 'Reviews received'}</h2>
+  <p class="muted">
+    {
+      zh
+        ? '尚無。本頁將原文刊載每一份審查意見與我們的回應——包括我們答不上來的部分。'
+        : 'None yet. This page will publish every review and our responses verbatim — including the parts we cannot answer.'
+    }
+  </p>
+</DocPage>
