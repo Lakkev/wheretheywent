@@ -31,6 +31,14 @@ test('IDU event layer renders dots when toggled (e=1)', async ({ page, request }
     },
     { timeout: 15_000 },
   );
+  // the event timeline dialog lists the chronology behind the dots
+  await page.locator('button.idu-timeline-btn').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  expect(await dialog.locator('tbody tr').count()).toBeGreaterThan(10);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+
   // toggling off removes the layer again
   await page.locator('button.idu-toggle').click();
   await page.waitForFunction(

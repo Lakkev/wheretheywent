@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "Conflict events",
   "idu.disaster.toggle": "Disaster events",
   "idu.definitionNote": "Event definitions differ from the annual IDP stock shown in colour, which excludes disasters.",
+  "idu.timeline": "Event timeline",
+  "idu.showMore": "Show more",
+  "idu.all": "All",
+  "idu.col.date": "Date",
+  "idu.col.country": "Country / territory",
+  "idu.col.type": "Type",
+  "idu.col.figure": "Displacements",
   "flows.toggle": "Flow arcs (top 10 partners)",
   "flows.note": "Arcs run from country of origin to country of asylum; width ∝ persons (refugees + asylum-seekers).",
   "flows.from2015": "Bilateral flows are published from 2015 onwards.",
@@ -295,6 +302,6 @@
   "tour.done": "Start exploring",
   "home.q": "Where is your country?",
   "nav.insights": "Records",
-  "nav.press": "Press",
+  "nav.facts": "Quick facts",
   "insights.more": "All records →"
 }

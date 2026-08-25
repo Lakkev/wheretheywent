@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "Événements de conflit",
   "idu.disaster.toggle": "Événements de catastrophe",
   "idu.definitionNote": "Les définitions des événements diffèrent du stock annuel de PDI affiché en couleur, qui exclut les catastrophes.",
+  "idu.timeline": "Chronologie des événements",
+  "idu.showMore": "Afficher plus",
+  "idu.all": "Tous",
+  "idu.col.date": "Date",
+  "idu.col.country": "Pays / territoire",
+  "idu.col.type": "Type",
+  "idu.col.figure": "Déplacements",
   "flows.toggle": "Arcs de flux (10 principaux partenaires)",
   "flows.note": "Les arcs vont du pays d'origine au pays d'asile ; la largeur est proportionnelle aux personnes (réfugiés + demandeurs d'asile).",
   "flows.from2015": "Les flux bilatéraux sont publiés à partir de 2015.",
@@ -295,6 +302,6 @@
   "tour.done": "Explorer",
   "home.q": "Où est votre pays ?",
   "nav.insights": "Records",
-  "nav.press": "Presse",
+  "nav.facts": "L'essentiel",
   "insights.more": "Tous les records →"
 }

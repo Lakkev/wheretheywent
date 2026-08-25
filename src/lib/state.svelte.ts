@@ -56,7 +56,7 @@ export const session = $state({
   /** live-region text for screen readers */
   announce: '',
   toasts: [] as { id: number; text: string }[],
-  dialog: null as null | 'share' | 'cite' | 'download' | 'keys' | 'boundaries' | 'stale',
+  dialog: null as null | 'share' | 'cite' | 'download' | 'keys' | 'boundaries' | 'stale' | 'events',
   detailCountry: null as import('./types').CountryFile | null,
   detailLoading: false,
   /** when true, state changes came from URL (popstate) — do not push history */

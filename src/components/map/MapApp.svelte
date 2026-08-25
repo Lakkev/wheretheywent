@@ -460,6 +460,11 @@
                 aria-pressed={evDisaster}
                 onclick={() => (evDisaster = !evDisaster)}>{tr('idu.disaster.toggle')}</button
               >
+              <button
+                class="btn idu-chip idu-timeline-btn"
+                type="button"
+                onclick={() => (session.dialog = 'events')}>≣ {tr('idu.timeline')}</button
+              >
             </div>
           {/if}
         {/if}
@@ -496,7 +501,15 @@
   {/if}
   {#if session.dialog}
     {#await import('./Dialogs.svelte') then { default: Dialogs }}
-      <Dialogs {locale} {view} {permalink} />
+      <Dialogs
+        {locale}
+        {view}
+        {permalink}
+        onlocate={(lon: number, lat: number) => {
+          ui.e = true;
+          mapRef?.flyToPoint(lon, lat);
+        }}
+      />
     {/await}
   {/if}
 {/if}

@@ -150,7 +150,7 @@
           <a href={localizePath('/about/boundaries', locale)}>{tr('nav.boundaries')}</a>
           <a href={localizePath('/cite', locale)}>{tr('cite.responsibly')}</a>
           <a href={localizePath('/insights', locale)}>{tr('nav.insights')}</a>
-          <a href={localizePath('/press', locale)}>{tr('nav.press')}</a>
+          <a href={localizePath('/facts', locale)}>{tr('nav.facts')}</a>
           <a href={localizePath('/stories', locale)}>{tr('nav.stories')}</a>
           <button type="button" class="report-item" onclick={report}>{tr('page.report')}</button>
         </nav>

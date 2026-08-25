@@ -1,6 +1,6 @@
 ---
 /** /insights — the record library. Every row is mechanically computed and deep-links to the
- *  view that proves it. For a journalist, each line is a ready-made story lead. */
+ *  view that proves it. Each line is a lead anyone can cite. */
 import DocPage from './DocPage.astro';
 import { useT, localizePath, type Locale } from '../../i18n/ui';
 import { getInsights, getCountries, getSources } from '../../lib/data-server';
@@ -30,8 +30,8 @@ const R = ins?.records;
   locale={locale}
   title={zh ? '紀錄庫' : 'The record library'}
   lede={zh
-    ? '七十五年資料裡的每一項極值——全部由管線機械計算，每一列都能點進地圖親眼驗證。對記者而言，每一行都是一條現成的報導線索。'
-    : 'Every extreme in seventy-five years of data — all mechanically computed, every row clickable into the map that proves it. For a journalist, each line is a ready-made lead.'}
+    ? '七十五年資料裡的每一項極值——全部由管線機械計算，每一列都能點進地圖親眼驗證。每一行，都是任何人都能直接引用的線索。'
+    : 'Every extreme in seventy-five years of data — all mechanically computed, every row clickable into the map that proves it. Each line is a lead anyone can cite.'}
 >
   <p class="callout small">
     {

@@ -556,6 +556,10 @@
   export function resetView() {
     map?.flyTo({ center: [10, 20], zoom: 1.4, duration: prefersReducedMotion() ? 0 : 500 });
   }
+  /** Fly to a specific event location (IDU event timeline). */
+  export function flyToPoint(lon: number, lat: number, zoom = 5) {
+    map?.flyTo({ center: [lon, lat], zoom, duration: prefersReducedMotion() ? 0 : 700 });
+  }
   export function resize() {
     map?.resize();
   }

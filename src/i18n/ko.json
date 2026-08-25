@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "분쟁 사건",
   "idu.disaster.toggle": "재해 사건",
   "idu.definitionNote": "사건 정의는 색으로 표시되는 연간 IDP 스톡(재해 제외)과 다릅니다.",
+  "idu.timeline": "사건 연표",
+  "idu.showMore": "더 보기",
+  "idu.all": "전체",
+  "idu.col.date": "날짜",
+  "idu.col.country": "국가/지역",
+  "idu.col.type": "유형",
+  "idu.col.figure": "실향(연인원)",
   "flows.toggle": "흐름 호(상위 10개 파트너)",
   "flows.note": "호는 출신국에서 비호국으로 향하며, 너비는 인원수(난민+비호신청자)에 비례합니다.",
   "flows.from2015": "양자 간 흐름은 2015년부터 발표됩니다.",
@@ -295,6 +302,6 @@
   "tour.done": "탐색 시작",
   "home.q": "당신의 나라는 어디인가요?",
   "nav.insights": "기록",
-  "nav.press": "언론인용",
+  "nav.facts": "핵심 수치",
   "insights.more": "모든 기록 →"
 }

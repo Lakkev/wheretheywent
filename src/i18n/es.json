@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "Eventos de conflicto",
   "idu.disaster.toggle": "Eventos de desastre",
   "idu.definitionNote": "Las definiciones de los eventos difieren del stock anual de desplazados internos mostrado en color, que excluye los desastres.",
+  "idu.timeline": "Cronología de eventos",
+  "idu.showMore": "Mostrar más",
+  "idu.all": "Todos",
+  "idu.col.date": "Fecha",
+  "idu.col.country": "País / territorio",
+  "idu.col.type": "Tipo",
+  "idu.col.figure": "Desplazamientos",
   "flows.toggle": "Arcos de flujo (10 principales socios)",
   "flows.note": "Los arcos van del país de origen al país de asilo; el ancho es proporcional a las personas (refugiados + solicitantes de asilo).",
   "flows.from2015": "Los flujos bilaterales se publican desde 2015.",
@@ -295,6 +302,6 @@
   "tour.done": "Explorar",
   "home.q": "¿Dónde está tu país?",
   "nav.insights": "Récords",
-  "nav.press": "Prensa",
+  "nav.facts": "Datos clave",
   "insights.more": "Todos los récords →"
 }

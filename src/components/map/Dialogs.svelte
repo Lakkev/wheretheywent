@@ -20,7 +20,7 @@
     zhData,
   } from '../../lib/data';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
-  import { fmtDateIso } from '../../lib/format';
+  import { fmtDateIso, fmtInt } from '../../lib/format';
   import { localizePath } from '../../i18n/ui';
   import type { DisputedNotes } from '../../lib/types';
 
@@ -30,10 +30,41 @@
       void raw.client.disputed().then((n) => (disputed = n));
   });
 
-  let { locale, view, permalink }: { locale: Locale; view: ViewResult; permalink: string } =
-    $props();
+  let {
+    locale,
+    view,
+    permalink,
+    onlocate,
+  }: {
+    locale: Locale;
+    view: ViewResult;
+    permalink: string;
+    onlocate?: (lon: number, lat: number) => void;
+  } = $props();
   const tr = $derived(useT(locale));
   const close = () => (session.dialog = null);
+
+  // IDU event timeline (dialog 'events') — the chronology behind the dots
+  let evType = $state<'all' | 'conflict' | 'disaster'>('all');
+  let evShown = $state(120);
+  $effect(() => {
+    if (session.dialog === 'events') evShown = 120;
+  });
+  const evList = $derived.by(() => {
+    const list = data.idu?.events ?? [];
+    return [...list]
+      .filter((e) => evType === 'all' || (e.type ?? '').toLowerCase() === evType)
+      .sort((a, b) => (a.displacement_date < b.displacement_date ? 1 : -1));
+  });
+  const evTypeLabel = (t: string) => {
+    const label = tr(('idu.type.' + (t ?? '').toLowerCase()) as MessageKey);
+    return label.startsWith('idu.type.') ? t : label;
+  };
+  function locate(e: { lon: number | null; lat: number | null }) {
+    if (e.lon === null || e.lat === null) return;
+    close();
+    onlocate?.(e.lon, e.lat);
+  }
 
   const metricLabel = $derived(tr(`metric.${ui.m}` as MessageKey));
   const viewLabel = $derived(ui.v === 'asylum' ? tr('view.asylum') : tr('view.origin'));
@@ -231,6 +262,66 @@
       <p class="muted">{tr('common.loading')}</p>
     {/if}
   </Modal>
+{:else if session.dialog === 'events'}
+  <Modal title={tr('idu.timeline')} onclose={close} closeLabel={tr('common.close')} wide>
+    <p class="small muted">
+      {tr('map.idu.body')}
+      {#if data.idu}<span class="num">{data.idu.since} – {data.idu.until}</span>{/if}
+    </p>
+    <label class="small ev-filter">
+      {tr('idu.col.type')}
+      <select bind:value={evType}>
+        <option value="all">{tr('idu.all')}</option>
+        <option value="conflict">{tr('idu.type.conflict')}</option>
+        <option value="disaster">{tr('idu.type.disaster')}</option>
+      </select>
+    </label>
+    <div class="events-scroll">
+      <table class="small">
+        <thead>
+          <tr>
+            <th>{tr('idu.col.date')}</th>
+            <th>{tr('idu.col.country')}</th>
+            <th>{tr('idu.col.type')}</th>
+            <th class="num">{tr('idu.col.figure')}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each evList.slice(0, evShown) as e (e.id)}
+            <tr>
+              <td class="num">{e.displacement_date}</td>
+              <td
+                >{raw.countryIndex.get(e.iso3)
+                  ? displayName(raw.countryIndex.get(e.iso3), locale, e.iso3)
+                  : e.country}</td
+              >
+              <td>{evTypeLabel(e.type)}</td>
+              <td class="num">{fmtInt(e.figure, locale)}</td>
+              <td class="ev-actions">
+                {#if e.lat !== null && e.lon !== null}
+                  <button class="btn ghost" type="button" onclick={() => locate(e)}
+                    >{tr('insight.see')}</button
+                  >
+                {/if}
+                {#if e.url}
+                  <a href={e.url} target="_blank" rel="noopener noreferrer" title={tr('idu.readReport')}
+                    >↗</a
+                  >
+                {/if}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+    {#if evList.length > evShown}
+      <button class="btn" type="button" onclick={() => (evShown += 200)}
+        >{tr('idu.showMore')} ({fmtInt(evList.length - evShown, locale)})</button
+      >
+    {/if}
+    <p class="small muted">{tr('idu.definitionNote')}</p>
+  </Modal>
 {:else if session.dialog === 'stale'}
   <Modal
     title={tr('source.stale', { since: fmtDateIso(stale[0]?.[1].stale_since ?? '') })}
@@ -251,6 +342,24 @@
 {/if}
 
 <style>
+  .events-scroll {
+    max-height: 55vh;
+    overflow: auto;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    margin: var(--sp-2) 0;
+  }
+  .ev-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .ev-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
   .dl-actions {
     display: flex;
     gap: var(--sp-2);

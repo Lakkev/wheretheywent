@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "衝突事件",
   "idu.disaster.toggle": "災害事件",
   "idu.definitionNote": "事件定義與地圖顏色所示的年度 IDP 存量不同；後者不含災害。",
+  "idu.timeline": "事件年表",
+  "idu.showMore": "顯示更多",
+  "idu.all": "全部",
+  "idu.col.date": "日期",
+  "idu.col.country": "國家／地區",
+  "idu.col.type": "類型",
+  "idu.col.figure": "流離人次",
   "flows.toggle": "流向弧線（前 10 大夥伴）",
   "flows.note": "弧線由來源國指向庇護國；寬度與人數成正比（難民＋庇護申請者）。",
   "flows.from2015": "雙邊流向資料自 2015 年起發布。",
@@ -295,6 +302,6 @@
   "tour.done": "開始探索",
   "home.q": "你的國家在哪裡？",
   "nav.insights": "紀錄庫",
-  "nav.press": "記者快查",
+  "nav.facts": "快查",
   "insights.more": "全部紀錄 →"
 }

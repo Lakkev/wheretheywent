@@ -1,7 +1,8 @@
 ---
-/** /press — quick facts for journalists on deadline. Every number is computed at build time
- *  from the published data, every row deep-links to the view that reproduces it, and the
- *  attribution boilerplate is ready to paste. */
+/** /facts — quick facts for anyone who needs a checkable number: writers, students,
+ *  researchers, readers. Every number is computed at build time from the published data,
+ *  every row deep-links to the view that reproduces it, and the attribution boilerplate
+ *  is ready to paste. Deliberately audience-neutral: the site is citable by anyone. */
 import DocPage from './DocPage.astro';
 import { localizePath, type Locale } from '../../i18n/ui';
 import { getInsights, getCountries, getSources } from '../../lib/data-server';
@@ -39,12 +40,12 @@ const boiler = zh
 
 <DocPage
   locale={locale}
-  title={zh ? '記者快查' : 'Press quick facts'}
+  title={zh ? '快查' : 'Quick facts'}
   lede={zh
-    ? `截稿前需要一個可查證的數字？這一頁的每個數字都由每日管線自資料計算、可點進地圖重現、附現成的出處寫法。最後更新：資料截至 ${asOf}。`
-    : `Need a checkable number before deadline? Every figure on this page is computed daily from the data, reproducible on the map in one click, with ready-to-paste attribution. Data as of ${asOf}.`}
+    ? `需要一個可查證的數字？無論您是寫作、研究、教學或單純想確認一件事——這一頁的每個數字都由每日管線自資料計算、可點進地圖重現、附現成的出處寫法。資料截至 ${asOf}。`
+    : `Need a checkable number? Whether you are writing, researching, teaching, or just verifying something — every figure on this page is computed daily from the data, reproducible on the map in one click, with ready-to-paste attribution. Data as of ${asOf}.`}
 >
-  <h2>{zh ? `今晚就能用的數字（${year} 年）` : `Numbers you can use tonight (${year})`}</h2>
+  <h2>{zh ? `現在就能引用的數字（${year} 年）` : `Numbers ready to cite (${year})`}</h2>
   {
     G && (
       <table class="small">
@@ -112,7 +113,7 @@ const boiler = zh
     )
   }
 
-  <h2>{zh ? '現成的報導線索' : 'Ready-made leads'}</h2>
+  <h2>{zh ? '現成的切入點' : 'Ready-made starting points'}</h2>
   {
     R && G && (
       <ul>

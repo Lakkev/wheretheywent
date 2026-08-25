@@ -255,6 +255,13 @@
   "idu.conflict.toggle": "紛争イベント",
   "idu.disaster.toggle": "災害イベント",
   "idu.definitionNote": "イベントの定義は、色で示す年間 IDP ストック（災害を含まない）とは異なります。",
+  "idu.timeline": "出来事の年表",
+  "idu.showMore": "もっと見る",
+  "idu.all": "すべて",
+  "idu.col.date": "日付",
+  "idu.col.country": "国・地域",
+  "idu.col.type": "種別",
+  "idu.col.figure": "避難件数（延べ）",
   "flows.toggle": "フロー弧（上位10パートナー）",
   "flows.note": "弧は出身国から庇護国へ向かい、幅は人数（難民＋庇護希望者）に比例します。",
   "flows.from2015": "二国間フローは2015年以降のみ公表されています。",
@@ -295,6 +302,6 @@
   "tour.done": "探索を始める",
   "home.q": "あなたの国はどこですか？",
   "nav.insights": "記録",
-  "nav.press": "報道関係者向け",
+  "nav.facts": "早見表",
   "insights.more": "すべての記録 →"
 }
