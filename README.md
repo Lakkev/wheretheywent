@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22087749.svg)](https://doi.org/10.5281/zenodo.22087749)
 
-Global forced-displacement data platform for journalists, researchers and NGOs: an interactive
+Global forced-displacement data platform for anyone who needs a checkable number: an interactive
 world map of refugees, asylum-seekers, internally displaced and stateless people by country and
 year (1951–latest), with sources, as-of dates, permanent links, citations and downloads for every
 number. Data: UNHCR, IDMC, UN WPP. No server, no tracking, zero hosting cost.
