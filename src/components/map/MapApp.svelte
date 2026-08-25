@@ -5,7 +5,7 @@
    */
   import { onMount, untrack } from 'svelte';
   import type { Locale } from '../../i18n/ui';
-  import { useT, type MessageKey } from '../../i18n/ui';
+  import { useT, localizePath, type MessageKey } from '../../i18n/ui';
   import {
     ui,
     data,
@@ -54,12 +54,15 @@
     styleUrl,
     yearMin,
     yearMax,
+    embed = false,
   }: {
     locale: Locale;
     styleUrl: string;
     yearMin: number;
     yearMax: number;
     snapshotId: string | null;
+    /** iframe mode (/embed): chrome stripped, corner brand chip links back to the full site */
+    embed?: boolean;
   } = $props();
   const tr = $derived(useT(locale));
 
@@ -402,15 +405,25 @@
 </script>
 
 {#if ready}
-  <div class="overlays" class:presentation={session.presentation}>
-    <TopBar
-      {locale}
-      onshare={() => (session.dialog = 'share')}
-      oncite={() => (session.dialog = 'cite')}
-      ondownload={() => (session.dialog = 'download')}
-      onkeys={() => (session.dialog = 'keys')}
-    />
-    <FilterRail {locale} {view} bind:searchEl />
+  <div class="overlays" class:presentation={session.presentation} class:embed>
+    {#if !embed}
+      <TopBar
+        {locale}
+        onshare={() => (session.dialog = 'share')}
+        oncite={() => (session.dialog = 'cite')}
+        ondownload={() => (session.dialog = 'download')}
+        onkeys={() => (session.dialog = 'keys')}
+      />
+      <FilterRail {locale} {view} bind:searchEl />
+    {:else}
+      <a
+        class="embed-brand"
+        href={localizePath('/', locale) +
+          (typeof location !== 'undefined' ? location.search : '')}
+        target="_blank"
+        rel="noopener">{tr('site.name')} ↗</a
+      >
+    {/if}
     <div class="center">
       {#if webgl}
         <div class="map-controls">
@@ -468,17 +481,19 @@
             </div>
           {/if}
         {/if}
-        <NowcastCard {locale} />
-        <InsightCard {locale} />
-        <TourCard {locale} />
-        <HomePrompt
-          {locale}
-          onOpen={() => {
-            if (session.narrow) session.railMobileOpen = true;
-            else if (ui.p !== 'open') ui.p = 'open';
-            setTimeout(() => searchEl?.focus(), 30);
-          }}
-        />
+        {#if !embed}
+          <NowcastCard {locale} />
+          <InsightCard {locale} />
+          <TourCard {locale} />
+          <HomePrompt
+            {locale}
+            onOpen={() => {
+              if (session.narrow) session.railMobileOpen = true;
+              else if (ui.p !== 'open') ui.p = 'open';
+              setTimeout(() => searchEl?.focus(), 30);
+            }}
+          />
+        {/if}
       {/if}
       <Legend {locale} {view} {worldPop} {metricCaveats} />
     </div>
@@ -566,6 +581,29 @@
 {/if}
 
 <style>
+  /* /embed: no rail column; corner brand chip links back to the full site */
+  .overlays.embed {
+    --rail-w: 0px;
+    --topbar-h: 0px;
+  }
+  .embed-brand {
+    position: absolute;
+    top: var(--overlay-gap);
+    left: var(--overlay-gap);
+    z-index: 30;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--c-primary);
+    text-decoration: none;
+    box-shadow: var(--shadow-1);
+  }
+  .embed-brand:hover {
+    background: var(--c-primary-soft);
+  }
   .idu-toggle {
     position: absolute;
     left: var(--overlay-gap);

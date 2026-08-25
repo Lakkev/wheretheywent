@@ -1,0 +1,36 @@
+---
+/** /embed — the map, iframe-able anywhere (X-Frame-Options lifted for this path in _headers).
+ *  Same app, chrome stripped: no top bar, no rail, no first-visit cards; a corner brand chip
+ *  links back to the full site with the same view. noindex — the canonical page is /. */
+import MapLayout from '../../layouts/MapLayout.astro';
+import MapSkeleton from '../map/MapSkeleton.astro';
+import MapApp from '../map/MapApp.svelte';
+import { useT, type Locale } from '../../i18n/ui';
+import { getManifest } from '../../lib/data-server';
+import { MAP_STYLE_URL } from '../../lib/site';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+const manifest = getManifest();
+const yearMin = manifest?.year_min ?? 1951;
+const yearMax = manifest?.year_max ?? 2025;
+---
+
+<MapLayout title={tr('site.name')} locale={locale} noindex>
+  <div class="map-root" id="map-root">
+    <h1 class="visually-hidden">{tr('site.name')} — {tr('site.tagline')}</h1>
+    <div class="map-canvas" id="map-canvas-skeleton"></div>
+    <MapSkeleton locale={locale} yearMin={yearMin} yearMax={yearMax} />
+    <MapApp
+      client:only="svelte"
+      locale={locale}
+      styleUrl={MAP_STYLE_URL}
+      yearMin={yearMin}
+      yearMax={yearMax}
+      snapshotId={manifest?.snapshot_id ?? null}
+      embed
+    />
+  </div>
+</MapLayout>

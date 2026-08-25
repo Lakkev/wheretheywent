@@ -124,6 +124,7 @@
   "share.copy": "Copier le lien",
   "share.copied": "Lien copié",
   "share.help": "Le lien reproduit l'année, l'indicateur, la vue, les filtres, la sélection et la position de la carte.",
+  "share.embed": "Intégrer (iframe)",
   "keys.title": "Raccourcis clavier",
   "keys.search": "Rechercher",
   "keys.table": "Afficher/masquer le tableau",

@@ -179,6 +179,12 @@
   <Modal title={tr('share.title')} onclose={close} closeLabel={tr('common.close')}>
     <p class="small muted">{tr('share.help')}</p>
     <CopyField {locale} label="URL" value={permalink} rows={2} />
+    <CopyField
+      {locale}
+      label={tr('share.embed')}
+      value={`<iframe src="${permalink.includes('?') ? permalink.replace('/?', '/embed?') : permalink.replace(/\/$/, '') + '/embed'}" width="960" height="560" style="border:1px solid #e0d7c8;border-radius:8px" loading="lazy" title="Where They Went"></iframe>`}
+      rows={3}
+    />
   </Modal>
 {:else if session.dialog === 'cite'}
   <Modal title={tr('cite.title')} onclose={close} closeLabel={tr('common.close')}>

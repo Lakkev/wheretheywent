@@ -124,6 +124,7 @@
   "share.copy": "リンクをコピー",
   "share.copied": "リンクをコピーしました",
   "share.help": "このリンクは年・指標・表示・フィルター・選択・地図位置を再現します。",
+  "share.embed": "埋め込み（iframe）",
   "keys.title": "キーボードショートカット",
   "keys.search": "検索",
   "keys.table": "表の表示切替",

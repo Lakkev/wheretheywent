@@ -124,6 +124,7 @@
   "share.copy": "Copy link",
   "share.copied": "Link copied",
   "share.help": "The link reproduces the current year, metric, view, filters, selection and map position.",
+  "share.embed": "Embed (iframe)",
   "keys.title": "Keyboard shortcuts",
   "keys.search": "Search",
   "keys.table": "Toggle table",

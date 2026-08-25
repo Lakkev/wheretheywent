@@ -124,6 +124,7 @@
   "share.copy": "Copiar enlace",
   "share.copied": "Enlace copiado",
   "share.help": "El enlace reproduce el año, el indicador, la vista, los filtros, la selección y la posición del mapa.",
+  "share.embed": "Insertar (iframe)",
   "keys.title": "Atajos de teclado",
   "keys.search": "Buscar",
   "keys.table": "Mostrar/ocultar tabla",

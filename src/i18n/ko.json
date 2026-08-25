@@ -124,6 +124,7 @@
   "share.copy": "링크 복사",
   "share.copied": "링크가 복사되었습니다",
   "share.help": "이 링크는 연도·지표·보기·필터·선택·지도 위치를 그대로 재현합니다.",
+  "share.embed": "삽입(iframe)",
   "keys.title": "키보드 단축키",
   "keys.search": "검색",
   "keys.table": "표 전환",

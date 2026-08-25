@@ -124,6 +124,7 @@
   "share.copy": "複製連結",
   "share.copied": "連結已複製",
   "share.help": "此連結可完整重現目前的年份、指標、視角、篩選、選取國家與地圖位置。",
+  "share.embed": "嵌入（iframe）",
   "keys.title": "鍵盤快捷鍵",
   "keys.search": "搜尋",
   "keys.table": "開啟/關閉表格",

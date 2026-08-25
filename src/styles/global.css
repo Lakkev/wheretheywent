@@ -380,3 +380,15 @@ button {
     padding: 0;
   }
 }
+
+/* Narrow screens: wide tables scroll in place instead of stretching the page.
+ * (display:block scroll pattern — guarded by tests/e2e/mobile.spec.ts) */
+@media (max-width: 700px) {
+  .doc table,
+  article table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

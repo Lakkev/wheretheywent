@@ -11,8 +11,9 @@ interface Props {
   description?: string;
   locale: Locale;
   jsonLd?: unknown;
+  noindex?: boolean;
 }
-const { title, description, locale, jsonLd } = Astro.props;
+const { title, description, locale, jsonLd, noindex = false } = Astro.props;
 ---
 
 <BaseLayout
@@ -20,6 +21,7 @@ const { title, description, locale, jsonLd } = Astro.props;
   description={description}
   locale={locale}
   jsonLd={jsonLd}
+  noindex={noindex}
   bare
   bodyClass="map-page"
 >
