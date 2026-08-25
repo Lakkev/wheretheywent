@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { ui, data, session, raw, setYear, announce } from '../../lib/state.svelte';
+  import { ui, data, session, raw, setYear, announce, selectCountry } from '../../lib/state.svelte';
+  import { TIMELINE_EVENTS, eventForYear, eventText } from '../../lib/events';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtCompact } from '../../lib/format';
   import { prefersReducedMotion } from '../../lib/webgl';
@@ -15,6 +16,13 @@
   });
   /** #8: first year this metric was collected at all — earlier years are structurally absent. */
   const coverageFrom = $derived(data.metrics?.metrics?.[ui.m]?.coverage_from ?? null);
+  /** Phase 3: historical anchor for the current year (events.ts) */
+  const ev = $derived(eventForYear(ui.y));
+  function gotoEvent() {
+    if (!ev) return;
+    if (ev.v) ui.v = ev.v;
+    if (ev.c) selectCountry(ev.c);
+  }
 
   // sparkline of the global total for the current metric/view across loaded years
   const spark = $derived.by(() => {
@@ -84,6 +92,15 @@
 </script>
 
 <div class="timeline" role="group" aria-label={tr('timeline.year')}>
+  {#if ev}
+    <div class="event-note small">
+      <span class="pin" aria-hidden="true">◆</span>
+      <span><strong>{ev.year}</strong> · {eventText(ev, locale)}</span>
+      {#if ev.c}
+        <button class="btn ghost" type="button" onclick={gotoEvent}>{tr('insight.see')}</button>
+      {/if}
+    </div>
+  {/if}
   <div class="year num" aria-live="off">{ui.y}</div>
   <div>
     <svg
@@ -102,6 +119,17 @@
           opacity="0.3"
         />
       {/if}
+      {#each TIMELINE_EVENTS.filter((e) => e.year >= yearMin && e.year <= yearMax) as e (e.year)}
+        <circle
+          cx={((e.year - yearMin) / Math.max(1, yearMax - yearMin)) * spark.W}
+          cy="4"
+          r="3"
+          fill="var(--c-primary)"
+          opacity={e.year === ui.y ? 0.9 : 0.4}
+        >
+          <title>{e.year} · {eventText(e, locale)}</title>
+        </circle>
+      {/each}
       {#if spark.d}<path
           d={spark.d}
           fill="none"
@@ -167,5 +195,39 @@
   .controls {
     display: flex;
     gap: 4px;
+  }
+  .timeline {
+    position: relative;
+  }
+  .event-note {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    max-width: min(480px, 78vw);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-1, 0 1px 4px rgba(0, 0, 0, 0.12));
+    line-height: 1.45;
+    pointer-events: auto;
+    z-index: 5;
+  }
+  .event-note .pin {
+    color: var(--c-primary);
+    flex: none;
+    font-size: 10px;
+  }
+  .event-note .btn {
+    flex: none;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .event-note {
+      display: none;
+    }
   }
 </style>

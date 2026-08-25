@@ -198,6 +198,13 @@ const R = ins?.records;
             ))}
           </tbody>
         </table>
+        {R.top_origin_years.some((r) => r.iso3 === 'UNK') && (
+          <p class="small muted">
+            {zh
+              ? '「來源不明」（UNK）如實列出：早年 UNHCR 有大量條目未標註來源國。這是歷史紀錄的誠實反映，不是資料錯誤——我們不猜測、不回填。'
+              : '"Unknown" (UNK) is listed as-is: in early decades UNHCR recorded large caseloads with no origin attached. That is an honest artifact of the historical record, not a data error — we do not guess or backfill.'}
+          </p>
+        )}
       </>
     )
   }

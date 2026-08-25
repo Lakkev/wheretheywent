@@ -20,7 +20,8 @@
 </script>
 
 {#if show}
-  <aside class="tour" role="dialog" aria-label={tr('tour.title')}>
+  <!-- non-modal, no focus trap — complementary landmark, not a dialog (kept out of getByRole('dialog')) -->
+  <aside class="tour" aria-label={tr('tour.title')}>
     <div class="head">
       <strong>{tr('tour.title')}</strong>
       <span class="muted">{step + 1}/{STEPS.length}</span>
