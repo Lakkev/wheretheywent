@@ -121,6 +121,9 @@ export function iduLayer(): Record<string, unknown> {
     id: LYR_IDU,
     type: 'circle',
     source: SRC_IDU,
+    // NB: circle-sort-key is a LAYOUT property. In `paint` it invalidates the whole layer,
+    // and MapLibre rejects invalid layers via an error EVENT — silently, no throw.
+    layout: { 'circle-sort-key': ['coalesce', ['get', 'figure'], 0] },
     paint: {
       'circle-radius': [
         'interpolate',
@@ -142,7 +145,6 @@ export function iduLayer(): Record<string, unknown> {
       'circle-opacity': 0.55,
       'circle-stroke-color': '#ffffff',
       'circle-stroke-width': 1,
-      'circle-sort-key': ['coalesce', ['get', 'figure'], 0],
     },
   };
 }

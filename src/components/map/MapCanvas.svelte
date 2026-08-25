@@ -389,6 +389,10 @@
         if (basemapTimer) clearTimeout(basemapTimer);
         onbasemap(false);
         map?.setStyle(fallbackStyle() as never);
+      } else if (msg) {
+        // MapLibre rejects invalid layers/sources via this event, not a throw — the wtw-idu
+        // layer was once silently dropped for months this way. Never swallow these again.
+        console.warn('[map]', msg);
       }
     });
     map.on('mousemove', LYR_FILL, (e) => {
