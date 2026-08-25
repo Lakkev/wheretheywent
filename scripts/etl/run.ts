@@ -651,6 +651,9 @@ export function buildManifest(
   const files: Manifest['files'] = {};
   for (const rel of listFiles(dir)) {
     if (rel === 'manifest.json' || rel.startsWith('_')) continue;
+    // S9: live/* is ephemeral (replaced daily, not in git) — it is not part of the snapshot's
+    // content address. The daily heartbeat survives via sources.json (live retrieved_at changes).
+    if (rel.startsWith('live/') || rel.startsWith('live\\')) continue;
     const full = join(dir, rel);
     files[rel] = { sha256: sha256File(full), bytes: readFileSync(full).length };
   }

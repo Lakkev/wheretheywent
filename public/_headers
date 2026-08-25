@@ -19,6 +19,9 @@
   Cache-Control: public, max-age=0, must-revalidate
 /data/v1/downloads/*
   Cache-Control: public, max-age=3600, must-revalidate
+# live/* is outside the manifest (no ?v= cache-busting) and replaced daily — always revalidate
+/data/v1/live/*
+  Cache-Control: public, max-age=0, must-revalidate
 
 # hashed build assets and vendored worker (versioned path) are immutable
 /_astro/*
