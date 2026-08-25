@@ -46,6 +46,7 @@
   import NowcastCard from './NowcastCard.svelte';
   import InsightCard from './InsightCard.svelte';
   import TourCard from './TourCard.svelte';
+  import HomePrompt from './HomePrompt.svelte';
   import Toasts from '../ui/Toasts.svelte';
 
   let {
@@ -465,6 +466,14 @@
         <NowcastCard {locale} />
         <InsightCard {locale} />
         <TourCard {locale} />
+        <HomePrompt
+          {locale}
+          onOpen={() => {
+            if (session.narrow) session.railMobileOpen = true;
+            else if (ui.p !== 'open') ui.p = 'open';
+            setTimeout(() => searchEl?.focus(), 30);
+          }}
+        />
       {/if}
       <Legend {locale} {view} {worldPop} {metricCaveats} />
     </div>
