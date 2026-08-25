@@ -37,6 +37,73 @@ const countries = getCountries();
 const names: Record<string, string> = {};
 for (const c of countries?.countries ?? []) names[c.iso3] = displayName(c, locale);
 const name = displayName(data.meta, locale);
+
+/** Quality scorecard: per metric × view — first/last reported, density, longest gap.
+ *  Computed from the published series itself (build time), so it can never disagree
+ *  with the data it describes. */
+interface CovRow {
+  m: string;
+  v: 'asylum' | 'origin' | 'both';
+  first: number;
+  firstNZ: number;
+  last: number;
+  rep: number;
+  span: number;
+  gap: number;
+}
+const covRows: CovRow[] = [];
+for (const m of METRIC_IDS) {
+  const mi = METRIC_IDS.indexOf(m);
+  // UNHCR tables zero-fill every metric once a country appears at all, so "first non-null"
+  // alone is meaningless. Two honesty rules: (1) years before the metric's global
+  // coverage_from count as NOT COLLECTED even when stored as 0 (same rule as the timeline
+  // hatch); (2) a metric whose series never goes above zero is omitted entirely.
+  const covFrom = metrics.metrics?.[m]?.coverage_from ?? -Infinity;
+  const series: Record<'asylum' | 'origin', (number | null)[]> = {
+    asylum: unpack(data.asylum.v[mi] ?? []),
+    origin: unpack(data.origin.v[mi] ?? []),
+  };
+  const identical = JSON.stringify(series.asylum) === JSON.stringify(series.origin);
+  for (const v of ['asylum', 'origin'] as const) {
+    if (identical && v === 'origin') continue;
+    const s = series[v];
+    let first = -1;
+    let firstNZ = -1;
+    let last = -1;
+    let rep = 0;
+    data.years.forEach((y, i) => {
+      if (y < covFrom) return;
+      const val = s[i];
+      if (val !== null && val !== undefined) {
+        if (first < 0) first = y;
+        if (firstNZ < 0 && val > 0) firstNZ = y;
+        last = y;
+        rep++;
+      }
+    });
+    if (firstNZ < 0) continue;
+    let gap = 0;
+    let cur = 0;
+    data.years.forEach((y, i) => {
+      if (y < Math.max(first, covFrom) || y > last) return;
+      const val = s[i];
+      if (val === null || val === undefined) {
+        cur++;
+        gap = Math.max(gap, cur);
+      } else cur = 0;
+    });
+    covRows.push({
+      m,
+      v: identical ? 'both' : v,
+      first,
+      firstNZ,
+      last,
+      rep,
+      span: last - first + 1,
+      gap,
+    });
+  }
+}
 const regionKey = ('region.' + data.meta.region_slug) as Parameters<typeof tr>[0];
 const regionLabel = tr(regionKey).startsWith('region.') ? data.meta.region : tr(regionKey);
 const yearMax = data.years[data.years.length - 1]!;
@@ -274,5 +341,58 @@ const jsonLd = {
       snapshotId={manifest?.snapshot_id ?? 'local'}
       worldTotals={getWorldTotals()}
     />
+
+    {/* Quality scorecard — static, crawlable, computed from the published series itself */}
+    {
+      covRows.length > 0 && (
+        <section class="coverage">
+          <h2>{tr('cov.title')}</h2>
+          <p class="small muted">{tr('cov.lede')}</p>
+          <div class="cov-scroll">
+            <table class="small">
+              <thead>
+                <tr>
+                  <th>{tr('common.value')}</th>
+                  <th>{tr('detail.hosting')} / {tr('detail.origin')}</th>
+                  <th class="num">{tr('cov.first')}</th>
+                  <th class="num">{tr('cov.firstNZ')}</th>
+                  <th class="num">{tr('cov.last')}</th>
+                  <th class="num">{tr('cov.density')}</th>
+                  <th class="num">{tr('cov.gap')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {covRows.map((r) => (
+                  <tr>
+                    <td>{tr(`metric.${r.m}` as MessageKey)}</td>
+                    <td>
+                      {r.v === 'both'
+                        ? '—'
+                        : r.v === 'asylum'
+                          ? tr('detail.hosting')
+                          : tr('detail.origin')}
+                    </td>
+                    <td class="num">{r.first}</td>
+                    <td class="num">{r.firstNZ}</td>
+                    <td class="num">{r.last}</td>
+                    <td class="num">
+                      {r.rep}/{r.span}
+                    </td>
+                    <td class="num">{r.gap > 0 ? tr('cov.gapYears', { n: r.gap }) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">{tr('cov.note')}</p>
+        </section>
+      )
+    }
   </article>
 </BaseLayout>
+
+<style>
+  .cov-scroll {
+    overflow-x: auto;
+  }
+</style>
