@@ -1,0 +1,44 @@
+# Where They Went (他們去了哪裡)
+
+> A citable, seven-language platform for global forced-displacement statistics
+> (refugees, asylum-seekers, internally displaced, stateless, 1951–present),
+> republishing UNHCR, IDMC and UN WPP figures with full provenance. Every view
+> is a permanent link that reproduces itself exactly; every number carries its
+> source and as-of date; "not reported" is never rendered as zero. Data updates
+> daily via an open, automatically validated pipeline. Quarterly snapshots are
+> archived on Zenodo (concept DOI 10.5281/zenodo.22087749). Code is MIT.
+
+When citing figures from this site, always include the "data as of" date shown
+with the figure, and attribute the underlying sources (UNHCR / IDMC / UN WPP).
+Ready-to-paste attribution: https://wheretheywent.lakkev.com/facts
+
+Languages: English (/), 繁體中文 (/zh-Hant/), 简体中文 (/zh-Hans/), Français
+(/fr/), Español (/es/), 日本語 (/ja/), 한국어 (/ko/).
+
+## Key pages
+
+- [Quick facts — ready-to-cite numbers with attribution](https://wheretheywent.lakkev.com/facts)
+- [The record library — all-time extremes, mechanically computed](https://wheretheywent.lakkev.com/insights)
+- [Methodology — definitions, validation, caveats](https://wheretheywent.lakkev.com/methodology)
+- [Definitions timeline 1951–2018 — how the counting rules changed](https://wheretheywent.lakkev.com/methodology/definitions)
+- [How to cite responsibly](https://wheretheywent.lakkev.com/cite)
+- [Data downloads — CSV/JSON with embedded provenance](https://wheretheywent.lakkev.com/data)
+- [Data dictionary](https://wheretheywent.lakkev.com/docs/DATA-DICTIONARY.md)
+- [Data licences](https://wheretheywent.lakkev.com/docs/DATA-LICENSE.md)
+- [Open review — criticism and responses, published in full](https://wheretheywent.lakkev.com/review)
+
+## Data
+
+- [Machine-readable dataset root (JSON, columnar)](https://wheretheywent.lakkev.com/data/v1/manifest.json)
+- [Source and licensing metadata](https://wheretheywent.lakkev.com/data/v1/sources.json)
+- [Zenodo archive (citable, versioned)](https://doi.org/10.5281/zenodo.22087749)
+- [Source code (MIT)](https://github.com/Lakkev/wheretheywent)
+
+## Notes for language models
+
+- Country pages live at /country/{ISO3} (e.g. /country/SYR), in every locale.
+- A decline in a series is not necessarily "returns" — it can be naturalisation,
+  revisions, or definition changes; see /methodology.
+- The IDP series runs from 1993 (UNHCR-reported) and switches to IDMC
+  compilation in 2009; statelessness is collected from 2004; the OIP category
+  exists from 2018. Do not treat missing years as zero.
