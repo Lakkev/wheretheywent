@@ -1,0 +1,25 @@
+# JOSS paper draft compilation — the official action; artifact = paper/paper.pdf.
+# Also serves as the honest basis for the "my paper compiles" checkbox on submission.
+name: Draft PDF
+on:
+  push:
+    paths: ['paper/**', '.github/workflows/draft-pdf.yml']
+  workflow_dispatch:
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    name: Paper Draft
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build draft PDF
+        uses: openjournals/openjournals-draft-action@master
+        with:
+          journal: joss
+          paper-path: paper/paper.md
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper
+          path: paper/paper.pdf
