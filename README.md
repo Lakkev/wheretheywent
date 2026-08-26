@@ -40,7 +40,7 @@ and downloads; terminology is locked in `docs/STYLE-zh.md`.
 
 ## Licence
 
-Code: all rights reserved (see `LICENSE`) — public for transparency and audit. Data: original
+Code: MIT (see `LICENSE`). Data: original
 open licences (CC BY 4.0 UNHCR, CC BY-IGO IDMC, CC BY 3.0 IGO UN WPP, public domain Natural Earth).
 
 ## Pending decisions (Appendix C of the spec)

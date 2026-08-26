@@ -8,8 +8,8 @@ tags:
   - data visualization
   - reproducibility
 authors:
-  - name: TODO 站主本名(JOSS 要求真實作者;所屬可填 Independent Researcher, Taiwan)
-    orcid: 0000-0000-0000-0000
+  - name: Chih-Hua Hsu
+    orcid: 0009-0005-5135-230X
     affiliation: 1
 affiliations:
   - name: Independent Researcher, Taiwan
