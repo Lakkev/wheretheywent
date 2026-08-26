@@ -355,7 +355,9 @@ html.map-page,
   position: absolute;
   right: 0;
   bottom: 0;
-  z-index: var(--z-overlay);
+  /* above the map canvas, but BELOW .overlays (z 10): as a later sibling it would otherwise
+   * win z ties and paint over the open mobile menu panel */
+  z-index: 9;
   font-size: 10px;
   line-height: 1.4;
   background: rgb(255 255 255 / 0.8);
@@ -527,6 +529,15 @@ html.map-page,
     overflow-y: hidden;
     gap: 6px;
     padding: 0 var(--sp-2);
+  }
+  /* keep the attribution off the timeline controls on small screens */
+  .attribution {
+    bottom: var(--timeline-h);
+    left: 0;
+    right: auto;
+    max-width: 100%;
+    border-top-left-radius: 0;
+    border-top-right-radius: var(--radius-sm);
   }
   .topbar .brand {
     display: none;

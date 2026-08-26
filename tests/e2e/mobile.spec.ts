@@ -28,6 +28,33 @@ test('map page: selecting a country via URL opens the mobile detail sheet', asyn
   await noHorizontalScroll(page);
 });
 
+test('map page: hamburger menu opens VISIBLY on mobile (topbar scroller must not clip it)', async ({
+  page,
+}) => {
+  await page.goto('/zh-Hant/');
+  await page.waitForSelector('#map-skeleton', { state: 'detached', timeout: 30_000 });
+  await page.locator('.menu > button').click();
+  const panel = page.locator('.menu-panel');
+  await expect(panel).toBeVisible();
+  const box = (await panel.boundingBox())!;
+  const vp = page.viewportSize()!;
+  // actually on screen, not clipped inside the 48px topbar
+  expect(box.height).toBeGreaterThan(100);
+  expect(box.y).toBeGreaterThan(30);
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1);
+  await expect(page.locator('.menu-nav a').first()).toBeVisible();
+});
+
+test('map page: attribution bar does not cover the timeline controls', async ({ page }) => {
+  await page.goto('/zh-Hant/');
+  await page.waitForSelector('#map-skeleton', { state: 'detached', timeout: 30_000 });
+  const attr = (await page.locator('.attribution').boundingBox())!;
+  const tl = (await page.locator('.timeline').boundingBox())!;
+  // attribution must end at or above the timeline's top edge
+  expect(attr.y + attr.height).toBeLessThanOrEqual(tl.y + 1);
+});
+
 for (const path of [
   '/zh-Hant/country/SYR/',
   '/zh-Hant/insights/',

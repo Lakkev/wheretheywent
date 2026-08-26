@@ -240,6 +240,20 @@
       grid-template-columns: 1fr;
     }
   }
+  /* Narrow screens: the topbar is a horizontal scroller (overflow-y hidden), which CLIPS an
+   * absolutely-positioned dropdown — the menu "opened" invisibly. Fixed positioning escapes
+   * the clip and gives the panel the full viewport width. */
+  @media (max-width: 900px) {
+    .menu-panel {
+      position: fixed;
+      top: calc(var(--topbar-h) + 6px);
+      left: 8px;
+      right: 8px;
+      max-height: calc(100dvh - var(--topbar-h) - 24px);
+      overflow-y: auto;
+      z-index: var(--z-modal); /* above the attribution bar and every map overlay */
+    }
+  }
   .menu-nav a {
     text-decoration: none;
     color: var(--c-text);
