@@ -66,7 +66,7 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
    `f=1` reserved in the URL codec. UI not built yet — visuals sit last in the spec's own priority ladder.
 2. **`/stories`**: the D2 secondary-audience entry point is a stub. Needs editorial content, not just code.
 3. **Phase 2 – boundary-set switch** (FieldMaps/USGS public-domain set): licence-clean candidate documented on `/about/boundaries`.
-4. **Phase 3 – ReliefWeb**: appname application not yet submitted (client task, Appendix C).
+4. **Phase 3 – ReliefWeb**: appname application not yet submitted (owner task, Appendix C).
 5. Smaller items: focus trap limited to modals (panels are non-modal by design — revisit with a real
    screen-reader session); basemap fallback has no label layer (own-boundaries + tooltips carry the
    information); `/zh-Hant/404` (Cloudflare Pages serves a single global 404); Playwright uses a

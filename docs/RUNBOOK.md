@@ -13,10 +13,10 @@
   Division (population). We never type numbers in by hand.
 - **What runs automatically**: every day at 03:17 UTC a robot ("the ETL") on GitHub downloads the
   latest figures, checks them (21 automatic checks), and — _only if something changed_ — commits the
-  new data files. Cloudflare then rebuilds and publishes the site within a few minutes.
+  new data files. the same workflow then builds and publishes the site within a few minutes (wrangler direct upload).
 - **Where things live**
   - Code + data: the GitHub repository (`public/data/v1/` is the data).
-  - Website hosting: Cloudflare Pages (free; rebuilds on every commit).
+  - Website hosting: Cloudflare Pages (free; the daily workflow builds and uploads — Cloudflare itself does not rebuild).
   - Alerts: a pinned GitHub issue named **"ETL alerts"**. Subscribe to it (bell icon) to get e-mails.
 - **Three dates you will see**: _data as of_ (what the data covers, e.g. 31 Dec 2025), _retrieved_
   (when we downloaded it), _snapshot_ (an 8-character id of the whole dataset).
@@ -107,7 +107,7 @@ suite on it.
 
 1. Ask for the share link (the _Copy link_ button) — it reproduces exactly what they saw.
 2. Numbers: check against unhcr.org (→ §4). Most reports turn out to be _not reported vs zero_
-   (grey vs light blue) or _UNRWA not included_ — both are explained on the methodology page;
+   (grey vs the lightest sand colour) or _UNRWA not included_ — both are explained on the methodology page;
    reply with the link.
 3. Boundaries/names: see `/about/boundaries`. Changes to how a place is drawn or named are policy
    decisions — decide, then ask the AI assistant to update `scripts/etl/geo/overrides.json`,
@@ -115,57 +115,40 @@ suite on it.
 
 ---
 
-## 8. First-time setup — current state (2026-08-22)
+## 8. Current production configuration (updated 2026-08-26)
 
-**Already done** (by the AI session on 2026-08-22):
+Everything below is LIVE — this section records what exists, so it can be rebuilt if lost.
 
-- [x] Cloudflare Pages project `wheretheywent` created and deployed (direct upload).
-      Live at <https://wheretheywent.pages.dev>.
-- [x] Custom domain `wheretheywent.lakkev.com` registered on the Pages project (status: _pending_
-      until the DNS record below exists).
-- [x] GitHub repository <https://github.com/Lakkev/wheretheywent> created (public).
-- [x] Site URL baked in as `https://wheretheywent.lakkev.com` (canonical, JSON-LD, citations, sitemap).
+- **Domain**: `wheretheywent.lakkev.com` — proxied CNAME to `wheretheywent.pages.dev`
+  on the `lakkev.com` zone. Mirror: `wheretheywent.pages.dev`.
+- **Repository**: <https://github.com/Lakkev/wheretheywent> (public; code MIT-licensed).
+- **Deployment**: the daily `etl-daily` workflow builds and uploads `dist/` via wrangler
+  (direct upload), gated on the `CLOUDFLARE_API_TOKEN` repo secret (Pages:Edit scope).
+  Manual fallback: `npm run deploy` (dirty-tree guard, commit stamp, wrangler upload).
+- **Actions configuration**: workflow permissions Read-and-write; pinned issue #1 "ETL alerts";
+  repo variables `PUBLIC_SITE_URL`, `PUBLIC_CONTACT_EMAIL` (the public project mailbox),
+  `CLOUDFLARE_ACCOUNT_ID`; secret `CLOUDFLARE_API_TOKEN`.
+- **Zone setting**: Scrape Shield → Email Address Obfuscation stays **off**
+  (otherwise no-JS readers and archives see `[email protected]`).
 
-**Still to do — needs you** (each is one or two clicks/commands):
+**Recurring operations**
 
-1. **DNS record** (makes the custom domain live). Cloudflare dashboard → **lakkev.com** → **DNS** →
-   **Add record**: type `CNAME`, name `wheretheywent`, target `wheretheywent.pages.dev`,
-   proxy **on** (orange cloud) → Save. The certificate provisions within a few minutes.
-   _(The CLI token used by the AI has no DNS-write permission, which is why this is manual.)_
-2. **Push the code** (the repo exists but is still empty — the CLI token lacks the `workflow`
-   scope needed to upload `.github/workflows/`). In a terminal:
-   ```
-   gh auth refresh -h github.com -s workflow
-   ```
-   Follow the browser prompt, then tell the AI assistant "done" and it will push.
-3. **Project mailbox**. `PUBLIC_CONTACT_EMAIL` is `roccafcheng@gmail.com` (a real inbox — the
-   owner's public project address; WeChat `palaceofversailles` is shown alongside it on
-   /about and /support). Disable **Scrape Shield → Email Address Obfuscation** for the zone:
-   otherwise crawlers, archives and no-JS readers see the literal text `[email protected]`
-   instead of the address — bad for a journalist audience.
-4. **After the push**: repo → Settings → Actions → Workflow permissions → **Read and write**;
-   create an issue titled **"ETL alerts"**, pin it, subscribe (it must be issue #1, or change
-   `ALERT_ISSUE_NUMBER` in `.github/workflows/etl-daily.yml`); Settings → Secrets and variables →
-   Actions → Variables: `PUBLIC_SITE_URL=https://wheretheywent.lakkev.com`,
-   `PUBLIC_CONTACT_EMAIL=roccafcheng@gmail.com`.
-5. **Automatic redeploys**. The deploy step is ALREADY WIRED into `etl-daily.yml`, gated on the
-   `CLOUDFLARE_API_TOKEN` repo secret — the moment the secret exists, a data change also builds
-   and deploys the site. Until then use `npm run deploy` manually
-   (it refuses a dirty working tree, builds, stamps the commit into `dist/build-info.json`,
-   then uploads via wrangler). To make the daily ETL publish
-   by itself, pick one:
-   - _Git integration_ (spec default): Cloudflare → Workers & Pages → wheretheywent → Settings →
-     Builds → Connect to Git → this repo; build command `npm run build`, output `dist`,
-     env `NODE_VERSION=22.22.2` + the two `PUBLIC_*` variables.
-   - _Deploy from Actions_: create a Cloudflare API token (Pages:Edit) and add it as the repo
-     secret `CLOUDFLARE_API_TOKEN`; the AI can then add a deploy step to `etl-daily.yml`.
-6. Enable Renovate (GitHub app) for the monthly dependency PR.
-7. **Quarterly Zenodo deposit** (DOI archive). Concept DOI `10.5281/zenodo.22087749` always
-   resolves to the latest version. Each quarter: ensure `ZENODO_TOKEN` is in `.env` (never
-   committed), then ask the AI to run the deposit as a **new version** of the concept record
-   (Zenodo "newversion" flow off deposition 22087750) — NOT a fresh deposition, or the versions
-   won't chain under one concept DOI. `scripts/dev/zenodo-deposit.mjs` bundles
-   `public/data/v1` (minus `live/`) and uploads; publishing is permanent.
+1. **Quarterly Zenodo deposit** (DOI archive). Concept DOI `10.5281/zenodo.22087749` always
+   resolves to the latest version. Each quarter: ensure `ZENODO_TOKEN` is in the local,
+   gitignored `.env`, then run `scripts/dev/zenodo-deposit.mjs --new-version` — the flow
+   branches off deposition 22087750 so versions chain under one concept DOI. Never create
+   a fresh deposition. Publishing is permanent.
+2. **Renovate** (GitHub app) for the monthly dependency PR, if enabled.
+
+**Disaster recovery (rebuild from scratch)**
+
+- DNS: Cloudflare dashboard → lakkev.com → DNS → add CNAME `wheretheywent` →
+  `wheretheywent.pages.dev`, proxied.
+- Pages project: `npx wrangler pages project create wheretheywent --production-branch master`,
+  then `npm run deploy`.
+- Secrets: re-issue a Cloudflare API token (minimal Pages:Edit scope) and store it with
+  `gh secret set CLOUDFLARE_API_TOKEN`; re-add the repo variables listed above. Tokens live
+  only in GitHub secrets and the local gitignored `.env` — never in the repo.
 
 ## 9. Things that are deliberately **not** possible
 

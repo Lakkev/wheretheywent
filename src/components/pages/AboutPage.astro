@@ -276,8 +276,7 @@ const ORGS = [
           <strong>關於 AI 的使用</strong>
           ：資料管線是決定性的程式碼——沒有任何模型生成、推估或修改過任何數字；每個數字都能逐位元組追溯到
           UNHCR、IDMC 或聯合國的原始發布（見方法論頁與 <code>sources.json</code>
-          ）。AI 只用於協助維護程式碼與文件，其產出一律經過自動驗證（每日 21
-          項不變量檢查）與版本庫審計。
+          ）。AI 只用於協助維護程式碼與文件，其產出一律經過自動驗證（每日 21 項自動檢查，其中 15 條為資料不變量）與版本庫審計。
         </>
       ) : (
         <>
@@ -287,7 +286,7 @@ const ORGS = [
           generated, estimated or modified any number; every figure is traceable byte-for-byte to
           the original UNHCR, IDMC or UN release (see the methodology page and{' '}
           <code>sources.json</code>). AI assists only with maintaining the code and documentation,
-          and its output always passes automated validation (21 daily invariant checks) and the
+          and its output always passes automated validation (21 daily automated checks, 15 of them data invariants) and the
           repository's audit trail.
         </>
       )

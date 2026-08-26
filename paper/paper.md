@@ -36,9 +36,9 @@ DOI [@wtw-zenodo].
 
 Displacement statistics are widely cited and widely misread. The upstream sources are
 authoritative but fragmented across portals, and the numbers carry structural traps:
-collection start-dates differ by metric (statelessness 2004, IDP stocks 2009, the
-"other people in need of international protection" category 2018 [@egriss-irrs;
-@egriss-iris]); "not reported" is routinely conflated with zero; declines are read as
+statelessness is collected only from 2004, the IDP series switches to IDMC compilation
+in 2009, and the "other people in need of international protection" category exists only
+from 2018 [@egriss-irrs; @egriss-iris]; "not reported" is routinely conflated with zero; declines are read as
 returns when they may be naturalisation or definitional change. General-purpose
 aggregators expose the numbers but rarely the traps.
 

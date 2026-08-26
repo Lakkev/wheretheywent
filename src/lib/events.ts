@@ -64,7 +64,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     c: 'AFG',
     v: 'origin',
     text: {
-      en: 'Soviet invasion of Afghanistan — the start of 34 years (and counting) as the world’s #1 origin.',
+      en: 'Soviet invasion of Afghanistan — the start of 34 years as the world’s #1 origin.',
       'zh-Hant': '蘇聯入侵阿富汗——此後累計 34 年位居全球最大來源國。',
       'zh-Hans': '苏联入侵阿富汗——此后累计 34 年位居全球最大来源国。',
       fr: "Invasion soviétique de l'Afghanistan — début de 34 années au total comme première origine mondiale.",

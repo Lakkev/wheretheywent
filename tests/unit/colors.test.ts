@@ -69,6 +69,9 @@ describe('colors', () => {
         b = parseInt(hex.slice(5, 7), 16);
       expect(r).toBeGreaterThanOrEqual(b); // red/earth dominates blue
       expect(g).toBeGreaterThanOrEqual(b); // never a purple/blue cast
+      // ochre/brown keeps a visible green component; pure alarm-red ramps (whose dark
+      // steps collapse toward g≈0.1·r, e.g. ColorBrewer Reds) must fail the build
+      expect(g).toBeGreaterThanOrEqual(0.3 * r);
       // sequential ramps must darken step by step or classes become unreadable
       const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
       expect(lum).toBeLessThan(prevLum);

@@ -78,13 +78,13 @@ const EVENTS = [
   {
     year: '2009',
     en: {
-      t: 'IDPs enter this dataset (via IDMC)',
-      what: 'Conflict- and violence-driven internal displacement, compiled by IDMC, is published through UNHCR.',
+      t: 'IDP figures switch to IDMC compilation',
+      what: 'From 2009, IDP figures published through UNHCR are compiled by IDMC (conflict and violence only). Earlier years (1993–2008) are UNHCR-reported IDPs — a narrower series with a different basis.',
       stat: 'Disaster displacement is NOT included in the annual stock — a bigger number exists elsewhere. Both views count IDPs under their own country.',
     },
     zh: {
-      t: 'IDP 進入本資料集（經 IDMC）',
-      what: '衝突與暴力所致的境內流離失所，由 IDMC 彙整、經 UNHCR 發布。',
+      t: 'IDP 數字改採 IDMC 彙編',
+      what: '2009 年起，經 UNHCR 發布的 IDP 數字改由 IDMC 彙整（僅衝突與暴力）。更早的 1993–2008 年為 UNHCR 自行通報的 IDP——口徑較窄、基準不同的另一段序列。',
       stat: '年度存量「不含」災害流離失所——更大的數字在別處。兩種視角都把 IDP 算在其本國名下。',
     },
   },
@@ -139,8 +139,8 @@ const EVENTS = [
     ) : (
       <ul>
         <li>
-          On the timeline, each metric's first-collected year is hatched and labelled (stateless
-          2004, OIP 2018).
+          On the timeline, metrics with a hard collection start are hatched and labelled
+          (stateless 2004, OIP 2018); the 2009 IDP source switch is annotated on the charts.
         </li>
         <li>Every metric carries its definition and caveats, embedded in every download.</li>
         <li>

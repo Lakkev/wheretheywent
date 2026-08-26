@@ -7,9 +7,10 @@ world map of refugees, asylum-seekers, internally displaced and stateless people
 year (1951–latest), with sources, as-of dates, permanent links, citations and downloads for every
 number. Data: UNHCR, IDMC, UN WPP. No server, no tracking, zero hosting cost.
 
-**Status**: MVP complete (batches ①–⑥ of `SPEC.md`) and **deployed**:
-<https://wheretheywent.pages.dev> → <https://wheretheywent.lakkev.com> (pending one DNS record).
-Remaining setup steps: `docs/RUNBOOK.md` §8.
+**Status**: live at <https://wheretheywent.lakkev.com> (mirror: <https://wheretheywent.pages.dev>).
+Data refreshes daily via an unattended pipeline (fetch → validate 21 invariants → publish →
+build → deploy); quarterly snapshots are archived on Zenodo
+([DOI 10.5281/zenodo.22087749](https://doi.org/10.5281/zenodo.22087749)).
 
 ## Quick start
 
@@ -20,12 +21,11 @@ npm run etl:validate && npm run etl:promote
 npm run dev                              # http://localhost:4321
 ```
 
-Quality gates: `npm run check` · `npm test` (62 unit tests) · `npm run build && npm run test:e2e`
+Quality gates: `npm run check` · `npm test` (full unit suite) · `npm run build && npm run test:e2e`
 (Playwright specs incl. axe, share-link reproduction, page-error tracking, WebGL/basemap
 fallbacks). Deploy with `npm run deploy` (dirty-tree guard + commit stamp).
 
-The site is fully bilingual (English / 繁體中文) — UI, methodology, metric definitions, caveats
-and downloads; terminology is locked in `docs/STYLE-zh.md`.
+The site ships in seven languages (English, 繁體中文, 简体中文, Français, Español, 日本語, 한국어) — UI, methodology, metric definitions, caveats and downloads; zh terminology is locked in `docs/STYLE-zh.md` and key-parity is enforced by unit tests.
 
 ## Documents
 
@@ -43,7 +43,6 @@ and downloads; terminology is locked in `docs/STYLE-zh.md`.
 Code: MIT (see `LICENSE`). Data: original
 open licences (CC BY 4.0 UNHCR, CC BY-IGO IDMC, CC BY 3.0 IGO UN WPP, public domain Natural Earth).
 
-## Pending decisions (Appendix C of the spec)
+## Display policies
 
-- Taiwan display policy: option **(c)** implemented by default (independent feature, "no data", explained on `/about/boundaries`); awaiting confirmation.
-- Project e-mail, GitHub organisation, Cloudflare account, custom domain.
+- Taiwan display policy: option **(c)** (independent feature; sourced entirely from upstream classifications) — documented on `/about/boundaries`.

@@ -11,14 +11,14 @@ A **static site** (Astro 7, `output: 'static'`) with **Svelte 5** islands. All d
 build/ETL time by a **Node 22 TypeScript pipeline** (no build step, native type stripping) that
 fetches UNHCR / IDMC / UN WPP, normalises to ISO3, validates 21 checks, and commits JSON/CSV files
 into `public/data/v1/`. The browser never calls an upstream API. Hosting is Cloudflare Pages
-(Git integration, free). The ETL runs daily on GitHub Actions and commits **only when content
+(direct upload via wrangler from GitHub Actions, free). The ETL runs daily on GitHub Actions and commits **only when content
 changes**, so most days produce no commit and no deploy.
 
 ```
 GitHub Actions (03:17 UTC) ── run.ts → validate.ts → promote.ts ── git commit (if changed)
         ▲                                                                  │
         │ alerts via pinned issue                                          ▼
-   docs/RUNBOOK.md                                       Cloudflare Pages: npm run build → dist/
+   docs/RUNBOOK.md                                       GitHub Actions: npm run build → wrangler pages deploy dist
                                                                           │
                                       browser: HTML skeleton → MapApp island → /data/v1/*.json
                                                MapLibre GL (WebGL2) + OpenFreeMap tiles (decor only)
@@ -43,7 +43,7 @@ GitHub Actions (03:17 UTC) ── run.ts → validate.ts → promote.ts ── g
 | `src/components/map/*`             | The map page islands (MapApp is the only root island, `client:only`)                                                                                                       |
 | `src/components/country/*`         | Country page & compare page islands                                                                                                                                        |
 | `src/components/pages/*.astro`     | Page bodies shared by `/` and `/zh-Hant/` routes                                                                                                                           |
-| `src/i18n/`                        | `en.json` (source of truth), `zh-Hant.json` (same keys, English values for MVP), `ui.ts`                                                                                   |
+| `src/i18n/`                        | `en.json` (source of truth) + 6 fully translated locales (zh-Hant, zh-Hans, fr, es, ja, ko; key parity enforced by tests), `ui.ts`                                                                                   |
 | `public/data/v1/`                  | The published dataset (committed; audit trail = git history)                                                                                                               |
 | `public/vendor/maplibre-gl/<ver>/` | MapLibre worker files copied by `scripts/dev/vendor-maplibre.mjs` (gitignored, generated on install/build)                                                                 |
 | `tests/unit`, `tests/e2e`          | vitest / Playwright                                                                                                                                                        |
@@ -63,7 +63,7 @@ UNHCR's `coo`/`coa` are internal codes that collide with real ISO3 codes (`AUS`=
 UNHCR sends `"-"` (not reported) vs `"0"`. `toNum()` maps to `null` vs `0`. The columnar codec packs
 runs of zeros as `["z",n]` and runs of nulls as `["n",n]` (the null-run extension is ours; the spec
 only mentioned zero-runs — it cut the history file from 941 KB to much less raw without losing the
-distinction; round-trip is fuzz-tested). Colours: grey vs lightest blue. CSV: empty vs `0`.
+distinction; round-trip is fuzz-tested). Colours: grey vs lightest sand. CSV: empty vs `0`.
 
 ### 3.3 Static, no runtime API, data in git
 
@@ -144,10 +144,16 @@ errors), the map switches to an inline water-only style and our layers are re-ad
 maplibre chunk is never requested (e2e asserts). The 8 KB maplibre CSS is page-level (Astro hoists
 CSS of dynamic imports) — accepted.
 
-### 3.13 Colours
+### 3.13 Colours — deviation from D6
 
-ColorBrewer Blues only (D6). Quantile default (always contrast), log/linear with "nice" rounding,
-7 classes; zero = lightest, null = grey; both always in the legend.
+**Supersedes spec D6 (Blues-only), owner decision 2026-08-25.** The ramp is ColorBrewer
+**YlOrBr** (sand → ochre → tilled-soil brown, "desert & soil"), 7 classes, CVD-safe.
+D6's *principle* — never frame displaced people as a threat — is kept and enforced
+differently: the site contains no red anywhere (the deepest class is soil brown, not an
+alarm colour), flows are arcs rather than arrows, and `tests/unit/colors.test.ts` fails
+the build unless the ramp is warm-earth (r ≥ b, g ≥ b) and monotonically darkening.
+Quantile default (always contrast), log/linear with "nice" rounding; zero = lightest,
+null = warm grey; both always in the legend.
 
 ### 3.14 i18n
 

@@ -32,8 +32,17 @@
   let svgEl: SVGSVGElement | null = null;
   let hasData = $state(true);
   /** Definitional breakpoints (see /methodology/definitions) — annotated on the chart so a
-   *  reader never mistakes a structural blank for "the number was zero before". */
-  const BREAKS: Partial<Record<AnyMetricId, number>> = { stateless: 2004, idps: 2009, oip: 2018 };
+   *  reader never mistakes a structural blank for "the number was zero before". Two kinds:
+   *  a hard collection start (stateless, OIP) vs a SOURCE SWITCH (IDPs run from 1993 as
+   *  UNHCR-reported; from 2009 they are IDMC-compiled — saying "collected from 2009" there
+   *  would contradict our own published 1993–2008 series). */
+  const BREAKS: Partial<
+    Record<AnyMetricId, { year: number; key: 'chart.seriesBegins' | 'chart.sourceSwitch' }>
+  > = {
+    stateless: { year: 2004, key: 'chart.seriesBegins' },
+    idps: { year: 2009, key: 'chart.sourceSwitch' },
+    oip: { year: 2018, key: 'chart.seriesBegins' },
+  };
 
   $effect(() => {
     const pts = countrySeries(file, metric);
@@ -70,10 +79,10 @@
       );
       if (y) marks.push(Plot.ruleX([y], { stroke: '#3b2a16', strokeOpacity: 0.5 }));
       const bk = BREAKS[metric];
-      if (bk && pts.some((p) => p.year < bk)) {
-        marks.push(Plot.ruleX([bk], { stroke: '#9a9184', strokeDasharray: '2,3' }));
+      if (bk && pts.some((p) => p.year < bk.year)) {
+        marks.push(Plot.ruleX([bk.year], { stroke: '#9a9184', strokeDasharray: '2,3' }));
         marks.push(
-          Plot.text([{ year: bk }], {
+          Plot.text([{ year: bk.year }], {
             x: 'year',
             frameAnchor: 'top',
             dy: 8,
@@ -81,7 +90,7 @@
             textAnchor: 'start',
             fill: '#7a6a55',
             fontSize: 10,
-            text: () => tr('chart.seriesBegins', { year: bk }),
+            text: () => tr(bk.key, { year: bk.year }),
           }),
         );
       }

@@ -30,8 +30,8 @@ const mapLink = (q: string) => `${localizePath('/', locale)}${q}`;
   ogImage="/og/story/ukraine.jpg"
   title={zh ? '烏克蘭：速度的紀錄' : 'Ukraine: a record of speed'}
   lede={zh
-    ? '流離失所通常以年為單位累積。2022 年的烏克蘭不是：一年之內，難民數字放大了兩百倍——二戰以來歐洲從未見過這種速度。'
-    : 'Displacement usually accumulates over years. Ukraine in 2022 did not: within one year the refugee figure multiplied two-hundred-fold — a speed Europe had not seen since the Second World War.'}
+    ? `流離失所通常以年為單位累積。2022 年的烏克蘭不是：一年之內，難民數字放大了約 ${ratio ?? '兩百'} 倍——二戰以來歐洲從未見過這種速度。`
+    : `Displacement usually accumulates over years. Ukraine in 2022 did not: within one year the refugee figure multiplied ${ratio ?? 200}-fold — a speed Europe had not seen since the Second World War.`}
 >
   <h2>{zh ? '一年，兩個數量級' : 'One year, two orders of magnitude'}</h2>
   <p>

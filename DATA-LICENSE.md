@@ -1,6 +1,6 @@
 # Data licenses
 
-The website code is **All rights reserved** (see `LICENSE`). The *data* served
+The website code is **MIT-licensed** (see `LICENSE`). The *data* served
 under `public/data/v1/` is derived from third-party open sources and is
 redistributed under the terms of those sources. When you reuse data downloaded
 from this site you must carry these attributions forward.

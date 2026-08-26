@@ -239,8 +239,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           （未報告）、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
         </li>
         <li>
-          <strong>驗證</strong> — 發布前須通過 15
-          條不變量，包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
+          <strong>驗證</strong> — 發布前須通過 15 條資料不變量（自動化檢查合計 21 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
           <em>可上色總和 + 無法顯示總和 = 全球總計</em>；年度總計與前一快照差異不超過 20%；三個
           <strong>黃金數字</strong>（土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民）誤差須在 1%
           內。
@@ -271,7 +270,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           <code>null</code> / <code>0</code> / integer.
         </li>
         <li>
-          <strong>Validate</strong> — 15 invariants must hold before anything is published,
+          <strong>Validate</strong> — 15 data invariants (21 automated checks in total) must hold before anything is published,
           including: the three collision cases are keyed correctly; no negative or non-finite
           values; <em>mapped total + unmappable total = global total</em> for every metric and year;
           totals do not drift more than 20 % against the previous snapshot; and three{' '}
@@ -336,14 +335,14 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       zh ? (
         <>
           UNHCR 區分<em>未報告</em>（<code>"-"</code>）與<em>報告為零</em>
-          。本站全程保留這個區別：地圖上（灰色 vs 最淺的藍）、圖表中（折線中斷 vs
+          。本站全程保留這個區別：地圖上（灰色 vs 最淺的沙色）、圖表中（折線中斷 vs
           落到零）、CSV（空欄位 vs <code>0</code>）與 JSON（<code>null</code> vs <code>0</code>
           ）。灰色國家可能收容許多流離失所者，只是該年度未報告。
         </>
       ) : (
         <>
           UNHCR distinguishes <em>not reported</em> (<code>"-"</code>) from <em>reported zero</em>.
-          We keep that distinction everywhere: on the map (grey vs the lightest blue), in charts (a
+          We keep that distinction everywhere: on the map (grey vs the lightest sand), in charts (a
           gap in the line vs a point at 0), in CSV (empty field vs <code>0</code>) and in JSON (
           <code>null</code> vs <code>0</code>). A country in grey may host many displaced people
           whose figures simply were not reported that year.
@@ -399,16 +398,26 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
     {
       zh ? (
         <>
-          全站僅使用單色藍階（ColorBrewer
-          Blues）——不用紅/橙暖色，避免在視覺上把流離失所者呈現為「威脅」。七個級距。分級預設為
+          全站使用<strong>大地色連續色階</strong>（ColorBrewer
+          YlOrBr：沙 → 赭 →
+          耕土的深褐），七個級距，色盲友善。原則不變：<strong>不把流離失所者在視覺上呈現為「威脅」</strong>
+          ——因此全站刻意沒有任何紅色，最深一級是土壤的褐，而非警報色；流向也以弧線而非箭頭呈現。選擇大地色是一個明確的設計主張：荒漠與土壤，是人們所跨越、也所失去的東西。此設計於
+          2026-08-25 取代早期版本的單色藍階（變更有紀錄可查），並由自動化測試守護：色階必須為暖土色系、逐級變暗，任何改為警報紅的嘗試都會使建置失敗。分級預設為
           <strong>分位數</strong>
           ，且<strong>跨全部年份</strong>
           計算（針對目前顯示的國家）：拖動時間軸時顏色代表「量級」而非每年重排的「名次」，不同年份的截圖可以互相比較。零有自己的最淺色；未報告為灰色。
         </>
       ) : (
         <>
-          A single-hue blue ramp (ColorBrewer Blues) is used throughout — no red/orange scales,
-          which would visually frame displaced people as a threat. Seven classes. Default breaks are{' '}
+          The site uses an <strong>earth-tone sequential ramp</strong> (ColorBrewer YlOrBr: sand →
+          ochre → tilled-soil brown), seven classes, colour-blind safe. The principle is unchanged:{' '}
+          <strong>displaced people are never visually framed as a threat</strong> — the site
+          deliberately contains no red anywhere; the deepest class is the brown of soil, not an
+          alarm colour, and flows are drawn as arcs, not arrows. The earth palette is a deliberate
+          statement: desert and soil are what people cross, and what they lose. This design
+          replaced an earlier single-hue blue ramp on 2026-08-25 (the change is on record), and is
+          guarded by automated tests: the ramp must be warm-earth and monotonically darkening — any
+          attempt to switch to alarm red fails the build. Default breaks are{' '}
           <strong>quantiles computed across the whole year range</strong> for the countries shown:
           while you scrub the timeline, colour means magnitude, not a rank that reshuffles every
           year — so screenshots from different years are comparable. Zero has its own lightest
