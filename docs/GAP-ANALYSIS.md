@@ -74,8 +74,9 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
 6. **Zenodo DOI for quarterly snapshots**: the success metric is citations, and the biggest
    friction for academic citation is "will this URL exist in five years". Snapshot ids and the
    git audit trail already exist — depositing a quarterly data snapshot to Zenodo (free,
-   CERN-run) yields a DOI per version plus a concept DOI. Needs the owner to create the Zenodo
-   account; the deposit step can then be automated.
+   CERN-run) yields a DOI per version plus a concept DOI. **Done 2026-08-25**: concept DOI
+   10.5281/zenodo.22087749 is live (v2 published); the quarterly new-version flow is scripted
+   in `scripts/dev/zenodo-deposit.mjs --new-version`.
 
 ## 6. Verification of this remediation
 
