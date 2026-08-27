@@ -50,15 +50,61 @@ const statusText = (st: string) => {
   const label = tr(key);
   return label.startsWith('status.') ? st : label;
 };
+/**
+ * schema.org/Dataset for Google Dataset Search (developers.google.com/search/docs/appearance/structured-data/dataset).
+ * `name` and `description` are required; everything else below is in Google's recommended set and is
+ * what makes a record rankable rather than merely valid. The DOI goes in `identifier` so the live
+ * dataset and its Zenodo deposit are recognised as the same thing.
+ */
+const catalogUrl = `${SITE_URL}${localizePath('/data', locale)}`;
+const publisher = {
+  '@type': 'Organization',
+  name: 'Where They Went',
+  url: SITE_URL,
+};
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'DataCatalog',
   name: zh ? '他們去了哪裡 — 資料下載' : 'Where They Went — data downloads',
-  url: `${SITE_URL}${localizePath('/data', locale)}`,
+  url: catalogUrl,
   inLanguage: locale,
+  publisher,
   dataset: downloads.map((d) => ({
     '@type': 'Dataset',
-    name: d.name,
+    name: DESC[d.name] ? `${zh ? DESC[d.name]!.zh : DESC[d.name]!.en} (${d.name})` : d.name,
+    description: zh
+      ? `${DESC[d.name]?.zh ?? d.name} 全球被迫流離失所統計，${manifest?.year_min ?? 1951}–${manifest?.year_max ?? ''} 年，資料來自 UNHCR、IDMC 與聯合國人口司。空欄位代表未報告，絕不等於零。`
+      : `${DESC[d.name]?.en ?? d.name} Global forced-displacement statistics, ${manifest?.year_min ?? 1951}–${manifest?.year_max ?? ''}, republished from UNHCR, IDMC and the UN World Population Prospects. An empty field means not reported and never means zero.`,
+    url: catalogUrl,
+    identifier: `https://doi.org/${DATA_DOI}`,
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    isAccessibleForFree: true,
+    creator: publisher,
+    publisher,
+    inLanguage: locale,
+    version: manifest?.snapshot_id,
+    temporalCoverage: `${manifest?.year_min ?? 1951}/${manifest?.year_max ?? ''}`,
+    spatialCoverage: { '@type': 'Place', name: 'World' },
+    keywords: [
+      'refugees',
+      'forced displacement',
+      'internally displaced persons',
+      'asylum seekers',
+      'statelessness',
+      'UNHCR',
+      'IDMC',
+      'demography',
+      'migration',
+    ],
+    isBasedOn: [
+      ...new Set(
+        Object.values(sources)
+          .map((s) => s?.landing_page)
+          .filter((u): u is string => !!u),
+      ),
+    ],
+    includedInDataCatalog: { '@type': 'DataCatalog', name: 'Where They Went', url: catalogUrl },
+    sameAs: `https://doi.org/${DATA_DOI}`,
     distribution: [
       {
         '@type': 'DataDownload',
