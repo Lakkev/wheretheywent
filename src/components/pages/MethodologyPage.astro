@@ -388,13 +388,57 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       zh ? (
         <>
           比率 = 人數 ÷ UN WPP 年中總人口 × 1,000。兩點注意：分子是 12 月 31 日的存量、分母是 7 月 1
-          日的人口；WPP 估計基準年之後的年份為中推計預測值。缺人口資料時不顯示比率。
+          日的人口；缺人口資料時不顯示比率。
         </>
       ) : (
         <>
           Rate = persons ÷ UN WPP mid-year total population × 1,000. Two caveats: the numerator is a
-          31 December stock while the denominator is 1 July; and WPP values after the estimate base
-          year are medium-variant projections. Rates are not shown where population is missing.
+          31 December stock while the denominator is 1 July. Rates are not shown where population is
+          missing.
+        </>
+      )
+    }
+  </p>
+  <p>
+    {
+      zh ? (
+        <>
+          <strong>估計值與預測值的分界</strong>：WPP 2024 中，1950–2023 年為<strong>估計值</strong>
+          （依人口普查、調查、登記與官方統計重建而得）；<strong>2024 年 1 月 1 日起至 2100 年為預測值</strong>
+          ，由統計預測模型與人口假設推導。本站在地圖切換至每千人、且所選年份落在預測區間時，會直接於圖例顯示提示。此一分界與署名寫法已向
+          UN DESA 人口司查證確認（2026-08-28）。欲檢視各國估計值背後的實證來源，可查
+          <a href="https://population.un.org/wpp/data-sources" rel="noopener">WPP 資料來源頁</a>、
+          <a href="https://population.un.org/wpp/downloads?folder=Documentation&group=Documentation" rel="noopener">
+            方法文件資料夾
+          </a>
+          ，或以
+          <a href="https://population.un.org/dataportal/" rel="noopener">UN 人口司資料入口</a>
+          （提供開放 API 與底層實證資料點）逐一核對。
+        </>
+      ) : (
+        <>
+          <strong>Estimates versus projections</strong>: in WPP 2024, the years 1950–2023 are{' '}
+          <strong>estimates</strong>, reconstructed from censuses, surveys, registers and official
+          statistics; <strong>1 January 2024 through 2100 are projections</strong> derived from
+          statistical forecasting models and demographic assumptions. When the map is showing
+          per-1,000 rates for a projected year, the legend says so in plain text. This boundary and
+          the attribution wording were confirmed with the UN DESA Population Division (2026-08-28).
+          To inspect the empirical basis of the estimates for any country, see the{' '}
+          <a href="https://population.un.org/wpp/data-sources" rel="noopener">
+            WPP data sources
+          </a>
+          , the{' '}
+          <a
+            href="https://population.un.org/wpp/downloads?folder=Documentation&group=Documentation"
+            rel="noopener"
+          >
+            methodology documentation folder
+          </a>
+          , or the{' '}
+          <a href="https://population.un.org/dataportal/" rel="noopener">
+            UN Population Division Data Portal
+          </a>
+          , which offers an open API and the underlying empirical data points.
         </>
       )
     }

@@ -135,7 +135,7 @@ optional politeness: it is how attribution errors get caught by the only people 
 |---|---|---|---|
 | UNHCR | Population, demographics, solutions, asylum applications, footnotes | no institutional statistics inbox; reached via EGRISS (`egrisstats@unhcr.org`) | 2026-08-25 (EGRISS) |
 | IDMC | Annual IDP stocks (via UNHCR `/idmc/`) and IDU event feed | `info@idmc.ch` | 2026-08-27 |
-| UN DESA Population Division | WPP 2024 — every per-capita denominator | `population@un.org` | 2026-08-27 |
+| UN DESA Population Division | WPP 2024 — every per-capita denominator | `population@un.org` | 2026-08-27 — **replied 2026-08-28**: attribution wording and the estimates/projections split confirmed correct by Patrick Gerland, Chief, Population Estimates and Projection Section. **The next full WPP revision is postponed to July 2027**, so do not wait for a 2026 or 2027-spring release. |
 | OpenFreeMap | Basemap tiles on every map load — **they pay this bandwidth, we do not** | `zsolt@openfreemap.org` | 2026-08-27 |
 | Natural Earth | Boundaries (via world-atlas) | public domain, volunteer project, no institutional contact | credited, no notice owed |
 
