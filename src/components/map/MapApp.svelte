@@ -478,6 +478,9 @@
                 type="button"
                 onclick={() => (session.dialog = 'events')}>≣ {tr('idu.timeline')}</button
               >
+              <!-- visible, not hover-only: two IDP definitions coexist on screen while the
+                   event layer is on (events include disasters; the annual stock does not) -->
+              <div class="idu-defnote">{tr('idu.definitionNote')}</div>
             </div>
           {/if}
         {/if}
@@ -616,7 +619,18 @@
     left: var(--overlay-gap);
     top: 164px;
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
+    max-width: 320px;
+  }
+  .idu-defnote {
+    flex-basis: 100%;
+    font-size: var(--fs-xs);
+    color: var(--c-text-3);
+    background: var(--c-surface);
+    border-radius: 4px;
+    padding: 2px 6px;
+    max-width: fit-content;
   }
   .idu-chip {
     font-size: var(--fs-xs);

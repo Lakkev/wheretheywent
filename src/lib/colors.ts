@@ -10,6 +10,13 @@
  */
 export type ScaleKind = 'lin' | 'log' | 'quant';
 
+/**
+ * Decided ahead of need (external review #3, 2026-08-27): if a year-over-year CHANGE map is ever
+ * built, the diverging ramp is teal ↔ brown (e.g. ColorBrewer BrBG), zero-centered on the sand
+ * ZERO color. It is colorblind-safe, contains no red (the warm-earth guard in colors.test.ts
+ * stays authoritative for the sequential ramp), and the brown end stays inside this palette.
+ * Do not improvise a red/green diverging scale later.
+ */
 export const EARTH_9 = [
   '#ffffe5',
   '#fff7bc',

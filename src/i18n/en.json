@@ -84,6 +84,7 @@
   "detail.hosting": "Hosting",
   "detail.origin": "Originating",
   "detail.population": "Population (WPP)",
+  "detail.pocComponents": "Derived sum — components reported: hosting {a}/{n} · origin {o}/{n}; unreported components add nothing",
   "detail.loading": "Loading…",
   "detail.noData": "Not reported",
   "detail.nameNote": "Name as used by {source}",

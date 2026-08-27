@@ -147,6 +147,30 @@ const ORGS = [
       )
     }
   </p>
+  <h3>{zh ? '如果有一天停止維護' : 'If maintenance ever stops'}</h3>
+  <p>
+    {
+      zh ? (
+        <>
+          存續計畫是公開的，不依賴任何承諾：程式碼與每日資料快照都在公開版本庫（MIT
+          授權，任何人可原樣重新架設）；季度資料束存於 Zenodo（CERN 營運，DOI
+          永久有效）；整個版本庫另由 Software Heritage
+          長期典藏。網址結構是穩定介面的一部分——既有連結與資料路徑（<code>/data/v1/</code>
+          ）不會被改動或移除，只會新增。也就是說：本站最壞的結局是「凍結」，而不是「消失」。
+        </>
+      ) : (
+        <>
+          The succession plan is public and depends on no promise: the code and every daily data
+          snapshot live in a public repository (MIT — anyone can redeploy the site as-is); quarterly
+          data bundles are archived on Zenodo (CERN-run, DOIs resolve permanently); and the whole
+          repository is independently preserved by Software Heritage. The URL structure is part of
+          the stable interface — existing links and data paths (<code>/data/v1/</code>) are only
+          ever added to, never changed or removed. The worst case for this site is “frozen”, not
+          “gone”.
+        </>
+      )
+    }
+  </p>
 
   <h2>{zh ? '資料、授權與程式碼' : 'Data, licences and code'}</h2>
   <p>

@@ -84,6 +84,7 @@
   "detail.hosting": "Acoge",
   "detail.origin": "Originarios",
   "detail.population": "Población (WPP)",
+  "detail.pocComponents": "Suma derivada — componentes informados: acogida {a}/{n} · origen {o}/{n}; los no informados no se suman",
   "detail.loading": "Cargando…",
   "detail.noData": "No informado",
   "detail.nameNote": "Nombre usado por {source}",

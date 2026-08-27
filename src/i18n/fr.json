@@ -84,6 +84,7 @@
   "detail.hosting": "Accueille",
   "detail.origin": "Originaires",
   "detail.population": "Population (WPP)",
+  "detail.pocComponents": "Somme dérivée — composants déclarés : accueil {a}/{n} · origine {o}/{n} ; les composants non déclarés ne sont pas ajoutés",
   "detail.loading": "Chargement…",
   "detail.noData": "Non déclaré",
   "detail.nameNote": "Nom utilisé par {source}",

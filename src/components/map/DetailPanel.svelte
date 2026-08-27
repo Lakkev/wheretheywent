@@ -1,7 +1,13 @@
 <script lang="ts">
   import { ui, data, session, raw, toggleCompare, selectCountry } from '../../lib/state.svelte';
   import type { ViewResult } from '../../lib/view';
-  import { displayName, footnoteMatchesMetric, sourceCaveats, zhData } from '../../lib/data';
+  import {
+    displayName,
+    footnoteMatchesMetric,
+    sourceCaveats,
+    zhData,
+    TOTAL_POC_COMPONENTS,
+  } from '../../lib/data';
   import { fmtInt, fmtRate, fmtCompact } from '../../lib/format';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { TABS, type Tab } from '../../lib/url';
@@ -74,6 +80,14 @@
       o: unpack(file.origin.v[mi]!)[yi] ?? null,
     })).filter((r) => r.a !== null || r.o !== null);
   });
+  /** total_poc is a partial sum wherever components are unreported — say how partial, per view. */
+  const pocReported = $derived.by(() => {
+    if (!iso3 || ui.m !== 'total_poc') return null;
+    void data.stockVersion;
+    const count = (v: 'asylum' | 'origin') =>
+      TOTAL_POC_COMPONENTS.filter((m) => raw.stock.value(v, iso3, m, ui.y) !== null).length;
+    return { a: count('asylum'), o: count('origin'), n: TOTAL_POC_COMPONENTS.length };
+  });
   const footnotes = $derived.by(() => {
     if (!file) return [];
     // §10.5: keyed by (country, year, population_type) — current-metric footnotes first
@@ -129,6 +143,11 @@
             </div>
           {/each}
         </div>
+        {#if pocReported}
+          <p class="muted small">
+            {tr('detail.pocComponents', { a: pocReported.a, o: pocReported.o, n: pocReported.n })}
+          </p>
+        {/if}
         <p class="muted small">
           {tr('country.asOf', { year: ui.y })} · {tr('detail.population')}: {fmtCompact(
             pop,

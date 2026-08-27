@@ -34,7 +34,24 @@
   "CHN": { "display_name": "China", "display_name_zh": "中國" },
   "HKG": { "display_name": "Hong Kong SAR, China", "display_name_zh": "香港" },
   "MAC": { "display_name": "Macao SAR, China", "display_name_zh": "澳門" },
-  "SYR": { "display_name": "Syria", "display_name_zh": "敘利亞" },
+  "SYR": {
+    "display_name": "Syria",
+    "display_name_zh": "敘利亞",
+    "note": "UNHCR figures exclude Palestine refugees registered with UNRWA in Syria (~0.6 million), counted by UNRWA separately.",
+    "note_zh": "UNHCR 數字不含在敘利亞向 UNRWA 登記的巴勒斯坦難民（約 60 萬），UNRWA 另行統計。"
+  },
+  "JOR": {
+    "display_name": "Jordan",
+    "display_name_zh": "約旦",
+    "note": "UNHCR figures exclude Palestine refugees registered with UNRWA in Jordan (~2.4 million), counted by UNRWA separately.",
+    "note_zh": "UNHCR 數字不含在約旦向 UNRWA 登記的巴勒斯坦難民（約 240 萬），UNRWA 另行統計。"
+  },
+  "LBN": {
+    "display_name": "Lebanon",
+    "display_name_zh": "黎巴嫩",
+    "note": "UNHCR figures exclude Palestine refugees registered with UNRWA in Lebanon (~0.5 million), counted by UNRWA separately.",
+    "note_zh": "UNHCR 數字不含在黎巴嫩向 UNRWA 登記的巴勒斯坦難民（約 50 萬），UNRWA 另行統計。"
+  },
   "IRN": { "display_name": "Iran", "display_name_zh": "伊朗" },
   "VEN": { "display_name": "Venezuela", "display_name_zh": "委內瑞拉" },
   "BOL": { "display_name": "Bolivia", "display_name_zh": "玻利維亞" },

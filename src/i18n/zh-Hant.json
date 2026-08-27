@@ -84,6 +84,7 @@
   "detail.hosting": "庇護",
   "detail.origin": "來源",
   "detail.population": "人口（WPP）",
+  "detail.pocComponents": "衍生加總——成分通報數：收容 {a}/{n} · 來源 {o}/{n}；未通報的成分不計入",
   "detail.loading": "載入中…",
   "detail.noData": "未報告",
   "detail.nameNote": "{source} 使用的名稱",

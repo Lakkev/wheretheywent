@@ -84,6 +84,7 @@
   "detail.hosting": "수용",
   "detail.origin": "출신",
   "detail.population": "인구(WPP)",
+  "detail.pocComponents": "파생 합계 — 보고된 구성요소: 수용 {a}/{n} · 출신 {o}/{n}; 미보고분은 합산되지 않음",
   "detail.loading": "불러오는 중…",
   "detail.noData": "미보고",
   "detail.nameNote": "{source} 사용 명칭",
