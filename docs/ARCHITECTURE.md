@@ -9,7 +9,7 @@ below with the measured reason.
 
 A **static site** (Astro 7, `output: 'static'`) with **Svelte 5** islands. All data is produced at
 build/ETL time by a **Node 22 TypeScript pipeline** (no build step, native type stripping) that
-fetches UNHCR / IDMC / UN WPP, normalises to ISO3, validates 21 checks, and commits JSON/CSV files
+fetches UNHCR / IDMC / UN WPP, normalises to ISO3, validates 22 checks, and commits JSON/CSV files
 into `public/data/v1/`. The browser never calls an upstream API. Hosting is Cloudflare Pages
 (direct upload via wrangler from GitHub Actions, free). The ETL runs daily on GitHub Actions and commits **only when content
 changes**, so most days produce no commit and no deploy.
@@ -30,7 +30,7 @@ GitHub Actions (03:17 UTC) ── run.ts → validate.ts → promote.ts ── g
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `scripts/etl/config.ts`            | **All magic numbers**: endpoints, throttling, thresholds, golden numbers, year windows                                                                                     |
 | `scripts/etl/run.ts`               | Orchestrator: fetch every source independently, transform, write staging                                                                                                   |
-| `scripts/etl/validate.ts`          | 15 spec invariants + schemas + golden numbers + size gates → `_validation.json`                                                                                            |
+| `scripts/etl/validate.ts`          | 16 spec invariants + schemas + golden numbers + size gates → `_validation.json`                                                                                            |
 | `scripts/etl/promote.ts`           | Copy passing _groups_ into `public/data/v1`, mark failed sources stale, rebuild manifest                                                                                   |
 | `scripts/etl/lib/codes.ts`         | ★ ISO3 normalisation; `sanitizeRow()` deletes UNHCR internal codes and installs throwing getters                                                                           |
 | `scripts/etl/lib/registry.ts`      | countries.json: UNHCR list ⊕ geometry ⊕ WPP ⊕ display overrides                                                                                                            |

@@ -246,8 +246,8 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           （未報告）、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
         </li>
         <li>
-          <strong>驗證</strong> — 發布前須通過 15 條資料不變量（自動化檢查合計 21 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
-          <em>可上色總和 + 無法顯示總和 = 全球總計</em>；年度總計與前一快照差異不超過 20%；三個
+          <strong>驗證</strong> — 發布前須通過 16 條資料不變量（自動化檢查合計 22 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
+          <em>可上色總和 + 無法顯示總和 = 全球總計</em>；來源國×庇護國雙邊矩陣的行列加總與各國邊際總計一致；年度總計與前一快照差異不超過 20%；三個
           <strong>黃金數字</strong>（土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民）誤差須在 1%
           內。
         </li>
@@ -277,9 +277,10 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           <code>null</code> / <code>0</code> / integer.
         </li>
         <li>
-          <strong>Validate</strong> — 15 data invariants (21 automated checks in total) must hold before anything is published,
+          <strong>Validate</strong> — 16 data invariants (22 automated checks in total) must hold before anything is published,
           including: the three collision cases are keyed correctly; no negative or non-finite
           values; <em>mapped total + unmappable total = global total</em> for every metric and year;
+          the origin×asylum bilateral matrix sums back to each country's marginal totals;
           totals do not drift more than 20 % against the previous snapshot; and three{' '}
           <strong>golden numbers</strong> (Türkiye refugees 2024, Syria IDPs 2016, world refugees
           2024) match within 1 %.

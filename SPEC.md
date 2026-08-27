@@ -180,7 +180,7 @@ GitHub Actions (public repo,免費無上限,每日 03:17 UTC)
   ├─ fetch      UNHCR API(~45 次請求,併發 2,間隔 300ms)+ WPP CSV + IDMC
   ├─ geo        world-atlas 50m → mapshaper 簡化 → TopoJSON
   ├─ transform  ISO3 正規化 → 聚合 → 欄式編碼 → 分片
-  ├─ validate   zod schema + 15 條不變量 + golden numbers + 檔案大小
+  ├─ validate   zod schema + 16 條不變量 + golden numbers + 檔案大小
   ├─ promote    逐 source 原子性替換(失敗保留上次快照)
   └─ commit     僅在內容 hash 改變時 commit + push
        └─ Cloudflare Pages Git 整合 → npm ci && npm run build → 部署
@@ -258,7 +258,7 @@ D:\Daily\
 │
 ├─ scripts/etl/              全部 node 直接執行 .ts(零建置)
 │  ├─ run.ts                 orchestrator → .etl-staging/
-│  ├─ validate.ts            zod + 15 條不變量 + golden numbers + 大小 gate
+│  ├─ validate.ts            zod + 16 條不變量 + golden numbers + 大小 gate
 │  ├─ promote.ts             staging → public/data/v1(逐 source 原子替換)
 │  ├─ config.ts              所有端點 URL/年份範圍/閾值/限流參數(集中+註解)
 │  ├─ sources/
@@ -693,7 +693,7 @@ npm ci && npm run geo && npm run etl && npm run etl:validate && npm run etl:prom
 npm run check && npm test && npm run build && npm run preview && npm run test:e2e
 ```
 
-## 13.2 validate.ts 的 15 條不變量(任一失敗 = 該 source 不 promote)
+## 13.2 validate.ts 的 16 條不變量(任一失敗 = 該 source 不 promote)
 
 1. countries 為 232 筆(±5)
 2. **每個 ISO3 不得命中 UNHCR 內部碼黑名單(AUS→AUT / ARE→EGY / MAR→MTQ 三組 golden case)**
@@ -710,6 +710,7 @@ npm run check && npm test && npm run build && npm run preview && npm run test:e2
 13. **Golden numbers:硬編碼已公開查證的錨點(2024 全球難民數、2024 土耳其收容數、2016 敘利亞 IDP 數),誤差 >1% FAIL** ← 抓「上游改口徑」最有效手段
 14. geo feature 數在預期範圍且都有 id
 15. 每 metric 在 metrics.json 有 definition + source_id
+16. **雙邊矩陣與邊際總計一致:`flows/{year}` 逐來源國加總 = 該國 origin 邊際、逐庇護國加總 = 該國 asylum 邊際(refugees 與 asylum_seekers,2015+)。容差 max(1,000 人, 0.5%)——2026-08-27 實測全部 8,344 格完全相等,容差僅為上游遮蔽行為改變時的緩衝,見 docs/data-verification.md**
 
 ## 13.3 人工對帳(自動化做不到的一層)
 

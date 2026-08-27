@@ -25,6 +25,35 @@ published, upstream definition change, ETL refactor), a person checks **5 countr
 
 Tolerance: 1 % (`THRESHOLDS.goldenTolerance`). Any failure blocks promotion of the core group.
 
+## Bilateral matrix ↔ marginal totals (invariant #16)
+
+The origin × asylum bilateral matrix (`flows/{year}.json`, 2015+, refugees and asylum-seekers)
+comes from a **separate API query** (`coo_all & coa_all`) than the marginals in `stock/*`
+(`coa_all` alone / `coo_all` alone). Invariant #16 asserts that summing the matrix over asylum
+countries reproduces every origin marginal, and summing over origin countries reproduces every
+asylum marginal. A country whose marginal is `null` (not reported) must also have no bilateral
+rows.
+
+**Exact equality was not assumed.** UNHCR redacts/rounds small cells and uses pseudo-entities
+(`XXA` stateless, `UNK` unknown, `OTH` others), any of which could make the three queries
+disagree. Measured on snapshot `2d5eacdf` (2026-08-27,
+`node scripts/dev/measure-bilateral.mjs public/data/v1`): all **8,152** populated
+(side × country × year × metric) cells — 8,344 including
+zero-marginal cells — match **exactly**, worst |Δ| = 0. UNHCR evidently applies its redaction
+consistently across the three queries, so the published marginals are the sums of the published
+(possibly redacted) cells.
+
+**Tolerance**: a cell passes when |Σ bilateral − marginal| ≤ max(**1,000 persons**, **0.5 %** of
+the larger side) — `THRESHOLDS.bilateralAbsTolerance` / `bilateralRelTolerance`. Rationale: the
+measured discrepancy today is zero, but the tolerance is deliberately non-zero. If UNHCR ever
+applies suppression asymmetrically (bilateral cells hidden while marginals keep the true total),
+per-cell rounding across ~200 partner countries could plausibly accumulate to a few hundred
+persons per marginal, which should not block the daily publish. The defects this guard exists to
+catch — a dropped API page, a mis-keyed country, double counting — are orders of magnitude larger
+(verified: a 50,000-person perturbation of one cell fails the guard on both its origin row and its
+asylum column). Any failure blocks promotion of the core group. Before widening the tolerance,
+re-measure the actual distribution with the same method and record the result here.
+
 ## Reconciliation log
 
 | date       | who                 | what was checked                                                                                                                                                        | result                |

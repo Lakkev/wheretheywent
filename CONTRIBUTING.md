@@ -18,7 +18,7 @@ published in full.
 1. Fork, branch, and keep changes focused.
 2. `npm ci && npm run build` must pass, along with the gates:
    `npx tsc --noEmit`, `npx vitest run` (unit), `npx playwright test` (e2e),
-   and `npm run validate:data` (21 data invariants).
+   and `npm run validate:data` (22 data invariants).
 3. Two hard principles reviewers will hold you to:
    - **"Not reported" is never rendered as zero.** Missingness is information.
    - **Data-level strings (metric definitions, caveats) ship in all seven
