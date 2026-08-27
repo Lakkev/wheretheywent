@@ -13,6 +13,16 @@ from this site you must carry these attributions forward.
 | Natural Earth (via `world-atlas`) | Public domain | Crediting is not required; we credit anyway: "Made with Natural Earth" |
 | OpenFreeMap / OpenStreetMap basemap tiles | ODbL (OSM data) | "© OpenFreeMap © OpenStreetMap contributors" |
 
+## This site's own contributions
+
+The transformations, file structure, derived aggregates (e.g. the computed
+record library and `total_poc` sums), metadata and translations that this site
+adds on top of the sources are released under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), attribution
+"Where They Went (wheretheywent.lakkev.com)". In practice: attribute the
+upstream sources per the table above **and** this site when you reuse its
+derived files — the ready-to-paste line on [/cite](/cite) covers both.
+
 Every CSV/JSON download from this site embeds `source_id`, `source_attribution`,
 `data_as_of` and `retrieved_at` columns so that provenance travels with the
 numbers. Boundaries and names do not imply official endorsement — see
