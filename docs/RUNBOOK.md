@@ -125,6 +125,29 @@ suite on it.
 
 ---
 
+## 7b. Courtesy notices to upstream providers (do this when a dependency is added)
+
+This site runs on other people's work, and in one case on someone else's bandwidth. Every provider
+the site depends on gets told, by name, what is being taken and how it is credited. This is not
+optional politeness: it is how attribution errors get caught by the only people who can catch them.
+
+| Provider | What we take from them | Contact | Notified |
+|---|---|---|---|
+| UNHCR | Population, demographics, solutions, asylum applications, footnotes | no institutional statistics inbox; reached via EGRISS (`egrisstats@unhcr.org`) | 2026-08-25 (EGRISS) |
+| IDMC | Annual IDP stocks (via UNHCR `/idmc/`) and IDU event feed | `info@idmc.ch` | 2026-08-27 |
+| UN DESA Population Division | WPP 2024 — every per-capita denominator | `population@un.org` | 2026-08-27 |
+| OpenFreeMap | Basemap tiles on every map load — **they pay this bandwidth, we do not** | `zsolt@openfreemap.org` | 2026-08-27 |
+| Natural Earth | Boundaries (via world-atlas) | public domain, volunteer project, no institutional contact | credited, no notice owed |
+
+**Rule: when a new upstream source or free service is added to the pipeline, add a row here and send
+the notice in the same week.** The letter says three things: what we take, how we credit it, and an
+invitation to tell us what is wrong or to ask us to stop. For a service someone personally pays for,
+add a fourth: an offer to move off it before we become a burden.
+
+Drafts of the sent letters are kept in `private/DRAFTS-禮節信-*.md`.
+
+---
+
 ## 8. Current production configuration (updated 2026-08-26)
 
 Everything below is LIVE — this section records what exists, so it can be rebuilt if lost.
