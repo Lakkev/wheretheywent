@@ -89,9 +89,13 @@ const jsonLd = {
           : 'RFC 4180, UTF-8, LF line endings. Empty field = not reported (distinct from 0).'
       }
       {tr('source.snapshot', { id: manifest?.snapshot_id ?? '—' })}.
-      {zh ? ' 長期典藏（Zenodo）DOI：' : ' Long-term archive (Zenodo) DOI: '}<a
+      {zh ? ' 長期典藏（Zenodo）Concept DOI：' : ' Long-term archive (Zenodo) concept DOI: '}<a
         href={`https://doi.org/${DATA_DOI}`}><code>{DATA_DOI}</code></a
-      >
+      >{
+        zh
+          ? '。此 DOI 永遠解析到最新一季的典藏版本；典藏按季進行，可能落後於上方每日更新的線上快照。要引用特定一份資料，請改用 Zenodo 紀錄頁所列該版本自己的版本 DOI，並記下其快照代碼。'
+          : ' — always resolves to the latest quarterly archived version, which can lag the daily online snapshot above. To cite one specific dataset, use that version’s own DOI as listed on the Zenodo record, and note its snapshot id.'
+      }
     </p>
     <table>
       <thead

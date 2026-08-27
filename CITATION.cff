@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software or its data, please cite it as below. Always
+  attribute the underlying sources (UNHCR, IDMC, UN WPP) and include the
+  data snapshot id shown with each figure — see
+  https://wheretheywent.lakkev.com/cite for responsible-citation guidance.
+title: "Where They Went: a citable, multilingual platform for global forced-displacement statistics"
+type: software
+authors:
+  - family-names: Hsu
+    given-names: Chih-Hua
+    orcid: "https://orcid.org/0009-0005-5135-230X"
+license: MIT
+repository-code: "https://github.com/Lakkev/wheretheywent"
+url: "https://wheretheywent.lakkev.com"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22087749
+    description: >-
+      Concept DOI for the quarterly-archived dataset — always resolves to
+      the latest archived version; each quarter also has its own version DOI.
+keywords:
+  - refugees
+  - forced displacement
+  - internally displaced persons
+  - statelessness
+  - open data
+  - UNHCR
+  - IDMC
+  - data visualization

@@ -280,6 +280,7 @@
   "error.technical": "技術的詳細",
   "map.loadingData": "データを読み込み中…",
   "legend.per1kNote": "千人あたり = 12月31日ストック ÷ WPP 年央人口",
+  "legend.per1kProjected": "2023年以降の人口は WPP 2024 中位推計による予測値",
   "legend.breaksNote": "色の区分は表示中の国について全年をまたいで固定",
   "source.aged": "データ最終更新 {date} — 自動更新が停止している可能性があります",
   "doc.untranslated": "このページはまだ日本語に対応していません — 以下は英語版です。",

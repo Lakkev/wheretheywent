@@ -280,6 +280,7 @@
   "error.technical": "기술적 세부 정보",
   "map.loadingData": "데이터 불러오는 중…",
   "legend.per1kNote": "천 명당 = 12월 31일 스톡 ÷ WPP 연중 인구",
+  "legend.per1kProjected": "2023년 이후 인구는 WPP 2024 중위 추계 전망치",
   "legend.breaksNote": "색 구간은 표시 중인 국가에 대해 전체 연도에 걸쳐 고정",
   "source.aged": "데이터 최종 갱신 {date} — 자동 업데이트가 중단되었을 수 있습니다",
   "doc.untranslated": "이 페이지는 아직 한국어로 제공되지 않습니다 — 아래는 영어판입니다.",

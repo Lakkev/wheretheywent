@@ -280,6 +280,7 @@
   "error.technical": "Détails techniques",
   "map.loadingData": "Chargement des données…",
   "legend.per1kNote": "pour 1 000 = stock au 31 déc. ÷ population WPP de mi-année",
+  "legend.per1kProjected": "La population après 2023 est une projection WPP 2024 (variante moyenne)",
   "legend.breaksNote": "Les classes couvrent toutes les années, pour les pays affichés",
   "source.aged": "Données actualisées le {date} — les mises à jour automatiques sont peut-être interrompues",
   "doc.untranslated": "Cette page n'est pas encore disponible en français — la version anglaise est affichée ci-dessous.",

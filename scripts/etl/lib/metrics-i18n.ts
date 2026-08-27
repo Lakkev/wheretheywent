@@ -188,18 +188,25 @@ export const METRIC_I18N: Record<AnyMetricId, MetricI18n> = {
       ko: '난민, 비호신청자, 국내실향민, 무국적자, 기타 보호대상자, 국제적 보호가 필요한 기타 인구의 합(수용 공동체와 귀환자는 제외).',
     },
     caveats: {
-      'zh-Hans': ['由前端自各组成指标加总；仅当至少一个组成有报告时，null 组成才视为 0。'],
+      'zh-Hans': [
+        '由前端自各组成指标加总；仅当至少一个组成有报告时，null 组成才视为 0。',
+        '本站加总可能与 UNHCR 自行发布的整体数字（如《全球趋势》报告）略有出入——UNHCR 采用其自身的汇总规则。',
+      ],
       fr: [
         "Calculé côté client à partir des indicateurs composants ; un composant null n'est traité comme 0 que si au moins un composant est déclaré.",
+        "Cette somme peut différer légèrement des totaux publiés par le HCR (p. ex. dans Global Trends), établis selon ses propres règles d'agrégation.",
       ],
       es: [
         'Se calcula en el cliente a partir de los indicadores componentes; un componente null solo se trata como 0 si al menos un componente está informado.',
+        'Esta suma puede diferir ligeramente de los totales que publica ACNUR (p. ej. en Global Trends), compilados con sus propias reglas de agregación.',
       ],
       ja: [
         'クライアント側で構成指標から合算。null の構成要素は、少なくとも1つの構成要素が報告されている場合にのみ 0 として扱う。',
+        'この合算は、UNHCR が独自の集計規則で公表する総計（Global Trends など）とわずかに異なる場合がある。',
       ],
       ko: [
         '클라이언트에서 구성 지표를 합산. null 구성요소는 최소 하나의 구성요소가 보고된 경우에만 0으로 처리.',
+        'UNHCR가 자체 집계 규칙으로 발표하는 총계(Global Trends 등)와는 약간 다를 수 있음.',
       ],
     },
   },

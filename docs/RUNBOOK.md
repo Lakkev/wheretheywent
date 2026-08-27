@@ -79,6 +79,16 @@ look_, not an error in our code.
 
 3. If the site's number is _not_ what UNHCR shows: paste the log and the correct figure to the AI
    assistant and ask for a diagnosis — do not edit data files by hand.
+4. If the drift is a **genuine large upstream revision** (e.g. a mass-return year revised in place —
+   entirely possible, and the check is designed to make a human look, not to deny reality): the site
+   is safely serving yesterday's snapshot in the meantime. Paste to the AI assistant:
+
+> "Drift check #4 fired for `<metric/year>`; I verified the new value on unhcr.org on <date> and it
+> is a real revision. Temporarily raise `THRESHOLDS.maxTotalDrift` in scripts/etl/config.ts so the
+> new baseline lands, revert it in the next commit, and record the decision with the verification
+> date in docs/data-verification.md."
+
+New years are never blocked by this check — it only compares years both snapshots already have.
 
 ---
 

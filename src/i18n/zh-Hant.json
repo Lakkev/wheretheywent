@@ -280,6 +280,7 @@
   "error.technical": "技術細節",
   "map.loadingData": "資料載入中…",
   "legend.per1kNote": "每千人 = 12/31 存量 ÷ WPP 年中人口",
+  "legend.per1kProjected": "2023 年之後的人口為 WPP 2024 中推計預測值",
   "legend.breaksNote": "色階分級跨全部年份計算，依目前顯示的國家",
   "source.aged": "資料最後更新於 {date} — 自動更新可能已中斷",
   "doc.untranslated": "此頁尚未有本語言版本——以下顯示英文版。",

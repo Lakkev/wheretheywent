@@ -128,8 +128,12 @@ const DEFS: Record<AnyMetricId, Omit<MetricDef, 'id'>> = {
     views: ['asylum', 'origin'],
     caveats: [
       'Derived on the client from the component metrics; a null component is treated as 0 only when at least one component is reported.',
+      'This sum can differ slightly from the headline totals UNHCR publishes (e.g. in Global Trends), which are compiled under UNHCR’s own aggregation rules.',
     ],
-    caveats_zh: ['由前端自各元件指標加總；僅當至少一個元件有報告時，null 元件才視為 0。'],
+    caveats_zh: [
+      '由前端自各元件指標加總；僅當至少一個元件有報告時，null 元件才視為 0。',
+      '本站加總可能與 UNHCR 自行發布的整體數字（如《全球趨勢》報告）略有出入——UNHCR 採用其自身的彙整規則。',
+    ],
     derived: true,
     components: ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'],
   },

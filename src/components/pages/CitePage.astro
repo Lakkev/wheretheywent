@@ -65,8 +65,9 @@ const boiler = `Displacement figures are taken from Where They Went (snapshot ${
           <a href={`https://doi.org/${DATA_DOI}`}>
             <code>{DATA_DOI}</code>
           </a>
-          ——它永遠解析到最新一季；每一季另有各自的版本 DOI，列於 Zenodo 紀錄頁。即使本站消失，DOI
-          與資料束仍在。
+          ——它永遠解析到最新一季；每一季另有各自的版本 DOI，列於 Zenodo
+          紀錄頁。注意：典藏按季進行，可能落後於本站每日更新的線上快照——引用特定數字時，請一併記下頁面顯示的快照代碼，或改用該季的版本
+          DOI。即使本站消失，DOI 與資料束仍在。
         </>
       ) : (
         <>
@@ -76,8 +77,10 @@ const boiler = `Displacement figures are taken from Where They Went (snapshot ${
             <code>{DATA_DOI}</code>
           </a>{' '}
           — it always resolves to the newest quarter; each quarter also has its own version DOI,
-          listed on the Zenodo record. Even if this site disappears, the DOI and the data bundle
-          remain.
+          listed on the Zenodo record. Note that archiving is quarterly, so the archive can lag the
+          daily online snapshot — when citing a specific figure, also record the snapshot id shown
+          on the page, or use that quarter’s version DOI. Even if this site disappears, the DOI and
+          the data bundle remain.
         </>
       )
     }

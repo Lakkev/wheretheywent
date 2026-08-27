@@ -24,6 +24,9 @@
   let showUnmappable = $state(false);
   let showCaveats = $state(false);
   const fmtTick = (v: number) => (ui.n === 'per1k' ? fmtRate(v, locale) : fmtCompact(v, locale));
+  /** WPP 2024 estimates end at 2023; later years use the Medium-variant projection (see
+   *  scripts/etl/config.ts WPP.variant). Bump when the WPP source is upgraded. */
+  const WPP_LAST_ESTIMATE_YEAR = 2023;
   /**
    * Evidence-class chip (#audit F3): IDPs are IDMC estimates, total_poc is a client-side sum;
    * only genuinely reported annual figures get the "Reported" chip.
@@ -74,6 +77,9 @@
     </ul>
     <div class="muted note">{tr('legend.breaksNote')}</div>
     {#if ui.n === 'per1k'}<div class="muted note">{tr('legend.per1kNote')}</div>{/if}
+    {#if ui.n === 'per1k' && ui.y > WPP_LAST_ESTIMATE_YEAR}<div class="muted note">
+        {tr('legend.per1kProjected')}
+      </div>{/if}
   {:else if !view.yearAvailable}
     <div class="muted">{tr('timeline.loadingHistory')}</div>
   {/if}

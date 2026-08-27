@@ -134,7 +134,14 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
         ><td>{zh ? '居民人口（每千人分母）' : 'Resident population (per-1,000 denominator)'}</td><td
           >UN DESA World Population Prospects 2024</td
         ><td><code>WPP2024_TotalPopulationBySex.csv</code>{zh ? '，中推計' : ', medium variant'}</td
-        ><td>CC BY 3.0 IGO</td><td>{fmtDateIso(sources['wpp_population']?.data_as_of)}</td></tr
+        ><td>CC BY 3.0 IGO</td><td
+          >{fmtDateIso(sources['wpp_population']?.data_as_of)}
+          {
+            zh
+              ? '（估計基準年；其後年份為中推計預測值）'
+              : ' (estimates base year; later years are medium-variant projections)'
+          }</td
+        ></tr
       >
       <tr
         ><td>{zh ? '邊界' : 'Boundaries'}</td><td

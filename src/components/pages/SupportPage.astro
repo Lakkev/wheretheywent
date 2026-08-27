@@ -77,6 +77,9 @@ const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
   </ul>
 
   <h2>{zh ? '如何贊助' : 'How to sponsor'}</h2>
+  {/* email_off: keep Cloudflare's e-mail obfuscation away from the payment address —
+      it must stay readable without JavaScript. */}
+  <Fragment set:html={'<!--email_off-->'} />
   <p class="callout">
     {
       zh ? (
@@ -101,6 +104,7 @@ const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
     <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
     {zh ? ' · 微信：' : ' · WeChat: '}<code>{CONTACT_WECHAT}</code>
   </p>
+  <Fragment set:html={'<!--/email_off-->'} />
 
   <h2>{zh ? '透明原則' : 'Transparency'}</h2>
   <p>
