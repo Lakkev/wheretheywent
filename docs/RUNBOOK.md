@@ -146,6 +146,16 @@ add a fourth: an offer to move off it before we become a burden.
 
 Drafts of the sent letters are kept in `private/DRAFTS-禮節信-*.md`.
 
+**Never publish a characterisation of private correspondence before the correspondent has agreed
+to it.** On 2026-08-28 the methodology page was updated to say that the WPP attribution and the
+estimates/projections split "were confirmed with the UN DESA Population Division", and *then* the
+Division was asked whether that wording was acceptable. The statement was true and deliberately
+narrow, and the reply had come from an official answering an official question with colleagues
+copied in — but the order was wrong. Ask first, publish second. If it has already gone out, say so
+plainly to the correspondent, quote the exact wording, offer to change or remove it, and then leave
+it alone until they answer: withdrawing it unilaterally makes the disclosure inaccurate and takes
+the decision away from them a second time.
+
 ---
 
 ## 8. Current production configuration (updated 2026-08-26)
