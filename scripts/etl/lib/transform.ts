@@ -595,6 +595,14 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
     version: snapshotId,
     created: inp.now,
     homepage: 'https://wheretheywent.lakkev.com', // pinned: published content must not vary with env (#audit S8)
+    description:
+      'Global forced-displacement statistics republished from UNHCR, IDMC and the UN World Population Prospects: refugees, asylum-seekers, internally displaced and stateless people, returnees, others in need of international protection, host communities, asylum applications, and resident population used as a per-capita denominator. Group-level statistics only; the collection contains no personal data. A value the upstream source did not report is preserved as empty and is never rendered as zero.',
+    // Temporal and spatial coverage: named explicitly because data-archive appraisal asks for it
+    // before anything else, and a Frictionless descriptor has no dedicated field for either.
+    temporalCoverage: `${inp.yearMin}/${inp.yearMax}`,
+    spatialCoverage: 'Global; country and territory level (ISO 3166-1 alpha-3)',
+    citation:
+      'Concept DOI 10.5281/zenodo.22087749 — always resolves to the latest quarterly archived version. Cite the version DOI and the snapshot id shown with the figure when citing a specific dataset.',
     licenses: [
       {
         name: 'CC-BY-4.0',
@@ -616,6 +624,8 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
       {
         name: 'unhcr-population-all-years',
         path: 'downloads/unhcr-population-all-years.csv',
+        description:
+          'Long (tidy) format: one row per country × view × year × metric. The most complete file — every other CSV here is a reshaping of a subset of it. An empty value means the source did not report that figure; it is never a zero.',
         format: 'csv',
         mediatype: 'text/csv',
         encoding: 'utf-8',
@@ -639,6 +649,10 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
       ...(['asylum', 'origin'] as const).map((v) => ({
         name: `unhcr-population-by-${v}`,
         path: `downloads/unhcr-population-by-${v}.csv`,
+        description:
+          v === 'asylum'
+            ? 'Wide format, one row per country × year, counting people by the country they are IN (country of asylum). Same underlying figures as the long file, reshaped for spreadsheet use.'
+            : 'Wide format, one row per country × year, counting people by the country they CAME FROM (country of origin). The same person appears in both the asylum and origin files, under different countries — the two must never be added together.',
         format: 'csv',
         mediatype: 'text/csv',
         encoding: 'utf-8',
@@ -657,6 +671,8 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
       {
         name: 'countries',
         path: 'downloads/countries.csv',
+        description:
+          'Lookup table joining every other file: canonical ISO 3166-1 alpha-3 code, the name UNHCR uses, the name displayed on the site, region, map centroid, and flags for whether the entity appears in each upstream source. Note that UNHCR internal codes are NOT ISO — see the methodology page.',
         format: 'csv',
         mediatype: 'text/csv',
         encoding: 'utf-8',
@@ -679,6 +695,8 @@ export function buildDatapackage(inp: TransformInput, snapshotId: string) {
       {
         name: 'wpp-total-population',
         path: 'downloads/wpp-total-population.csv',
+        description:
+          'UN World Population Prospects 2024 mid-year total population, used as the denominator for every per-1,000-resident rate. Estimates end in 2023; later years are medium-variant projections, not observations.',
         format: 'csv',
         mediatype: 'text/csv',
         encoding: 'utf-8',
