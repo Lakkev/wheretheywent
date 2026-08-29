@@ -196,10 +196,16 @@ const jsonLd = {
   isAccessibleForFree: true,
   creator: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
   publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+  /**
+   * Upstream sources are cited as CreativeWork, not Dataset. Google's Dataset rich-result
+   * validator requires `description` on every node typed Dataset, including nested ones, and we
+   * have no description of our own to give for someone else's collection — emitting them as
+   * Dataset produced one "missing description" error per source per page (WNC-10030322).
+   */
   isBasedOn: Object.values(sources)
     .filter((s) => data.sources.includes(Object.keys(sources).find((k) => sources[k] === s) ?? ''))
     .map((s) => ({
-      '@type': 'Dataset',
+      '@type': 'CreativeWork',
       name: s.title,
       creator: { '@type': 'Organization', name: s.publisher },
       url: s.landing_page,
