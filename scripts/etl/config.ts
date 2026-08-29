@@ -67,6 +67,16 @@ export const THRESHOLDS = {
   maxTotalDrift: 0.2,
   /** Golden numbers tolerance (§13.2 #13). */
   goldenTolerance: 0.01,
+  /**
+   * Bilateral matrix vs marginal totals (§13.2 #16): a cell passes when
+   * |Σ bilateral − marginal| ≤ max(abs, rel × max(Σ bilateral, marginal)).
+   * Measured 2026-08-27 on snapshot 2d5eacdf: all 8,152 cells match EXACTLY (UNHCR applies its
+   * small-cell redaction consistently across the marginal and bilateral queries). The non-zero
+   * tolerance is headroom for upstream redaction ever becoming asymmetric — real pipeline bugs
+   * (dropped page, mis-keyed country) are orders of magnitude larger. See docs/data-verification.md.
+   */
+  bilateralAbsTolerance: 1_000,
+  bilateralRelTolerance: 0.005,
   maxFileBytes: 20 * 1024 * 1024,
   maxFiles: 5_000,
   countriesExpected: 232,

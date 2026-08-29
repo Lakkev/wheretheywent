@@ -1,5 +1,5 @@
 /**
- * validate.ts — zod schemas + the 15 invariants (§13.2) + golden numbers + size gates.
+ * validate.ts — zod schemas + the 16 invariants (§13.2) + golden numbers + size gates.
  *
  *   node scripts/etl/validate.ts --in .etl-staging      (candidate; compares against public/data/v1)
  *   node scripts/etl/validate.ts --in public/data/v1    (self-check of the published tree, CI gate)
@@ -568,6 +568,75 @@ function main() {
         results.push(`${g.id}=${actual}`);
       }
       return results.join(', ');
+    });
+    guard('#16 ★ bilateral matrix sums match marginal totals (flows vs stock)', 'core', () => {
+      // flows/{year}.json rows [coo, coa, refugees, asylum_seekers] come from a separate API
+      // query (coo_all & coa_all) than the stock marginals (coa_all alone / coo_all alone).
+      // Summing the matrix over asylum countries must reproduce each origin marginal, and vice
+      // versa, within THRESHOLDS.bilateral*Tolerance (measured exact on 2026-08-27 — see
+      // docs/data-verification.md before widening).
+      const fdir = join(IN, 'flows');
+      assert(existsSync(fdir), 'flows/ missing');
+      const flowMetrics = [
+        { id: 'refugees', col: 2, mi: METRIC_IDS.indexOf('refugees') },
+        { id: 'asylum_seekers', col: 3, mi: METRIC_IDS.indexOf('asylum_seekers') },
+      ] as const;
+      const marginal = (view: 'asylum' | 'origin', iso3: string, y: number, mi: number) => {
+        for (const s of stockFiles) {
+          const yi = s.years.indexOf(y);
+          if (yi < 0) continue;
+          const e = s[view][iso3];
+          return e ? (unpack(e.v[mi]!)[yi] ?? null) : null;
+        }
+        return null;
+      };
+      let cells = 0,
+        worst = 0;
+      const bad: string[] = [];
+      for (const fname of readdirSync(fdir).filter((f) => f.endsWith('.json'))) {
+        const fl = readJsonIfExists<{
+          year: number;
+          rows: [string, string, number | null, number | null][];
+        }>(join(fdir, fname));
+        assert(fl, `flows/${fname} unreadable`);
+        for (const m of flowMetrics) {
+          for (const [view, keyIdx] of [
+            ['origin', 0],
+            ['asylum', 1],
+          ] as const) {
+            const sums = new Map<string, number>();
+            for (const row of fl.rows) {
+              const v = row[m.col];
+              if (v === null) continue;
+              const k = row[keyIdx];
+              sums.set(k, (sums.get(k) ?? 0) + v);
+            }
+            const keys = new Set(sums.keys());
+            for (const s of stockFiles)
+              if (s.years.includes(fl.year)) for (const k of Object.keys(s[view])) keys.add(k);
+            for (const k of keys) {
+              const bsum = sums.get(k) ?? 0;
+              const marg = marginal(view, k, fl.year, m.mi);
+              if (marg === null && bsum === 0) continue; // not reported on either side
+              const mv = marg ?? 0;
+              const diff = Math.abs(bsum - mv);
+              const tol = Math.max(
+                THRESHOLDS.bilateralAbsTolerance,
+                THRESHOLDS.bilateralRelTolerance * Math.max(bsum, mv),
+              );
+              if (diff > tol)
+                bad.push(
+                  `${view}/${k} ${fl.year} ${m.id}: Σbilateral ${bsum} vs marginal ${marg} (Δ${diff})`,
+                );
+              worst = Math.max(worst, diff);
+              cells++;
+            }
+          }
+        }
+      }
+      assert(cells > 5000, `only ${cells} bilateral cells compared`);
+      assert(!bad.length, `${bad.length} cells out of tolerance: ${bad.slice(0, 5).join('; ')}`);
+      return `${cells} (side × country × year × metric) cells; worst |Δ| = ${worst}`;
     });
     guard('downloads present + CSV header carries provenance', 'core', () => {
       const p = join(IN, 'downloads/unhcr-population-all-years.csv');

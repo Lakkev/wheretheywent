@@ -8,7 +8,7 @@ year (1951–latest), with sources, as-of dates, permanent links, citations and 
 number. Data: UNHCR, IDMC, UN WPP. No server, no tracking, zero hosting cost.
 
 **Status**: live at <https://wheretheywent.lakkev.com> (mirror: <https://wheretheywent.pages.dev>).
-Data refreshes daily via an unattended pipeline (fetch → validate 21 invariants → publish →
+Data refreshes daily via an unattended pipeline (fetch → validate 22 invariants → publish →
 build → deploy); quarterly snapshots are archived on Zenodo
 ([DOI 10.5281/zenodo.22087749](https://doi.org/10.5281/zenodo.22087749)).
 
