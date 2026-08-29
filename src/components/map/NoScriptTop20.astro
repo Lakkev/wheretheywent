@@ -1,0 +1,165 @@
+---
+/**
+ * No-JS fallback for the map homepage: a server-rendered Top-20 table (latest year,
+ * refugees by country of asylum) inside <noscript>, computed at build time from the
+ * recent stock window. Renders nothing when JS is on, so it can never double-render
+ * or shift the hydrated layout. The skeleton stays aria-hidden, so this block is also
+ * the accessible no-JS content.
+ */
+import { useT, localizePath, type Locale } from '../../i18n/ui';
+import { getStockRecent, getCountries, getSources, getMetrics } from '../../lib/data-server';
+import { packedAt } from '../../lib/columnar';
+import { displayName } from '../../lib/data';
+import { fmtInt, fmtDateLong } from '../../lib/format';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const tr = useT(locale);
+
+const stock = getStockRecent();
+const countries = getCountries();
+const meta = new Map((countries?.countries ?? []).map((c) => [c.iso3, c]));
+
+let year: number | null = null;
+let top: { iso3: string; name: string; value: string }[] = [];
+if (stock && stock.years.length > 0) {
+  const yi = stock.years.length - 1;
+  year = stock.years[yi]!;
+  const mi = stock.metrics.indexOf('refugees');
+  if (mi >= 0) {
+    top = Object.entries(stock.asylum)
+      .map(([iso3, rec]) => ({ iso3, v: packedAt(rec.v[mi] ?? [], yi) }))
+      // null = not reported — excluded from ranking, never coerced to zero
+      .filter((r): r is { iso3: string; v: number } => r.v !== null && r.v > 0)
+      .sort((a, b) => b.v - a.v)
+      .slice(0, 20)
+      .map((r) => ({
+        iso3: r.iso3,
+        name: displayName(meta.get(r.iso3), locale, r.iso3),
+        value: fmtInt(r.v, locale),
+      }));
+  }
+}
+
+const sourceId = getMetrics()?.metrics.refugees?.source_id ?? 'unhcr_population';
+const src = getSources()?.[sourceId] ?? null;
+const title = tr('legend.sentence.asylum', { metric: tr('metric.refugees'), year: year ?? '' });
+const sourceLine = src
+  ? tr('source.note', {
+      attribution: src.attribution,
+      asOf: fmtDateLong(src.data_as_of, locale),
+      retrieved: fmtDateLong(src.retrieved_at, locale),
+    })
+  : tr('map.attribution.data');
+---
+
+{
+  top.length > 0 && (
+    <noscript>
+      <style is:inline>
+        /* JS is off: the skeleton's spinner text and "···" placeholders would sit there forever */
+        #map-skeleton .loading-note,
+        #map-skeleton .rail .ranklist,
+        #map-skeleton .rail .muted.small,
+        #map-skeleton .legend {
+          display: none;
+        }
+        .noscript-top {
+          position: absolute;
+          z-index: var(--z-modal);
+          left: 50%;
+          transform: translateX(-50%);
+          top: calc(var(--topbar-h) + var(--overlay-gap));
+          max-height: calc(100dvh - var(--topbar-h) - var(--timeline-h) - 2 * var(--overlay-gap));
+          width: min(92vw, 560px);
+          overflow: auto;
+          background: var(--c-surface);
+          border: 1px solid var(--c-border);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow-2);
+          padding: var(--sp-4) var(--sp-5);
+          font-size: var(--fs-sm);
+          color: var(--c-text);
+        }
+        .noscript-top h2 {
+          margin: 0 0 var(--sp-1);
+          font-size: var(--fs-lg);
+        }
+        .noscript-top .lede {
+          margin: 0 0 var(--sp-2);
+          color: var(--c-text-2);
+        }
+        .noscript-top .note {
+          margin: 0 0 var(--sp-3);
+          font-size: var(--fs-xs);
+          color: var(--c-text-3);
+        }
+        .noscript-top table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .noscript-top th,
+        .noscript-top td {
+          padding: 4px 6px;
+          border-bottom: 1px solid var(--c-border);
+          text-align: start;
+          font-weight: 400;
+        }
+        .noscript-top thead th {
+          font-size: var(--fs-xs);
+          color: var(--c-text-2);
+          font-weight: 600;
+        }
+        .noscript-top .num {
+          text-align: end;
+          font-variant-numeric: tabular-nums;
+        }
+        .noscript-top .rank,
+        .noscript-top thead th:first-child {
+          width: 2.5rem;
+          color: var(--c-text-3);
+          font-size: var(--fs-xs);
+        }
+        .noscript-top tbody a {
+          color: var(--c-primary);
+        }
+        .noscript-top .src {
+          margin: var(--sp-3) 0 0;
+          font-size: var(--fs-xs);
+          color: var(--c-text-3);
+        }
+      </style>
+      <section class="noscript-top" aria-labelledby="noscript-top-title">
+        <h2 id="noscript-top-title">{tr('rail.top')}</h2>
+        <p class="lede">{title}</p>
+        <p class="note">{tr('noscript.note')}</p>
+        <table>
+          <caption class="visually-hidden">{title}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{tr('table.rank')}</th>
+              <th scope="col">{tr('table.country')}</th>
+              <th scope="col" class="num">
+                {tr('table.value')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {top.map((r, i) => (
+              <tr>
+                <td class="rank">{i + 1}</td>
+                <td>
+                  <a href={localizePath(`/country/${r.iso3}`, locale)}>{r.name}</a>
+                </td>
+                <td class="num">{r.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="src">{sourceLine}</p>
+      </section>
+    </noscript>
+  )
+}
