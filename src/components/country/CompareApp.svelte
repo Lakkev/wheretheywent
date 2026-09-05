@@ -74,7 +74,10 @@
   }
   function writeUrl() {
     const p = new URLSearchParams();
-    if (cmp.length) p.set('cmp', [...cmp].sort().join(','));
+    // Insertion order is state, not noise: it decides row order and which colour each country
+    // gets. Sorting only on the way out made a shared link come back with the rows and colours
+    // swapped relative to what the sender was looking at.
+    if (cmp.length) p.set('cmp', cmp.join(','));
     if (metric !== 'refugees') p.set('m', metric);
     if (view !== 'asylum') p.set('v', view);
     if (year && year !== yearMax) p.set('y', String(year));
@@ -84,7 +87,10 @@
       `${location.pathname}${p.toString() ? '?' + p.toString().replace(/%2C/g, ',') : ''}`,
     );
   }
+  /** Rapid add/remove can land an older response after a newer one; only the newest may commit. */
+  let loadGeneration = 0;
   async function load() {
+    const gen = ++loadGeneration;
     loading = true;
     try {
       if (!client.manifest) await client.loadManifest();
@@ -94,16 +100,18 @@
           client.sources(),
           client.metrics(),
         ]);
-      files = (await Promise.all(cmp.map((c) => client.country(c).catch(() => null)))).filter(
-        (f): f is CountryFile => !!f,
-      );
-      cmp = files.map((f) => f.iso3);
+      const wanted = [...cmp];
+      const loaded = (await Promise.all(wanted.map((c) => client.country(c).catch(() => null))))
+        .filter((f): f is CountryFile => !!f);
+      if (gen !== loadGeneration) return;
+      files = loaded;
+      cmp = loaded.map((f) => f.iso3);
       if (!year) year = yearMax;
       error = null;
     } catch (e) {
       error = String(e);
     } finally {
-      loading = false;
+      if (gen === loadGeneration) loading = false;
     }
   }
   onMount(() => {

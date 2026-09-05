@@ -67,6 +67,35 @@ test('language switch keeps state that was set after load, not just at load', as
   expect(new URL(page.url()).searchParams.get('cmp')).toBe(before);
 });
 
+test('compare keeps the order the reader built, through a share and a reload', async ({
+  page,
+  context,
+}) => {
+  // Regression: rows kept insertion order but writeUrl sorted, so a reload or a shared link came
+  // back with the rows — and therefore the series colours — swapped.
+  await page.goto('/compare');
+  const box = page.getByRole('searchbox').first();
+  await box.waitFor({ timeout: 30_000 });
+  for (const [q, iso3] of [
+    ['Uganda', 'UGA'],
+    ['Germany', 'DEU'],
+  ] as const) {
+    await box.fill(q);
+    await page.getByRole('option', { name: new RegExp(iso3) }).first().click();
+  }
+  await page.waitForURL(/cmp=[^&]*DEU/);
+  expect(new URL(page.url()).searchParams.get('cmp')).toBe('UGA,DEU');
+
+  const shared = page.url();
+  const fresh = await context.newPage();
+  await fresh.goto(shared);
+  await fresh.getByRole('searchbox').first().waitFor({ timeout: 30_000 });
+  expect(new URL(fresh.url()).searchParams.get('cmp')).toBe('UGA,DEU');
+  const chips = await fresh.locator('.chip.big').allTextContents();
+  expect(chips.join(' ')).toMatch(/Uganda[\s\S]*Germany/);
+  await fresh.close();
+});
+
 // The 2.5 s budget (spec §13.4) is enforced as-is on developer machines. GitHub's shared
 // runners execute CPU-bound work ~1.5–2× slower than the reference hardware the budget was
 // set on, and were observed at 2.6–2.8 s with zero payload change — so CI gets a fixed

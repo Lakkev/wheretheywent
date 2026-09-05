@@ -26,10 +26,25 @@ export function fmtCompact(v: number | null | undefined, locale: Locale = 'en'):
   return nf(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(v);
 }
 
-/** Per-1,000 rate: 0.00 – 999.9 with sensible precision. */
+/**
+ * Per-1,000 rate: 0.00 – 999.9 with sensible precision.
+ *
+ * Two decimals rounded anything below 0.005 to a bare "0", which on this site means something
+ * specific and different: 0 is a figure the source reported as zero, and — is a figure it did not
+ * report. Germany hosting 327 refugees from a given origin reads as 0.0039 per 1,000 residents;
+ * printing that as "0" says nobody, which is not what the data says. Small non-zero values are
+ * therefore shown as a threshold, never collapsed into zero.
+ */
 export function fmtRate(v: number | null | undefined, locale: Locale = 'en'): string {
   if (v === null || v === undefined || !Number.isFinite(v)) return '—';
-  const digits = v >= 100 ? 0 : v >= 10 ? 1 : 2;
+  const mag = Math.abs(v);
+  if (v !== 0 && mag < 0.01) {
+    const threshold = nf(locale, { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(
+      0.01,
+    );
+    return `${v < 0 ? '>-' : '<'}${threshold}`;
+  }
+  const digits = mag >= 100 ? 0 : mag >= 10 ? 1 : 2;
   return nf(locale, { maximumFractionDigits: digits, minimumFractionDigits: 0 }).format(v);
 }
 
