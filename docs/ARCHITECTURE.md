@@ -128,7 +128,7 @@ while scrubbing.
 Stable key order, defaults omitted, zod `.catch`-style fallbacks with a toast, continuous params
 (`y`, `map`, `min`) → `replaceState` + 300 ms debounce, discrete → `pushState`, `popstate`
 re-applies with the `applyingFromUrl` flag. `e=1` (IDU event layer) was added beyond the spec;
-`f=1` stays reserved for Phase 2 flow arcs. The map position is only written after a _user_ move
+`f=1` turns on the flow-arc layer for the selected country (Phase 2, shipped 2026-08-25). The map position is only written after a _user_ move
 (the initial `moveend` is ignored) so the default URL stays clean.
 
 ### 3.11 Basemap is decoration
@@ -264,7 +264,7 @@ any of them back.
 - **Upgrade MapLibre**: bump version, run `npm i`, confirm `public/vendor/maplibre-gl/<ver>` exists and
   the map renders (e2e `fallbacks.spec.ts` covers it).
 - **Phase 2 flows**: data already exists in `public/data/v1/flows/{year}.json` (origin, asylum,
-  refugees, asylum_seekers); `f=1` is reserved in the URL codec.
+  refugees, asylum_seekers); `f=1` renders them as arcs from the selected country.
 
 ## 6. Local development
 

@@ -62,9 +62,11 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
 
 ## 5. Deferred (priority order for the next phases)
 
-1. **Phase 2 – flow arcs**: data already published (`flows/{year}.json`, 2015+, zero-pairs removed);
-   `f=1` reserved in the URL codec. UI not built yet — visuals sit last in the spec's own priority ladder.
-2. **`/stories`**: the D2 secondary-audience entry point is a stub. Needs editorial content, not just code.
+1. ~~**Phase 2 – flow arcs**~~ — **Done 2026-08-25** (`ee5f18e`): `f=1` with a selected country
+   draws the top-partner arc layer over `flows/{year}.json`; asserted end-to-end in
+   `tests/e2e/flows.spec.ts`.
+2. ~~**`/stories`**~~ — **Done 2026-08-25** (`ee5f18e`, `3c9fcfa`): nine data-driven stories ship
+   (world, AFG, BGD, COL, HKG, RWA, SYR, UKR, VEN), each recomputed from the published data.
 3. **Phase 2 – boundary-set switch** (FieldMaps/USGS public-domain set): licence-clean candidate documented on `/about/boundaries`.
 4. **Phase 3 – ReliefWeb**: appname application not yet submitted (owner task, Appendix C).
 5. Smaller items: focus trap limited to modals (panels are non-modal by design — revisit with a real
@@ -79,6 +81,11 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
    in `scripts/dev/zenodo-deposit.mjs --new-version`.
 
 ## 6. Verification of this remediation
+
+> **Historical record — figures as of 2026-08-24.** This section is the evidence for *that*
+> remediation and is deliberately not updated as the project grows; treating it as current state
+> is what let "60/60 / 21/21" drift. For the live counts see `docs/ARCHITECTURE.md`
+> (23 automated checks / 17 invariants) or run the suites.
 
 - `npm run check` — 0 errors; `npm test` — 60/60 (citation template now byte-equal to the spec's example)
 - `npm run etl` (cold re-run) → `etl:validate` — **21/21** with the strengthened invariants
