@@ -98,7 +98,7 @@ const src = getSources()?.['unhcr_population'];
           produces the rigour needed to cite data.
         </li>
         <li>
-          <strong>Self-checks</strong>: 22 daily automated checks — 16 data invariants (incl. mapped + unmappable = global
+          <strong>Self-checks</strong>: 24 daily automated checks — 18 data invariants (incl. mapped + unmappable = global
           total for every metric × 75 years; three golden numbers within 1%). Current snapshot{' '}
           <code>{manifest?.snapshot_id}</code>, data as of {src?.data_as_of}.
         </li>
@@ -133,8 +133,99 @@ const src = getSources()?.['unhcr_population'];
   <p class="muted">
     {
       zh
-        ? '尚無。本頁將原文刊載每一份審查意見與我們的回應——包括我們答不上來的部分。'
-        : 'None yet. This page will publish every review and our responses verbatim — including the parts we cannot answer.'
+        ? '本頁刊載每一份審查意見與我們的回應——包括我們答不上來的部分。人工審查尚未收到;以下是自動化程式審查的結果。'
+        : 'Every review and our response is published here — including the parts we cannot answer. No human review has arrived yet; below is an automated one.'
+    }
+  </p>
+
+  <h3>
+    {zh
+      ? '2026-09-05 · 自動化程式審查（由維護者委託的 AI 進行）'
+      : '2026-09-05 · Automated code review (an AI, commissioned by the maintainer)'}
+  </h3>
+  <p>
+    {
+      zh ? (
+        <>
+          審查範圍為完整原始碼與線上網站。結論是不需要重寫架構,但指出<strong
+            >三項會影響公開陳述的語意缺陷</strong
+          >與四項讀者可見的錯誤。我們逐條查證後全部確認成立,並在同一天修正。這些是我們自己沒有抓到的:
+        </>
+      ) : (
+        <>
+          A full pass over the source and the live site. It found no reason to rewrite the
+          architecture, and <strong>three semantic defects affecting published claims</strong>{' '}
+          plus four reader-facing bugs. We reproduced every one of them in the code and fixed them
+          the same day. We had not caught any of these ourselves:
+        </>
+      )
+    }
+  </p>
+  <ul>
+    <li>
+      {
+        zh ? (
+          <>
+            首頁「每 N 人中有 1 人被迫流離失所」的分子誤用<strong>受關注人口總數</strong
+            >,其中含無國籍者與其他受關注者(約 6%)。已改由「難民 + 庇護申請者 + IDP + OIP」計算,
+            數字自「每 71 人」更正為「每 76 人」。（
+            <a href={localizePath('/methodology#displaced-vs-poc', locale)}>方法論說明</a>）
+          </>
+        ) : (
+          <>
+            The home page's "1 in every N people is forcibly displaced" was computed from{' '}
+            <strong>total people of concern</strong>, which also carries stateless persons and
+            others of concern (~6%). It is now computed from refugees + asylum-seekers + IDPs +
+            OIP, and the published figure moves from 1 in 71 to 1 in 76. (
+            <a href={localizePath('/methodology#displaced-vs-poc', locale)}>methodology</a>)
+          </>
+        )
+      }
+    </li>
+    <li>
+      {
+        zh ? (
+          <>
+            指標的可用視角在資料中早有定義,但程式從未讀取它——<code>?m=stateless&amp;v=origin</code
+            >會把居住國數字放在來源國標題下。（
+            <a href={localizePath('/methodology#metric-views', locale)}>方法論說明</a>）
+          </>
+        ) : (
+          <>
+            The data had always declared which view each metric exists in, but nothing in the app
+            read it — <code>?m=stateless&amp;v=origin</code> put residence figures under an origin
+            heading. (<a href={localizePath('/methodology#metric-views', locale)}>methodology</a>)
+          </>
+        )
+      }
+    </li>
+    <li>
+      {zh
+        ? '衍生指標的引用與下載只標示 UNHCR,但其中的 IDP 數字來自 IDMC。現在每一份引用與匯出都列出實際用到的每一個來源。'
+        : 'Citations and downloads for derived metrics credited UNHCR alone, although their IDP component comes from IDMC. Every citation and export now lists every source actually used.'}
+    </li>
+    <li>
+      {zh
+        ? '切換語言會丟掉整串查詢參數(國家、年份、指標);比較頁分享後國家順序與顏色會對調;每千人比率小於 0.01 時顯示為「0」,而本站的「0」意思是「來源報告為零」;首次造訪時導覽卡覆蓋圖例。'
+        : 'Switching language discarded the entire query string (countries, year, metric); shared comparison links came back with the rows and colours swapped; per-1,000 rates below 0.01 printed as "0", which on this site means "the source reported zero"; and on a first visit the tour card covered the legend.'}
+    </li>
+  </ul>
+  <p>
+    {
+      zh ? (
+        <>
+          每一項修正都附帶會失敗的測試,資料層另加兩條不變量(第 17、18
+          條)防止復發。<strong>尚未處理</strong>:國家搜尋下拉的鍵盤操作模型(方向鍵、Escape、
+          <code>aria-activedescendant</code>)仍不完整。
+        </>
+      ) : (
+        <>
+          Each fix ships with a test that fails against the previous build, and the data layer
+          gained two invariants (#17, #18) so the two semantic defects cannot return.{' '}
+          <strong>Still outstanding</strong>: the keyboard interaction model for the country search
+          comboboxes (arrow keys, Escape, <code>aria-activedescendant</code>) is incomplete.
+        </>
+      )
     }
   </p>
 </DocPage>
