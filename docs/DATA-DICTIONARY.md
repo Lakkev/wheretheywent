@@ -32,6 +32,23 @@ Machine-readable equivalents: `metrics.json` (metrics), `sources.json` (provenan
 | —   | `total_poc`         | Total people of concern (derived, client-side)   | asylum: refugees + asylum_seekers + idps + stateless + ooc + oip · origin: the same **without stateless** (residence-only)                                                                                         | —                                 | both             | null only if all components null                  |
 | —   | `forced_displacement` | Forcibly displaced (derived, ETL; insights only) | refugees + asylum_seekers + idps + oip — **not** total_poc: stateless persons are counted by residence and others of concern has no displacement definition                                                     | —                                 | asylum           | numerator of the "1 in N" claim; invariant #17   |
 
+### Multi-source provenance in client exports
+
+A derived metric can rest on more than one publisher: `total_poc` contains IDMC's IDP series
+alongside UNHCR's, and any per-1,000 view additionally rests on UN WPP. The provenance columns
+stay single-valued so naive parsers keep working, with documented separators:
+
+| Column | Separator | Example |
+|---|---|---|
+| `source_id` | `+` | `unhcr_population+unhcr_idmc` |
+| `source_attribution` | ` · ` (space, middle dot, space) | `UNHCR Refugee Population Statistics Database · Internal Displacement Monitoring Centre (IDMC)` |
+
+`data_as_of` is the **earliest** across the sources (a combined figure is only as current as its
+stalest part) and `retrieved_at` the **latest** (when the combination was assembled). The set is
+resolved from `metrics.json → components`, so a downstream user reading the same file reaches the
+same answer. Rows in the ETL-generated `downloads/*.csv` are per-metric and always carry exactly
+one source id.
+
 ## Files
 
 ### Snapshot semantics (three ids, all resolvable)

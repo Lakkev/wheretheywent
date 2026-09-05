@@ -1,6 +1,13 @@
 <script lang="ts">
   /** Share / Cite / Download / Keys / Stale dialogs for the map page. */
   import { ui, data, session, raw, staleSources, toast } from '../../lib/state.svelte';
+  import {
+    sourcesFor,
+    joinSourceIds,
+    joinAttributions,
+    earliestAsOf,
+    latestRetrievedAt,
+  } from '../../lib/sources';
   import Modal from '../ui/Modal.svelte';
   import CopyField from '../ui/CopyField.svelte';
   import type { ViewResult } from '../../lib/view';
@@ -81,14 +88,10 @@
       normLabel: tr('scale.per1k'),
     }),
   );
-  const sourceId = $derived(ui.m === 'idps' ? 'unhcr_idmc' : 'unhcr_population');
-  const sources = $derived.by(() => {
-    const s = data.sources ?? {};
-    const list = [s[sourceId], ui.n === 'per1k' ? s['wpp_population'] : undefined].filter(
-      (x): x is NonNullable<typeof x> => !!x,
-    );
-    return list;
-  });
+  // total_poc contains IDMC's IDP series, so a single source_id would credit UNHCR for a figure
+  // that is partly IDMC's. Resolution comes from metrics.json `components` (see lib/sources.ts).
+  const resolved = $derived(sourcesFor(ui.m, ui.v, ui.n, data.metrics, data.sources));
+  const sources = $derived(resolved.map((r) => r.entry));
   /** metric-level caveats travel with every export (#audit-2) */
   const metricCaveats = $derived.by(() => {
     const def = data.metrics?.metrics?.[ui.m];
@@ -129,12 +132,11 @@
       }));
   }
   function prov() {
-    const s = sources[0]!;
     return {
-      source_id: sourceId,
-      source_attribution: s.attribution,
-      data_as_of: s.data_as_of,
-      retrieved_at: s.retrieved_at,
+      source_id: joinSourceIds(resolved),
+      source_attribution: joinAttributions(resolved),
+      data_as_of: earliestAsOf(resolved),
+      retrieved_at: latestRetrievedAt(resolved),
       snapshot_id: snapshotId,
     };
   }
@@ -160,9 +162,7 @@
         title,
         permalink,
         snapshotId,
-        sources: Object.fromEntries(
-          sources.map((s, i) => [i === 0 ? sourceId : 'wpp_population', s]),
-        ),
+        sources: Object.fromEntries(resolved.map((r) => [r.id, r.entry])),
         citations,
         notes: [...metricCaveats, ...sources.flatMap((s) => sourceCaveats(s, locale))],
         data: exportRows(),

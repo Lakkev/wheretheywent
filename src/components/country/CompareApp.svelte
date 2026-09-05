@@ -5,10 +5,18 @@
     CountryFile,
     CountriesFile,
     SourcesFile,
+    MetricsFile,
     AnyMetricId,
     ViewId,
   } from '../../lib/types';
   import { METRIC_IDS, metricInView } from '../../lib/types';
+  import {
+    sourcesFor,
+    joinSourceIds,
+    joinAttributions,
+    earliestAsOf,
+    latestRetrievedAt,
+  } from '../../lib/sources';
   import { DataClient, displayName, indexCountries } from '../../lib/data';
   import { unpack } from '../../lib/columnar';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
@@ -32,6 +40,7 @@
   const client = new DataClient();
   let countries = $state<CountriesFile | null>(null);
   let sources = $state<SourcesFile>({});
+  let metricsFile = $state<MetricsFile | null>(null);
   let files = $state<CountryFile[]>([]);
   let cmp = $state<string[]>([]);
   let metric = $state<AnyMetricId>('refugees');
@@ -80,7 +89,11 @@
     try {
       if (!client.manifest) await client.loadManifest();
       if (!countries)
-        [countries, sources] = await Promise.all([client.countries(), client.sources()]);
+        [countries, sources, metricsFile] = await Promise.all([
+          client.countries(),
+          client.sources(),
+          client.metrics(),
+        ]);
       files = (await Promise.all(cmp.map((c) => client.country(c).catch(() => null)))).filter(
         (f): f is CountryFile => !!f,
       );
@@ -171,8 +184,9 @@
     view = v;
     if (!metricInView(metric, v)) metric = 'refugees';
   }
-  const srcId = $derived(metric === 'idps' ? 'unhcr_idmc' : 'unhcr_population');
-  const src = $derived(sources[srcId]);
+  // Resolved from metrics.json `components`, so a derived metric credits every source it uses.
+  const resolved = $derived(sourcesFor(metric, view, 'abs', metricsFile, sources));
+  const src = $derived(resolved[0]?.entry);
   const title = $derived(
     `${rows.map((r) => r.name).join(' vs ')} — ${tr(`metric.${metric}` as MessageKey).toLowerCase()} (${view === 'asylum' ? tr('view.asylum') : tr('view.origin')}), ${yearMin}–${yearMax}`,
   );
@@ -184,7 +198,7 @@
       locale,
       title,
       url: permalink,
-      sources: src ? [src] : [],
+      sources: resolved.map((r) => r.entry),
       version: client.manifest?.snapshot_id,
     }),
   );
@@ -265,10 +279,10 @@
         });
       });
     const prov = {
-      source_id: srcId,
-      source_attribution: src?.attribution ?? 'UNHCR',
-      data_as_of: src?.data_as_of ?? '',
-      retrieved_at: src?.retrieved_at ?? '',
+      source_id: joinSourceIds(resolved),
+      source_attribution: joinAttributions(resolved) || 'UNHCR',
+      data_as_of: earliestAsOf(resolved),
+      retrieved_at: latestRetrievedAt(resolved),
       snapshot_id: client.manifest?.snapshot_id ?? '',
     };
     const withComments = localStorage.getItem('wtw.csvStrict') !== '1';
@@ -383,7 +397,7 @@
     <figure class="chart">
       <div bind:this={plotEl} class="plot" role="img" aria-label={tr('detail.tab.series')}></div>
     </figure>
-    {#if src}<SourceNote {locale} source={src} sourceId={srcId} />{/if}
+    {#each resolved as r (r.id)}<SourceNote {locale} source={r.entry} sourceId={r.id} />{/each}
   {/if}
 
   {#if dialog === 'cite'}

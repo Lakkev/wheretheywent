@@ -13,6 +13,13 @@
     WorldTotalsFile,
   } from '../../lib/types';
   import { METRIC_IDS, metricInView, pocComponentsFor } from '../../lib/types';
+  import {
+    sourcesFor,
+    joinSourceIds,
+    joinAttributions,
+    earliestAsOf,
+    latestRetrievedAt,
+  } from '../../lib/sources';
   import { unpack } from '../../lib/columnar';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtInt, fmtRate, fmtCompact, fmtDateIso } from '../../lib/format';
@@ -145,8 +152,15 @@
       .map((f) => ({ ...f, match: footnoteMatchesMetric(f.population_type, metric) }))
       .sort((a, b) => Number(b.match) - Number(a.match)),
   );
-  const srcId = $derived(metric === 'idps' ? 'unhcr_idmc' : 'unhcr_population');
-  const src = $derived(sources[srcId]);
+  // The country page shows both views at once, so its provenance is the union of both.
+  // total_poc pulls in IDMC alongside UNHCR; a single source_id used to hide that.
+  const resolved = $derived.by(() => {
+    const out = sourcesFor(metric, 'asylum', 'abs', metrics, sources);
+    for (const r of sourcesFor(metric, 'origin', 'abs', metrics, sources))
+      if (!out.some((x) => x.id === r.id)) out.push(r);
+    return out;
+  });
+  const src = $derived(resolved[0]?.entry);
   const permalink = $derived(
     `${siteUrl}${localizePath(`/country/${file.iso3}`, locale)}${year !== yearMax || metric !== 'refugees' ? `?${year !== yearMax ? `y=${year}` : ''}${year !== yearMax && metric !== 'refugees' ? '&' : ''}${metric !== 'refugees' ? `m=${metric}` : ''}` : ''}`,
   );
@@ -158,7 +172,9 @@
       locale,
       title,
       url: permalink,
-      sources: [src, sources['wpp_population']].filter((s): s is NonNullable<typeof s> => !!s),
+      sources: [...resolved.map((r) => r.entry), sources['wpp_population']].filter(
+        (s): s is NonNullable<typeof s> => !!s,
+      ),
       version: snapshotId,
     }),
   );
@@ -207,10 +223,10 @@
     return out;
   }
   const prov = () => ({
-    source_id: srcId,
-    source_attribution: src?.attribution ?? 'UNHCR',
-    data_as_of: src?.data_as_of ?? '',
-    retrieved_at: src?.retrieved_at ?? '',
+    source_id: joinSourceIds(resolved),
+    source_attribution: joinAttributions(resolved) || 'UNHCR',
+    data_as_of: earliestAsOf(resolved),
+    retrieved_at: latestRetrievedAt(resolved),
     snapshot_id: snapshotId,
   });
   function dlCsv() {
@@ -317,7 +333,7 @@
       <div class="label">UN WPP 2024</div>
     </div>
   </section>
-  {#if src}<SourceNote {locale} source={src} sourceId={srcId} />{/if}
+  {#each resolved as r (r.id)}<SourceNote {locale} source={r.entry} sourceId={r.id} />{/each}
 
   <h2>{tr('country.asOf', { year })}</h2>
   {#if rows.length}
@@ -403,7 +419,7 @@
   <p class="small">
     <button class="btn ghost" type="button" onclick={dlSeriesSvg}>⬇ {tr('download.svg')}</button>
   </p>
-  {#if src}<SourceNote {locale} source={src} sourceId={srcId} compact />{/if}
+  {#each resolved as r (r.id)}<SourceNote {locale} source={r.entry} sourceId={r.id} compact />{/each}
 
   <div class="grid-2">
     <section>
