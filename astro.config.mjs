@@ -17,7 +17,10 @@ export default defineConfig({
   integrations: [svelte()],
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'zh-Hant'],
+    // Must stay identical to LOCALES in src/i18n/ui.ts — asserted by tests/unit/i18n.test.ts.
+    // It listed only two while the site shipped seven, so Astro's own i18n helpers disagreed
+    // with every page the site actually builds.
+    locales: ['en', 'zh-Hant', 'zh-Hans', 'fr', 'es', 'ja', 'ko'],
     routing: { prefixDefaultLocale: false },
   },
   build: {

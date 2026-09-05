@@ -60,18 +60,6 @@ function seriesFor(map: StockMap, key: string, years: number[]): (number | null)
   return METRIC_IDS.map((_, mi) => years.map((y) => byYear?.get(y)?.[mi] ?? null));
 }
 
-function sumSeries(series: (number | null)[][]): (number | null)[] {
-  const n = series[0]?.length ?? 0;
-  const out: (number | null)[] = new Array(n).fill(null);
-  for (const s of series) {
-    for (let i = 0; i < n; i++) {
-      const v = s[i];
-      if (v === null || v === undefined) continue;
-      out[i] = (out[i] ?? 0) + v;
-    }
-  }
-  return out;
-}
 
 export function buildStock(inp: TransformInput, years: number[], sourcesUsed: string[]): StockFile {
   const asylum: StockFile['asylum'] = {};

@@ -28,8 +28,6 @@ import { fetchUnhcrCountries, type UnhcrCountry } from './sources/unhcr-countrie
 import { detectMaxYear } from './sources/unhcr-years.ts';
 import {
   fetchPopulation,
-  type PopulationResult,
-  type StockMap,
   type UnmatchedEntry,
 } from './sources/unhcr-population.ts';
 import {

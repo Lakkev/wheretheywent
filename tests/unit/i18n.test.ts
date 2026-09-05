@@ -17,6 +17,24 @@ const NON_EN: [string, Record<string, string>][] = [
   ['ko', ko],
 ];
 
+import { readFileSync } from 'node:fs';
+import { LOCALES } from '../../src/i18n/ui';
+
+describe('astro config', () => {
+  it('declares the same locales the site actually ships', () => {
+    // The config listed ['en','zh-Hant'] while seven locales were built, so Astro's i18n helpers
+    // and the site disagreed about what existed.
+    const cfg = readFileSync('astro.config.mjs', 'utf8');
+    const m = cfg.match(/locales:\s*\[([^\]]*)\]/);
+    expect(m, 'locales array not found in astro.config.mjs').toBeTruthy();
+    const declared = m![1]!
+      .split(',')
+      .map((s) => s.trim().replace(/^['"]|['"]$/g, ''))
+      .filter(Boolean);
+    expect(declared).toEqual([...LOCALES]);
+  });
+});
+
 describe('i18n dictionaries', () => {
   it.each(NON_EN)('%s has exactly the same keys as en', (_name, dict) => {
     expect(Object.keys(dict).sort()).toEqual(Object.keys(en).sort());

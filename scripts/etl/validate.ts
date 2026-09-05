@@ -26,7 +26,6 @@ import {
   type StockFile,
   type CountryFile,
   type MetricsFile,
-  type PackedSeries,
 } from '../../src/lib/types.ts';
 import { log } from './lib/log.ts';
 
@@ -122,7 +121,7 @@ const CountrySchema = z.object({
 const SourceEntrySchema = z.object({
   publisher: z.string().min(1),
   title: z.string().min(1),
-  license: z.object({ id: z.string().min(1), url: z.string().url() }),
+  license: z.object({ id: z.string().min(1), url: z.url() }),
   attribution: z.string().min(1),
   data_as_of: z.string(),
   retrieved_at: z.string(),
@@ -166,12 +165,6 @@ function guard(id: string, group: Group, fn: () => string | void) {
 }
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(msg);
-}
-
-function sumPacked(p: PackedSeries): number | null {
-  let s: number | null = null;
-  for (const v of unpack(p)) if (v !== null) s = (s ?? 0) + v;
-  return s;
 }
 
 function main() {

@@ -1,7 +1,7 @@
 ---
 /** Story: Venezuela and the OIP category — figures computed from the current snapshot. */
 import DocPage from '../DocPage.astro';
-import { useT, localizePath, type Locale } from '../../../i18n/ui';
+import { localizePath, type Locale } from '../../../i18n/ui';
 import { getCountry, getSources } from '../../../lib/data-server';
 import { fmtInt } from '../../../lib/format';
 import { metricAt, firstReported, latestReported } from './story-utils';
@@ -9,7 +9,6 @@ interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const tr = useT(locale);
 const zh = locale === 'zh-Hant' || locale === 'zh-Hans';
 const ven = getCountry('VEN');
 const src = getSources()?.['unhcr_population'];

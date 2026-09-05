@@ -13,7 +13,6 @@ import {
   type CountryFile,
   type CountryMeta,
   type Manifest,
-  type MetricId,
   type MetricsFile,
   type SourcesFile,
   type StockFile,

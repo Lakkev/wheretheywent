@@ -8,7 +8,7 @@
  * stale in the final sources.json. manifest.json is recomputed over the final tree.
  */
 import { join } from 'node:path';
-import { existsSync, readFileSync, cpSync } from 'node:fs';
+import { existsSync, cpSync } from 'node:fs';
 import { PATHS, SOURCE_IDS, THRESHOLDS, type SourceId } from './config.ts';
 import { readJsonIfExists, writeJsonAtomic, rmrf, listFiles } from './lib/atomic.ts';
 import { markStale } from './lib/provenance.ts';
