@@ -50,6 +50,8 @@ export const session = $state({
   hover: null as string | null,
   playing: false,
   presentation: false,
+  /** First-visit tour is on screen. Other transient cards stand down while it is (#P1-2). */
+  tourOpen: false,
   webgl2: true,
   basemapOk: true,
   mapReady: false,

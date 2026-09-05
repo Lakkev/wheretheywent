@@ -448,46 +448,56 @@
           >
         </div>
         {#if !session.basemapOk}<div class="chip nobasemap">{tr('map.noBasemap')}</div>{/if}
-        {#if data.idu}
-          <button
-            class="btn idu-toggle"
-            class:is-active={ui.e}
-            type="button"
-            aria-pressed={ui.e}
-            title={tr('map.idu.body')}
-            onclick={() => (ui.e = !ui.e)}>◉ {tr('map.idu.title')}</button
-          >
-          {#if ui.e}
-            <div class="idu-sub" title={tr('idu.definitionNote')}>
-              <button
-                class="btn idu-chip"
-                class:is-active={evConflict}
-                type="button"
-                aria-pressed={evConflict}
-                onclick={() => (evConflict = !evConflict)}>{tr('idu.conflict.toggle')}</button
-              >
-              <button
-                class="btn idu-chip"
-                class:is-active={evDisaster}
-                type="button"
-                aria-pressed={evDisaster}
-                onclick={() => (evDisaster = !evDisaster)}>{tr('idu.disaster.toggle')}</button
-              >
-              <button
-                class="btn idu-chip idu-timeline-btn"
-                type="button"
-                onclick={() => (session.dialog = 'events')}>≣ {tr('idu.timeline')}</button
-              >
-              <!-- visible, not hover-only: two IDP definitions coexist on screen while the
-                   event layer is on (events include disasters; the annual stock does not) -->
-              <div class="idu-defnote">{tr('idu.definitionNote')}</div>
-            </div>
+        <!-- Every floating card lives in ONE column. With the filter rail open the map area can
+             be under 400 px wide, so overlays anchored to separate corners simply cannot miss each
+             other: the tour landed on the legend, and the stack landed on the IDU chips. A single
+             flex column makes non-overlap structural instead of a set of hand-tuned offsets. -->
+        <div class="overlay-stack">
+          {#if !embed}
+            <NowcastCard {locale} />
           {/if}
-        {/if}
+          {#if data.idu}
+            <button
+              class="btn idu-toggle"
+              class:is-active={ui.e}
+              type="button"
+              aria-pressed={ui.e}
+              title={tr('map.idu.body')}
+              onclick={() => (ui.e = !ui.e)}>◉ {tr('map.idu.title')}</button
+            >
+            {#if ui.e}
+              <div class="idu-sub" title={tr('idu.definitionNote')}>
+                <button
+                  class="btn idu-chip"
+                  class:is-active={evConflict}
+                  type="button"
+                  aria-pressed={evConflict}
+                  onclick={() => (evConflict = !evConflict)}>{tr('idu.conflict.toggle')}</button
+                >
+                <button
+                  class="btn idu-chip"
+                  class:is-active={evDisaster}
+                  type="button"
+                  aria-pressed={evDisaster}
+                  onclick={() => (evDisaster = !evDisaster)}>{tr('idu.disaster.toggle')}</button
+                >
+                <button
+                  class="btn idu-chip idu-timeline-btn"
+                  type="button"
+                  onclick={() => (session.dialog = 'events')}>≣ {tr('idu.timeline')}</button
+                >
+                <!-- visible, not hover-only: two IDP definitions coexist on screen while the
+                     event layer is on (events include disasters; the annual stock does not) -->
+                <div class="idu-defnote">{tr('idu.definitionNote')}</div>
+              </div>
+            {/if}
+          {/if}
+          {#if !embed}
+            <InsightCard {locale} />
+            <TourCard {locale} />
+          {/if}
+        </div>
         {#if !embed}
-          <NowcastCard {locale} />
-          <InsightCard {locale} />
-          <TourCard {locale} />
           <HomePrompt
             {locale}
             onOpen={() => {
@@ -607,19 +617,17 @@
   .embed-brand:hover {
     background: var(--c-primary-soft);
   }
+  /* Both are laid out by .overlay-stack (map.css); they used to be pinned at left/top offsets
+     that assumed a wide map area. */
   .idu-toggle {
-    position: absolute;
-    left: var(--overlay-gap);
-    top: 132px;
     font-size: var(--fs-xs);
     box-shadow: var(--shadow-1);
+    align-self: flex-end;
   }
   .idu-sub {
-    position: absolute;
-    left: var(--overlay-gap);
-    top: 164px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 4px;
     max-width: 320px;
   }
@@ -643,14 +651,7 @@
   .idu-toggle:not(.is-active) {
     background: var(--c-surface);
   }
-  @media (max-width: 900px) {
-    .idu-toggle {
-      top: 184px;
-    }
-    .idu-sub {
-      top: 216px;
-    }
-  }
+
   .nobasemap {
     position: absolute;
     left: 56px;

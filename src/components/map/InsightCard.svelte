@@ -2,7 +2,7 @@
   /** "Did you know?" — rotating, mechanically-computed facts from insights.json.
    *  Every fact deep-links to the reproducible view that proves it. */
   import { onMount } from 'svelte';
-  import { raw } from '../../lib/state.svelte';
+  import { raw, session } from '../../lib/state.svelte';
   import { displayName } from '../../lib/data';
   import { fmtInt, fmtPct } from '../../lib/format';
   import { useT, localizePath, type Locale } from '../../i18n/ui';
@@ -66,7 +66,9 @@
   const fact = $derived(facts.length ? facts[idx % facts.length]! : null);
 </script>
 
-{#if !off && fact}
+<!-- The first-visit tour asks for the reader's attention; a second card competing for it at the
+     same moment is noise, so insights wait until the tour is finished or skipped. -->
+{#if !off && fact && !session.tourOpen}
   <aside class="insight" role="complementary" aria-label={tr('insight.title')}>
     <div class="head">
       <strong>{tr('insight.title')}</strong>
@@ -89,10 +91,7 @@
 
 <style>
   .insight {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: var(--overlay-gap);
+    /* positioned by .overlay-stack in map.css */
     max-width: 380px;
     font-size: var(--fs-xs);
     background: color-mix(in srgb, var(--c-surface) 94%, transparent);

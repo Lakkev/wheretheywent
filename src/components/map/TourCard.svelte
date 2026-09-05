@@ -2,7 +2,7 @@
   /** First-visit 4-step tour — teaches the timeline, the two views, click and hover.
    *  Shows once (localStorage), fully dismissible, no spotlight theatrics. */
   import { onMount } from 'svelte';
-  import { data } from '../../lib/state.svelte';
+  import { data, session } from '../../lib/state.svelte';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
 
   let { locale }: { locale: Locale } = $props();
@@ -11,9 +11,12 @@
   let show = $state(false);
   onMount(() => {
     show = localStorage.getItem('wtw.tourDone') !== '1';
+    session.tourOpen = show;
+    return () => (session.tourOpen = false);
   });
   function finish() {
     show = false;
+    session.tourOpen = false;
     localStorage.setItem('wtw.tourDone', '1');
   }
   const STEPS: MessageKey[] = ['tour.s1', 'tour.s2', 'tour.s3', 'tour.s4'];
@@ -44,11 +47,10 @@
 {/if}
 
 <style>
+  /* Positioned by .overlay-stack in map.css. It used to be centred at bottom: 118px, which put it
+     on top of the legend at ordinary desktop sizes — 202x114 px of overlap measured at 1280x720,
+     the tutorial covering the thing it was explaining. */
   .tour {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 118px;
     width: min(360px, calc(100vw - 24px));
     background: var(--c-surface);
     border: 1px solid var(--c-border);

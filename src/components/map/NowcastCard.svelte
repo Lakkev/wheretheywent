@@ -1,6 +1,6 @@
 <script lang="ts">
   /** "Latest estimate" card — UNHCR nowcasting, clearly labelled as an estimate (D11). */
-  import { data, ui, raw } from '../../lib/state.svelte';
+  import { data, ui, raw, session } from '../../lib/state.svelte';
   import { fmtCompact, fmtMonth } from '../../lib/format';
   import { displayName } from '../../lib/data';
   import { useT, type Locale } from '../../i18n/ui';
@@ -12,7 +12,8 @@
   const src = $derived(data.sources?.['unhcr_nowcasting']);
 </script>
 
-{#if nc}
+<!-- The first-visit tour gets the reader's attention to itself; standing cards return after it. -->
+{#if nc && !session.tourOpen}
   <div class="nowcast-card" role="complementary" aria-label={tr('map.nowcast.title')}>
     <button class="head" type="button" aria-expanded={open} onclick={() => (open = !open)}>
       <span class="chip estimate">{tr('source.estimate')}</span>
