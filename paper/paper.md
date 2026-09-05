@@ -47,7 +47,7 @@ never reported is never rendered as zero; definitional breakpoints are annotated
 chart; a per-country coverage scorecard states first-reported year, first non-zero year
 and the longest gap for every metric; and a record library recomputes all-time extremes
 mechanically from the published data on every update. Content-addressed snapshot
-identifiers, 17 published validation invariants (23 automated checks) run daily in CI, and byte-identical
+identifiers, 18 published validation invariants (24 automated checks) run daily in CI, and byte-identical
 Zenodo archives make any figure shown on the site independently verifiable — a property
 aimed at researchers, educators and anyone who needs a checkable number, in their own
 language.

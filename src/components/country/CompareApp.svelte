@@ -8,7 +8,7 @@
     AnyMetricId,
     ViewId,
   } from '../../lib/types';
-  import { METRIC_IDS } from '../../lib/types';
+  import { METRIC_IDS, metricInView } from '../../lib/types';
   import { DataClient, displayName, indexCountries } from '../../lib/data';
   import { unpack } from '../../lib/columnar';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
@@ -165,6 +165,12 @@
       };
     }),
   );
+  /** Same rule as the map: a metric with no meaning in the new view falls back rather than
+   *  being relabelled. metrics.json declares which views each metric has (invariant #18). */
+  function setView(v: ViewId) {
+    view = v;
+    if (!metricInView(metric, v)) metric = 'refugees';
+  }
   const srcId = $derived(metric === 'idps' ? 'unhcr_idmc' : 'unhcr_population');
   const src = $derived(sources[srcId]);
   const title = $derived(
@@ -315,8 +321,9 @@
     </div>
     <label
       >{tr('common.value')}<select bind:value={metric}
-        >{#each URL_METRICS as m (m)}<option value={m}>{tr(`metric.${m}` as MessageKey)}</option
-          >{/each}</select
+        >{#each URL_METRICS as m (m)}{#if metricInView(m, view)}<option value={m}
+              >{tr(`metric.${m}` as MessageKey)}</option
+            >{/if}{/each}</select
       ></label
     >
     <span class="seg"
@@ -324,12 +331,12 @@
         class="btn"
         type="button"
         aria-pressed={view === 'asylum'}
-        onclick={() => (view = 'asylum')}>{tr('view.asylum')}</button
+        onclick={() => setView('asylum')}>{tr('view.asylum')}</button
       ><button
         class="btn"
         type="button"
         aria-pressed={view === 'origin'}
-        onclick={() => (view = 'origin')}>{tr('view.origin')}</button
+        onclick={() => setView('origin')}>{tr('view.origin')}</button
       ></span
     >
     <label

@@ -85,7 +85,7 @@ Each was examined and kept, with the reason recorded here and in `ARCHITECTURE.m
 > **Historical record — figures as of 2026-08-24.** This section is the evidence for *that*
 > remediation and is deliberately not updated as the project grows; treating it as current state
 > is what let "60/60 / 21/21" drift. For the live counts see `docs/ARCHITECTURE.md`
-> (23 automated checks / 17 invariants) or run the suites.
+> (24 automated checks / 18 invariants) or run the suites.
 
 - `npm run check` — 0 errors; `npm test` — 60/60 (citation template now byte-equal to the spec's example)
 - `npm run etl` (cold re-run) → `etl:validate` — **21/21** with the strengthened invariants

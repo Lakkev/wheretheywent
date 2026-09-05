@@ -1,9 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
   METRIC_IDS,
+  METRIC_VIEWS,
   TOTAL_POC_COMPONENTS,
   FORCED_DISPLACEMENT_COMPONENTS,
+  pocComponentsFor,
+  metricInView,
 } from '../../src/lib/types';
+import { decodeState } from '../../src/lib/url';
 
 /**
  * These two lists are load-bearing for a public claim: the home page says "1 in every N people
@@ -47,5 +51,46 @@ describe('displacement component lists', () => {
     for (const m of [...TOTAL_POC_COMPONENTS, ...FORCED_DISPLACEMENT_COMPONENTS]) {
       expect(METRIC_IDS as readonly string[]).toContain(m);
     }
+  });
+});
+
+/**
+ * Until 2026-09-05 MetricDef.views had no consumer anywhere in the app, so ?m=stateless&v=origin
+ * rendered residence figures under an origin heading — the same numbers, a different claim.
+ */
+describe('metric availability by view', () => {
+  it('marks the residence-only metrics as asylum-only', () => {
+    expect(METRIC_VIEWS.stateless).toEqual(['asylum']);
+    expect(METRIC_VIEWS.hst).toEqual(['asylum']);
+  });
+
+  it('drops residence-only components from an origin total', () => {
+    expect(pocComponentsFor('asylum')).toEqual(TOTAL_POC_COMPONENTS);
+    expect(pocComponentsFor('origin')).not.toContain('stateless');
+    expect(pocComponentsFor('origin')).toContain('refugees');
+  });
+
+  it('answers metricInView for plain and derived metrics', () => {
+    expect(metricInView('stateless', 'asylum')).toBe(true);
+    expect(metricInView('stateless', 'origin')).toBe(false);
+    expect(metricInView('refugees', 'origin')).toBe(true);
+    expect(metricInView('total_poc', 'origin')).toBe(true);
+  });
+});
+
+describe('URL normalisation of metric + view', () => {
+  const ctx = { yearMin: 1951, yearMax: 2025 };
+
+  it('rejects a metric that has no reading in the requested view', () => {
+    const { state, errors } = decodeState('?m=stateless&v=origin', ctx);
+    expect(state.m).toBe('refugees');
+    expect(state.v).toBe('origin');
+    expect(errors).toContain('m');
+  });
+
+  it('keeps the same metric where the view supports it', () => {
+    const { state, errors } = decodeState('?m=stateless&v=asylum', ctx);
+    expect(state.m).toBe('stateless');
+    expect(errors).not.toContain('m');
   });
 });

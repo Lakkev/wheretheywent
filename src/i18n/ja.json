@@ -243,6 +243,7 @@
   "common.status": "状態",
   "download.rowCount": "{n} か国分の行",
   "toast.compareLimit": "比較できるのは最大 {n} か国です。",
+  "toast.metricNotInView": "この指標は出身国別に集計されないため、「{metric}」を表示しています。",
   "toast.detailError": "国の詳細を読み込めませんでした。",
   "toast.downloadError": "ダウンロードを準備できませんでした。もう一度お試しください。",
   "report.subject": "[Where They Went] 問題の報告",

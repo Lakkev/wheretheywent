@@ -12,6 +12,7 @@ import {
   METRIC_IDS,
   TOTAL_POC_COMPONENTS,
   FORCED_DISPLACEMENT_COMPONENTS,
+  pocComponentsFor,
   type MetricId,
   type CountriesFile,
   type StockFile,
@@ -123,7 +124,6 @@ export function buildStock(inp: TransformInput, years: number[], sourcesUsed: st
 /** #14: world-totals.json — year → metric → global totals by view, incl. derived total_poc. */
 export function buildWorldTotals(stocks: StockFile[]): WorldTotalsFile {
   const totals: WorldTotalsFile['totals'] = {};
-  const POC = TOTAL_POC_COMPONENTS;
   const sum = (vals: (number | null | undefined)[]): number | null =>
     vals.reduce<number | null>(
       (acc, v) => (v === null || v === undefined ? acc : (acc ?? 0) + v),
@@ -137,9 +137,11 @@ export function buildWorldTotals(stocks: StockFile[]): WorldTotalsFile {
       METRIC_IDS.forEach((m, mi) => {
         row[m] = { asylum: a[mi]?.[yi] ?? null, origin: o[mi]?.[yi] ?? null };
       });
+      // The origin sum drops stateless persons: they are reported by country of residence, so
+      // adding them to an origin total puts people under a country they never left.
       row['total_poc'] = {
-        asylum: sum(POC.map((m) => a[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
-        origin: sum(POC.map((m) => o[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
+        asylum: sum(pocComponentsFor('asylum').map((m) => a[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
+        origin: sum(pocComponentsFor('origin').map((m) => o[METRIC_IDS.indexOf(m)]?.[yi] ?? null)),
       };
     });
   }

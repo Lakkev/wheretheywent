@@ -243,6 +243,7 @@
   "common.status": "狀態",
   "download.rowCount": "{n} 個國家的資料列",
   "toast.compareLimit": "最多只能比較 {n} 個國家。",
+  "toast.metricNotInView": "此指標不按來源國統計，已改顯示「{metric}」。",
   "toast.detailError": "無法載入國家詳情。",
   "toast.downloadError": "無法產生下載檔案，請再試一次。",
   "report.subject": "【他們去了哪裡】問題回報",

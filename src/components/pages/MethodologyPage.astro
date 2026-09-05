@@ -246,7 +246,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           （未報告）、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
         </li>
         <li>
-          <strong>驗證</strong> — 發布前須通過 17 條資料不變量（自動化檢查合計 23 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
+          <strong>驗證</strong> — 發布前須通過 18 條資料不變量（自動化檢查合計 24 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
           <em>可上色總和 + 無法顯示總和 = 全球總計</em>；來源國×庇護國雙邊矩陣的行列加總與各國邊際總計一致；年度總計與前一快照差異不超過 20%；三個
           <strong>黃金數字</strong>（土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民）誤差須在 1%
           內。
@@ -277,7 +277,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           <code>null</code> / <code>0</code> / integer.
         </li>
         <li>
-          <strong>Validate</strong> — 17 data invariants (23 automated checks in total) must hold before anything is published,
+          <strong>Validate</strong> — 18 data invariants (24 automated checks in total) must hold before anything is published,
           including: the three collision cases are keyed correctly; no negative or non-finite
           values; <em>mapped total + unmappable total = global total</em> for every metric and year;
           the origin×asylum bilateral matrix sums back to each country's marginal totals;
@@ -378,6 +378,55 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
             about 6% high. It is now computed from a single definition,{' '}
             <code>FORCED_DISPLACEMENT_COMPONENTS</code>, checked before every publish by data
             invariant #17.
+          </small>
+        </>
+      )
+    }
+  </p>
+
+  <h3 id="metric-views">
+    {zh ? '有些指標只存在於一個視角' : 'Some metrics exist in only one view'}
+  </h3>
+  <p>
+    {
+      zh ? (
+        <>
+          <strong>無國籍者</strong>與<strong>收容社區</strong>只有「他們現在在哪裡」的讀數。
+          無國籍者按<em>居住國</em>報告——一個從未被任何國家承認為國民的人,沒有「來源國」可言;
+          收容社區計算的則是本來就住在當地的人。上游檔案在兩個視角放同一個數字,
+          但那不代表它在來源國視角下有意義。
+          <br />
+          因此這兩個指標在「他們從哪裡逃離」下不再提供:指標選單不列出、網址若指定會被更正、
+          國家頁該欄顯示為未報告,而<strong>受關注人口總數</strong
+          >在來源國視角下也會扣掉無國籍者(2025 年為 {' '}
+          <span class="num">4,477,220</span> 人)。
+          <br />
+          <small class="muted">
+            更正紀錄:此規則在 metrics.json 早有定義,但 2026-09-05
+            之前程式沒有任何地方讀取它——<code>?m=stateless&amp;v=origin</code>
+            會把居住國數字放在來源國標題下。現在由 <code>METRIC_VIEWS</code>
+            單一規則控制,並由不變量第 18 條檢查其與 metrics.json 一致。
+          </small>
+        </>
+      ) : (
+        <>
+          <strong>Stateless persons</strong> and <strong>host community</strong> have a reading only
+          for "where they are now". Statelessness is reported by <em>country of residence</em> —
+          someone no state recognises as a national has no country of origin to be counted under —
+          and host community counts people already living where they are. The upstream file repeats
+          the same number in both views, which is not the same as that number meaning anything in
+          the second one.
+          <br />
+          So neither metric is offered under "where they fled from": the menu omits it, a URL that
+          asks for it is corrected, the country page shows that column as not reported, and{' '}
+          <strong>total people of concern</strong> drops stateless persons from its origin sum (
+          <span class="num">4,477,220</span> people in 2025).
+          <br />
+          <small class="muted">
+            Correction: metrics.json has always declared this rule, but until 2026-09-05 nothing in
+            the app read it — <code>?m=stateless&amp;v=origin</code> put residence figures under an
+            origin heading. One rule, <code>METRIC_VIEWS</code>, now drives every surface, and
+            invariant #18 asserts it matches the published metadata.
           </small>
         </>
       )

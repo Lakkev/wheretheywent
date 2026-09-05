@@ -28,8 +28,8 @@ import {
 
 export const DATA_BASE = '/data/v1';
 
-import { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS } from './types';
-export { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS };
+import { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS, pocComponentsFor } from './types';
+export { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS, pocComponentsFor };
 
 export class DataClient {
   manifest: Manifest | null = null;
@@ -220,7 +220,7 @@ export class StockStore {
     if (yi === undefined) return null;
     const s = (view === 'asylum' ? this.asylum : this.origin).get(iso3);
     if (!s) return null;
-    if (metric === 'total_poc') return sumComponents(s, yi);
+    if (metric === 'total_poc') return sumComponents(s, yi, view);
     return s[METRIC_IDS.indexOf(metric)]?.[yi] ?? null;
   }
   pop(iso3: string, year: number): number | null {
@@ -240,27 +240,28 @@ export class StockStore {
     if (yi === undefined) return null;
     const t = this.totals[view];
     if (!t.length) return null;
-    if (metric === 'total_poc') return sumComponents(t, yi);
+    if (metric === 'total_poc') return sumComponents(t, yi, view);
     return t[METRIC_IDS.indexOf(metric)]?.[yi] ?? null;
   }
   /** Full series for one key/metric across loaded years (aligned with this.years). */
   series(view: ViewId, iso3: string, metric: AnyMetricId): (number | null)[] {
     const s = (view === 'asylum' ? this.asylum : this.origin).get(iso3);
     if (!s) return this.years.map(() => null);
-    if (metric === 'total_poc') return this.years.map((_, yi) => sumComponents(s, yi));
+    if (metric === 'total_poc') return this.years.map((_, yi) => sumComponents(s, yi, view));
     return s[METRIC_IDS.indexOf(metric)] ?? this.years.map(() => null);
   }
   totalSeries(view: ViewId, metric: AnyMetricId): (number | null)[] {
     const t = this.totals[view];
     if (!t.length) return this.years.map(() => null);
-    if (metric === 'total_poc') return this.years.map((_, yi) => sumComponents(t, yi));
+    if (metric === 'total_poc') return this.years.map((_, yi) => sumComponents(t, yi, view));
     return t[METRIC_IDS.indexOf(metric)] ?? this.years.map(() => null);
   }
 }
 
-function sumComponents(s: Series, yi: number): number | null {
+/** Sum of the total_poc components that exist in `view` — origin excludes residence-only ones. */
+function sumComponents(s: Series, yi: number, view: ViewId): number | null {
   let sum: number | null = null;
-  for (const m of TOTAL_POC_COMPONENTS) {
+  for (const m of pocComponentsFor(view)) {
     const v = s[METRIC_IDS.indexOf(m)]?.[yi];
     if (v !== null && v !== undefined) sum = (sum ?? 0) + v;
   }

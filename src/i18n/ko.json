@@ -243,6 +243,7 @@
   "common.status": "상태",
   "download.rowCount": "{n}개국 행",
   "toast.compareLimit": "최대 {n}개국까지 비교할 수 있습니다.",
+  "toast.metricNotInView": "이 지표는 출신국 기준으로 집계되지 않아 «{metric}»을(를) 표시합니다.",
   "toast.detailError": "국가 상세 정보를 불러오지 못했습니다.",
   "toast.downloadError": "다운로드를 준비하지 못했습니다. 다시 시도해 주세요.",
   "report.subject": "[Where They Went] 문제 신고",

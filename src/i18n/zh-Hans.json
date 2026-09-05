@@ -243,6 +243,7 @@
   "common.status": "状态",
   "download.rowCount": "{n} 个国家的数据行",
   "toast.compareLimit": "最多只能比较 {n} 个国家。",
+  "toast.metricNotInView": "此指标不按来源国统计，已改显示「{metric}」。",
   "toast.detailError": "无法加载国家详情。",
   "toast.downloadError": "无法生成下载文件，请再试一次。",
   "report.subject": "[Where They Went] 问题报告",

@@ -12,7 +12,7 @@
     CountryMeta,
     WorldTotalsFile,
   } from '../../lib/types';
-  import { METRIC_IDS } from '../../lib/types';
+  import { METRIC_IDS, metricInView, pocComponentsFor } from '../../lib/types';
   import { unpack } from '../../lib/columnar';
   import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { fmtInt, fmtRate, fmtCompact, fmtDateIso } from '../../lib/format';
@@ -111,9 +111,12 @@
   const yi = $derived(file.years.indexOf(year));
   const val = (view: 'asylum' | 'origin', m: AnyMetricId): number | null => {
     if (yi < 0) return null;
+    // Asylum-only metrics have no origin reading: the upstream file repeats the residence figure
+    // in both views, and showing it under "where they fled from" would invent a fact.
+    if (!metricInView(m, view)) return null;
     if (m === 'total_poc') {
       let s: number | null = null;
-      for (const c of ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'] as const) {
+      for (const c of pocComponentsFor(view)) {
         const v = unpack(file[view].v[METRIC_IDS.indexOf(c)]!)[yi] ?? null;
         if (v !== null) s = (s ?? 0) + v;
       }
@@ -167,16 +170,10 @@
   function exportRows(): ViewExportRow[] {
     const out: ViewExportRow[] = [];
     const valAt = (view: 'asylum' | 'origin', i: number): number | null => {
+      if (!metricInView(metric, view)) return null;
       if (metric === 'total_poc') {
         let s: number | null = null;
-        for (const c of [
-          'refugees',
-          'asylum_seekers',
-          'idps',
-          'stateless',
-          'ooc',
-          'oip',
-        ] as const) {
+        for (const c of pocComponentsFor(view)) {
           const x = unpack(file[view].v[METRIC_IDS.indexOf(c)]!)[i] ?? null;
           if (x !== null) s = (s ?? 0) + x;
         }

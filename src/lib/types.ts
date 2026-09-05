@@ -47,6 +47,39 @@ export const FORCED_DISPLACEMENT_COMPONENTS = [
   'oip',
 ] as const satisfies readonly MetricId[];
 
+/**
+ * Which of the two views each metric is actually defined in — the single rule the whole app
+ * follows. `metrics.json` carries the same list and data invariant #18 asserts the two agree.
+ *
+ * Two metrics are asylum-only because of what they count, not because of missing data:
+ * stateless persons are reported by country of *residence* (there is no "origin" for someone a
+ * state never recognised), and host community counts people already living where they are. Until
+ * 2026-09-05 nothing consumed this list, so `?m=stateless&v=origin` rendered residence figures
+ * under an origin heading — identical numbers, a different and wrong meaning.
+ */
+export const METRIC_VIEWS = {
+  refugees: ['asylum', 'origin'],
+  asylum_seekers: ['asylum', 'origin'],
+  idps: ['asylum', 'origin'],
+  stateless: ['asylum'],
+  ooc: ['asylum', 'origin'],
+  returned_refugees: ['asylum', 'origin'],
+  returned_idps: ['asylum', 'origin'],
+  oip: ['asylum', 'origin'],
+  hst: ['asylum'],
+} as const satisfies Record<MetricId, readonly ViewId[]>;
+
+/** Components of `total_poc` that are defined in `view` — origin drops the residence-only ones. */
+export function pocComponentsFor(view: ViewId): readonly MetricId[] {
+  return TOTAL_POC_COMPONENTS.filter((m) => (METRIC_VIEWS[m] as readonly ViewId[]).includes(view));
+}
+
+/** Is this metric meaningful in this view? Derived metrics exist wherever a component does. */
+export function metricInView(metric: AnyMetricId, view: ViewId): boolean {
+  if (metric === 'total_poc') return pocComponentsFor(view).length > 0;
+  return (METRIC_VIEWS[metric] as readonly ViewId[]).includes(view);
+}
+
 /** Derived metric for UI: refugees + asylum_seekers + idps + stateless + ooc + oip. */
 export type DerivedMetricId = 'total_poc';
 export type AnyMetricId = MetricId | DerivedMetricId;

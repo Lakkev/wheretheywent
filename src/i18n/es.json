@@ -243,6 +243,7 @@
   "common.status": "Estado",
   "download.rowCount": "{n} filas de países",
   "toast.compareLimit": "Se pueden comparar hasta {n} países.",
+  "toast.metricNotInView": "No se declara por país de origen: se muestra «{metric}» en su lugar.",
   "toast.detailError": "No se pudieron cargar los detalles del país.",
   "toast.downloadError": "No se pudo preparar la descarga. Inténtelo de nuevo.",
   "report.subject": "[Where They Went] Informe de problema",

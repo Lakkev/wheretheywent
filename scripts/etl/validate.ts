@@ -16,7 +16,9 @@ import { KNOWN_COLLISIONS, NON_GEO_ENTITIES } from './lib/codes.ts';
 import { pack, unpack } from '../../src/lib/columnar.ts';
 import {
   METRIC_IDS,
+  METRIC_VIEWS,
   FORCED_DISPLACEMENT_COMPONENTS,
+  pocComponentsFor,
   type InsightsFile,
   type Manifest,
   type SourcesFile,
@@ -244,6 +246,26 @@ function main() {
       'one_in_n missing — the headline sentence would render blank',
     );
     return `1 in ${g.one_in_n} from ${g.forced_displacement} of ${g.total_poc} PoC (${FORCED_DISPLACEMENT_COMPONENTS.join('+')})`;
+  });
+  guard('#18 ★ published metric views match the rule the UI applies', 'meta', () => {
+    // metrics.json is what the app loads; METRIC_VIEWS is what the menus, the URL decoder and the
+    // derived sums obey. If the two ever disagree the UI would offer a view the data has no
+    // reading for — which is exactly what happened while nothing consumed views at all.
+    assert(metrics, 'metrics.json missing');
+    for (const id of METRIC_IDS) {
+      const published = metrics.metrics[id]?.views ?? [];
+      const expected = METRIC_VIEWS[id];
+      assert(
+        [...published].sort().join(',') === [...expected].sort().join(','),
+        `${id}: metrics.json says [${published}], METRIC_VIEWS says [${expected}]`,
+      );
+    }
+    const originComponents = pocComponentsFor('origin');
+    assert(
+      !(originComponents as readonly string[]).includes('stateless'),
+      'stateless is counted by residence and must not enter an origin total',
+    );
+    return `${METRIC_IDS.length} metrics; total_poc origin = ${originComponents.join('+')}`;
   });
   guard('#15 every metric has definition + source_id', 'meta', () => {
     assert(metrics, 'metrics.json missing');

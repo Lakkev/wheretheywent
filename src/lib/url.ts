@@ -5,7 +5,7 @@
  * Same state ⇒ byte-identical URL (used as cache key and in e2e).
  */
 import { z } from 'zod';
-import { METRIC_IDS, type AnyMetricId, type ViewId } from './types';
+import { METRIC_IDS, metricInView, type AnyMetricId, type ViewId } from './types';
 import type { ScaleKind } from './colors';
 
 export const URL_METRICS: AnyMetricId[] = [...METRIC_IDS, 'total_poc'];
@@ -215,8 +215,12 @@ export function decodeState(search: string, ctx: CodecContext): DecodeResult {
   const list = (key: string) => (p.has(key) ? (p.get(key) ?? '').split(',').filter(Boolean) : []);
 
   const y = get('y', z.coerce.number().int().min(ctx.yearMin).max(ctx.yearMax), d.y);
-  const m = get('m', z.enum(URL_METRICS as [AnyMetricId, ...AnyMetricId[]]), d.m);
+  const mRaw = get('m', z.enum(URL_METRICS as [AnyMetricId, ...AnyMetricId[]]), d.m);
   const v = get('v', z.enum(['asylum', 'origin']), d.v) as ViewId;
+  // A metric that has no meaning in the requested view is not a rendering problem to paper over:
+  // ?m=stateless&v=origin used to show residence figures under an origin heading. Normalise to the
+  // default metric and report it like any other bad parameter, so the UI can say what it changed.
+  const m = metricInView(mRaw, v) ? mRaw : (errors.push('m'), d.m);
   const n = get('n', z.enum(['abs', 'per1k']), d.n) as Norm;
   const sc = get('sc', z.enum(['lin', 'log', 'quant']), d.sc) as ScaleKind;
   const cRaw = get('c', z.string().regex(/^[A-Za-z0-9_]{3,4}$/), null as string | null);

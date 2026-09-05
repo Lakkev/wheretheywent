@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { ui, data, session, staleSources } from '../../lib/state.svelte';
+  import { ui, data, session, staleSources, toast } from '../../lib/state.svelte';
   import { URL_METRICS } from '../../lib/url';
+  import { metricInView, type ViewId } from '../../lib/types';
   import {
     useT,
     localizePath,
@@ -36,6 +37,17 @@
     return days > AGED_DAYS ? g.slice(0, 10) : null;
   });
   const metricLabel = (m: string) => tr(`metric.${m}` as MessageKey);
+  /** Switching view can strand a metric that only exists in the other one (stateless, host
+   *  community). Fall back to the default and say so, rather than silently relabelling the same
+   *  residence figures as origin figures. */
+  const FALLBACK_METRIC = 'refugees';
+  function setView(v: ViewId) {
+    ui.v = v;
+    if (metricInView(ui.m, v)) return;
+    const was = metricLabel(ui.m);
+    ui.m = FALLBACK_METRIC;
+    toast(tr('toast.metricNotInView', { metric: metricLabel(FALLBACK_METRIC) }) + ` (${was})`);
+  }
   const pathWithQuery = () => (typeof location !== 'undefined' ? location.search : '');
   let menuOpen = $state(false);
   /** D17: contextual problem report — the mailto body carries the exact share URL of this view. */
@@ -60,20 +72,20 @@
       type="button"
       aria-pressed={ui.v === 'asylum'}
       title={tr('view.asylum') + ' — ' + tr('view.asylum.help')}
-      onclick={() => (ui.v = 'asylum')}>{tr('view.asylum.short')}</button
+      onclick={() => setView('asylum')}>{tr('view.asylum.short')}</button
     >
     <button
       class="btn"
       type="button"
       aria-pressed={ui.v === 'origin'}
       title={tr('view.origin') + ' — ' + tr('view.origin.help')}
-      onclick={() => (ui.v = 'origin')}>{tr('view.origin.short')}</button
+      onclick={() => setView('origin')}>{tr('view.origin.short')}</button
     >
   </span>
   <label class="visually-hidden" for="metric-select">{tr('a11y.metricSelect')}</label>
   <select id="metric-select" bind:value={ui.m}>
     {#each URL_METRICS as m (m)}
-      {#if m !== 'hst' || ui.v === 'asylum'}
+      {#if metricInView(m, ui.v)}
         <option value={m}>{metricLabel(m)}</option>
       {/if}
     {/each}

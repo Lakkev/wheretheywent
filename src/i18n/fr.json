@@ -243,6 +243,7 @@
   "common.status": "État",
   "download.rowCount": "{n} lignes-pays",
   "toast.compareLimit": "Au plus {n} pays peuvent être comparés.",
+  "toast.metricNotInView": "Non déclaré par pays d’origine — affichage de « {metric} » à la place.",
   "toast.detailError": "Impossible de charger les détails du pays.",
   "toast.downloadError": "Le téléchargement n'a pas pu être préparé. Veuillez réessayer.",
   "report.subject": "[Where They Went] Signalement",
