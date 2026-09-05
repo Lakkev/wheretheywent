@@ -5,6 +5,7 @@
   import { displayName } from '../../lib/data';
   import { fmtValue } from '../../lib/format';
   import { useT, type Locale, type MessageKey } from '../../i18n/ui';
+  import CountryCombobox from '../ui/CountryCombobox.svelte';
 
   let {
     locale,
@@ -64,38 +65,24 @@
   {#if open}
     <div class="panel-body">
       <div class="rail-controls">
-        <label>
-          {tr('rail.search')}
-          <input
-            type="search"
-            bind:this={searchEl}
-            bind:value={query}
-            placeholder={tr('rail.search.placeholder')}
-            autocomplete="off"
-            aria-autocomplete="list"
-            aria-controls={matches.length ? 'search-results' : undefined}
-          />
-        </label>
-        {#if matches.length}
-          <ul class="ranklist search-results" id="search-results" role="listbox">
-            {#each matches as r (r.iso3)}
-              <li
-                role="option"
-                aria-selected={ui.c === r.iso3}
-                tabindex="0"
-                onclick={() => pick(r.iso3)}
-                onkeydown={(e) => e.key === 'Enter' && pick(r.iso3)}
-                onmouseenter={() => prefetchCountry(r.iso3)}
-              >
-                <span class="rank">{r.iso3}</span>
-                <span class="name">{displayName(r.meta, locale)}</span>
-                <span class="val"
-                  >{r.value === null ? '—' : fmtValue(r.value, ui.n, locale, true)}</span
-                >
-              </li>
-            {/each}
-          </ul>
-        {/if}
+        <CountryCombobox
+          id="rail-search"
+          items={matches}
+          bind:query
+          bind:inputEl={searchEl}
+          label={tr('rail.search')}
+          placeholder={tr('rail.search.placeholder')}
+          selectedKey={ui.c}
+          onpick={pick}
+          onhover={prefetchCountry}
+        >
+          {#snippet option(r)}
+            <span class="rank">{r.iso3}</span>
+            <span class="name">{displayName(r.meta, locale)}</span>
+            <span class="val">{r.value === null ? '—' : fmtValue(r.value, ui.n, locale, true)}</span
+            >
+          {/snippet}
+        </CountryCombobox>
         <fieldset class="regions">
           <legend>{tr('rail.region')}</legend>
           <label class="inline"

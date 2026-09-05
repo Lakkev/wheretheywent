@@ -47,7 +47,8 @@ test('language switch keeps state that was set after load, not just at load', as
   // build, so a language change dropped whatever the islands had written with replaceState
   // after load. The value has to be read from location at change time instead.
   await page.goto('/compare');
-  const box = page.getByRole('searchbox').first();
+  // The adder is an ARIA combobox, so it no longer matches the implicit searchbox role.
+  const box = page.locator('input[aria-controls="compare-add-listbox"]');
   await box.waitFor({ timeout: 30_000 });
   for (const [q, iso3] of [
     ['Uganda', 'UGA'],
@@ -74,7 +75,8 @@ test('compare keeps the order the reader built, through a share and a reload', a
   // Regression: rows kept insertion order but writeUrl sorted, so a reload or a shared link came
   // back with the rows — and therefore the series colours — swapped.
   await page.goto('/compare');
-  const box = page.getByRole('searchbox').first();
+  // The adder is an ARIA combobox, so it no longer matches the implicit searchbox role.
+  const box = page.locator('input[aria-controls="compare-add-listbox"]');
   await box.waitFor({ timeout: 30_000 });
   for (const [q, iso3] of [
     ['Uganda', 'UGA'],
@@ -89,7 +91,7 @@ test('compare keeps the order the reader built, through a share and a reload', a
   const shared = page.url();
   const fresh = await context.newPage();
   await fresh.goto(shared);
-  await fresh.getByRole('searchbox').first().waitFor({ timeout: 30_000 });
+  await fresh.locator('input[aria-controls="compare-add-listbox"]').waitFor({ timeout: 30_000 });
   expect(new URL(fresh.url()).searchParams.get('cmp')).toBe('UGA,DEU');
   const chips = await fresh.locator('.chip.big').allTextContents();
   expect(chips.join(' ')).toMatch(/Uganda[\s\S]*Germany/);

@@ -215,15 +215,25 @@ const src = getSources()?.['unhcr_population'];
       zh ? (
         <>
           每一項修正都附帶會失敗的測試,資料層另加兩條不變量(第 17、18
-          條)防止復發。<strong>尚未處理</strong>:國家搜尋下拉的鍵盤操作模型(方向鍵、Escape、
-          <code>aria-activedescendant</code>)仍不完整。
+          條)防止復發。國家搜尋下拉的鍵盤操作模型已改寫為共用的 ARIA 1.2 combobox
+          元件(上下鍵含循環、Home/End、Enter、Escape 兩段退出、
+          <code>aria-activedescendant</code>,選項不再各自成為 Tab 停留點)。
+          <br />
+          <strong>仍未做的一件事</strong>:真人使用螢幕閱讀器的實測。上述行為由自動化鍵盤測試涵蓋,
+          但 NVDA / VoiceOver 的人工走查尚未進行——自動化掃描抓不到互動模型的問題,
+          這次就是最好的例子。
         </>
       ) : (
         <>
           Each fix ships with a test that fails against the previous build, and the data layer
-          gained two invariants (#17, #18) so the two semantic defects cannot return.{' '}
-          <strong>Still outstanding</strong>: the keyboard interaction model for the country search
-          comboboxes (arrow keys, Escape, <code>aria-activedescendant</code>) is incomplete.
+          gained two invariants (#17, #18) so the two semantic defects cannot return. The country
+          search boxes are now one shared ARIA 1.2 combobox: arrow keys with wrap, Home/End, Enter,
+          a two-stage Escape, <code>aria-activedescendant</code>, and options that are no longer
+          individual tab stops.
+          <br />
+          <strong>One thing still not done</strong>: a real screen-reader pass. The behaviour above
+          is covered by automated keyboard tests, but no one has walked it with NVDA or VoiceOver —
+          and an automated scan missing an interaction model is exactly what happened here.
         </>
       )
     }

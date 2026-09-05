@@ -24,6 +24,7 @@
   import { URL_METRICS, MAX_COMPARE } from '../../lib/url';
   import { loadPlot, segments, PLOT_STYLE } from '../charts/plot-helpers';
   import { buildCitations } from '../../lib/citation';
+  import CountryCombobox from '../ui/CountryCombobox.svelte';
   import {
     viewRowsToCsv,
     provenanceComments,
@@ -321,23 +322,20 @@
       {/each}
       {#if cmp.length < MAX_COMPARE}
         <span class="adder">
-          <input
-            type="search"
+          <CountryCombobox
+            id="compare-add"
+            items={matches}
+            bind:query
+            label={tr('compare.add')}
+            labelHidden
+            listClass="results"
             placeholder={tr('compare.add')}
-            bind:value={query}
-            aria-label={tr('compare.add')}
-          />
-          {#if matches.length}<ul class="results" role="listbox">
-              {#each matches as c (c.iso3)}<li
-                  role="option"
-                  aria-selected="false"
-                  tabindex="0"
-                  onclick={() => add(c.iso3)}
-                  onkeydown={(e) => e.key === 'Enter' && add(c.iso3)}
-                >
-                  {displayName(c, locale)} <span class="muted">{c.iso3}</span>
-                </li>{/each}
-            </ul>{/if}
+            onpick={add}
+          >
+            {#snippet option(c)}
+              {displayName(c, locale)} <span class="muted">{c.iso3}</span>
+            {/snippet}
+          </CountryCombobox>
         </span>
       {/if}
     </div>
