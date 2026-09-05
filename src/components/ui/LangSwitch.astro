@@ -7,7 +7,14 @@ interface Props {
 const { locale } = Astro.props;
 const tr = useT(locale);
 const base = stripLocale(Astro.url.pathname);
-const search = Astro.url.search;
+/**
+ * Option values carry the target PATH only. The query string cannot be baked in here: these
+ * pages are prerendered, so `Astro.url.search` is empty at build time, and the map, country and
+ * compare islands rewrite the query with history.replaceState after load. Reading
+ * location.search + location.hash at change time is the only way a language switch preserves the
+ * view the reader is actually looking at — otherwise switching language silently resets their
+ * countries, year and metric, which also breaks the promise that every view is a permanent link.
+ */
 ---
 
 <nav class="lang-switch" aria-label={tr('nav.language')}>
@@ -15,7 +22,7 @@ const search = Astro.url.search;
   <select id={`lang-select-${locale}`} data-lang-select>
     {
       LOCALES.map((l) => (
-        <option value={localizePath(base, l) + search} selected={l === locale} lang={l}>
+        <option value={localizePath(base, l)} selected={l === locale} lang={l}>
           {LOCALE_NAMES[l]}
         </option>
       ))
@@ -24,7 +31,7 @@ const search = Astro.url.search;
   <noscript>
     {
       LOCALES.map((l) => (
-        <a href={localizePath(base, l) + search} hreflang={l} lang={l}>
+        <a href={localizePath(base, l)} hreflang={l} lang={l}>
           {LOCALE_NAMES[l]}
         </a>
       ))
@@ -36,7 +43,7 @@ const search = Astro.url.search;
   for (const s of document.querySelectorAll('select[data-lang-select]:not([data-wired])')) {
     s.dataset.wired = '1';
     s.addEventListener('change', function () {
-      location.href = this.value;
+      location.href = this.value + location.search + location.hash;
     });
   }
 </script>

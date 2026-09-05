@@ -40,6 +40,33 @@ test('language switch keeps the query string', async ({ page }) => {
   expect(await page.locator('.timeline .year').textContent()).toBe('2016');
 });
 
+test('language switch keeps state that was set after load, not just at load', async ({
+  page,
+}) => {
+  // Regression: the switcher used to carry Astro.url.search, which is empty in a prerendered
+  // build, so a language change dropped whatever the islands had written with replaceState
+  // after load. The value has to be read from location at change time instead.
+  await page.goto('/compare');
+  const box = page.getByRole('searchbox').first();
+  await box.waitFor({ timeout: 30_000 });
+  for (const [q, iso3] of [
+    ['Uganda', 'UGA'],
+    ['Germany', 'DEU'],
+  ] as const) {
+    await box.fill(q);
+    await page.getByRole('option', { name: new RegExp(iso3) }).first().click();
+  }
+  await page.waitForURL(/cmp=[^&]*DEU/);
+  const before = new URL(page.url()).searchParams.get('cmp');
+  expect(before).toContain('DEU');
+  expect(before).toContain('UGA');
+
+  // /compare has no menu drawer: the switcher sits in the page chrome directly.
+  await page.locator('select[data-lang-select]').first().selectOption({ label: '繁體中文' });
+  await page.waitForURL(/\/zh-Hant\/compare/);
+  expect(new URL(page.url()).searchParams.get('cmp')).toBe(before);
+});
+
 // The 2.5 s budget (spec §13.4) is enforced as-is on developer machines. GitHub's shared
 // runners execute CPU-bound work ~1.5–2× slower than the reference hardware the budget was
 // set on, and were observed at 2.6–2.8 s with zero payload change — so CI gets a fixed
