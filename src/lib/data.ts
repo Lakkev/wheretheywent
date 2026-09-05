@@ -28,14 +28,8 @@ import {
 
 export const DATA_BASE = '/data/v1';
 
-export const TOTAL_POC_COMPONENTS: MetricId[] = [
-  'refugees',
-  'asylum_seekers',
-  'idps',
-  'stateless',
-  'ooc',
-  'oip',
-];
+import { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS } from './types';
+export { TOTAL_POC_COMPONENTS, FORCED_DISPLACEMENT_COMPONENTS };
 
 export class DataClient {
   manifest: Manifest | null = null;

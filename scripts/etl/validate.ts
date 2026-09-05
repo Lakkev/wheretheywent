@@ -16,6 +16,8 @@ import { KNOWN_COLLISIONS, NON_GEO_ENTITIES } from './lib/codes.ts';
 import { pack, unpack } from '../../src/lib/columnar.ts';
 import {
   METRIC_IDS,
+  FORCED_DISPLACEMENT_COMPONENTS,
+  type InsightsFile,
   type Manifest,
   type SourcesFile,
   type CountriesFile,
@@ -213,6 +215,35 @@ function main() {
       );
     }
     return `${Object.keys(sources).length} sources`;
+  });
+  guard('#17 ★ "1 in N displaced" numerator excludes non-displacement categories', 'core', () => {
+    // The published sentence says "forcibly displaced". Stateless persons are counted by country
+    // of residence and others of concern is a residual protection category, so neither belongs in
+    // that numerator even though both sit inside total_poc. This invariant exists because the two
+    // were once conflated: the claim read ~6% high until 2026-09-05.
+    const ins = readJsonIfExists<InsightsFile>(join(IN, 'insights.json'));
+    assert(ins, 'insights.json missing');
+    const g = ins.global;
+    for (const m of FORCED_DISPLACEMENT_COMPONENTS) {
+      assert(METRIC_IDS.includes(m), `component ${m} is not a published metric`);
+    }
+    for (const banned of ['stateless', 'ooc', 'hst', 'returned_refugees', 'returned_idps'] as const) {
+      assert(
+        !(FORCED_DISPLACEMENT_COMPONENTS as readonly string[]).includes(banned),
+        `${banned} must not count as forced displacement`,
+      );
+    }
+    assert(g.forced_displacement !== null, 'forced_displacement not published');
+    assert(g.total_poc !== null, 'total_poc not published');
+    assert(
+      g.forced_displacement! < g.total_poc!,
+      `forced_displacement (${g.forced_displacement}) must be strictly below total_poc (${g.total_poc})`,
+    );
+    assert(
+      g.one_in_n !== null && g.one_in_n > 0,
+      'one_in_n missing — the headline sentence would render blank',
+    );
+    return `1 in ${g.one_in_n} from ${g.forced_displacement} of ${g.total_poc} PoC (${FORCED_DISPLACEMENT_COMPONENTS.join('+')})`;
   });
   guard('#15 every metric has definition + source_id', 'meta', () => {
     assert(metrics, 'metrics.json missing');

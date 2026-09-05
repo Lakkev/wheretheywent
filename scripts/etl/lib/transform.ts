@@ -10,6 +10,8 @@
 import { join } from 'node:path';
 import {
   METRIC_IDS,
+  TOTAL_POC_COMPONENTS,
+  FORCED_DISPLACEMENT_COMPONENTS,
   type MetricId,
   type CountriesFile,
   type StockFile,
@@ -121,7 +123,7 @@ export function buildStock(inp: TransformInput, years: number[], sourcesUsed: st
 /** #14: world-totals.json — year → metric → global totals by view, incl. derived total_poc. */
 export function buildWorldTotals(stocks: StockFile[]): WorldTotalsFile {
   const totals: WorldTotalsFile['totals'] = {};
-  const POC = ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'] as const;
+  const POC = TOTAL_POC_COMPONENTS;
   const sum = (vals: (number | null | undefined)[]): number | null =>
     vals.reduce<number | null>(
       (acc, v) => (v === null || v === undefined ? acc : (acc ?? 0) + v),
@@ -251,11 +253,16 @@ export function buildInsights(
   const recent = stocks.find((s) => s.years.includes(year))!;
   const yi = recent.years.indexOf(year);
   const totA = recent.totals.asylum.map((p) => unpack(p)[yi] ?? null);
-  const POC = ['refugees', 'asylum_seekers', 'idps', 'stateless', 'ooc', 'oip'] as const;
-  const totalPoc = POC.reduce<number | null>((s, m) => {
-    const v = totA[METRIC_IDS.indexOf(m)] ?? null;
-    return v === null ? s : (s ?? 0) + v;
-  }, null);
+  const POC = TOTAL_POC_COMPONENTS;
+  const sumOf = (ms: readonly MetricId[]): number | null =>
+    ms.reduce<number | null>((s, m) => {
+      const v = totA[METRIC_IDS.indexOf(m)] ?? null;
+      return v === null ? s : (s ?? 0) + v;
+    }, null);
+  const totalPoc = sumOf(POC);
+  // "1 in N is forcibly displaced" must not be computed from total_poc: that category also
+  // carries stateless persons and others of concern, who are not necessarily displaced.
+  const forcedDisplacement = sumOf(FORCED_DISPLACEMENT_COMPONENTS);
   let worldPop = 0;
   if (inp.population) for (const m of inp.population.values()) worldPop += m.get(year) ?? 0;
   const countries: import('../../../src/lib/types.ts').InsightsFile['countries'] = {};
@@ -289,9 +296,11 @@ export function buildInsights(
     year,
     global: {
       total_poc: totalPoc,
+      forced_displacement: forcedDisplacement,
       refugees: worldRef,
       idps: totA[METRIC_IDS.indexOf('idps')] ?? null,
-      one_in_n: totalPoc && worldPop > 0 ? Math.round(worldPop / totalPoc) : null,
+      one_in_n:
+        forcedDisplacement && worldPop > 0 ? Math.round(worldPop / forcedDisplacement) : null,
       top_hosts: hosts.slice(0, 3),
       top_origins: origins.slice(0, 3),
       top5_host_share: worldRef

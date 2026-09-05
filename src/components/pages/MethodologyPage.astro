@@ -246,7 +246,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           （未報告）、<code>"0"</code> 與數字分別轉為 <code>null</code> / <code>0</code> / 整數。
         </li>
         <li>
-          <strong>驗證</strong> — 發布前須通過 16 條資料不變量（自動化檢查合計 22 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
+          <strong>驗證</strong> — 發布前須通過 17 條資料不變量（自動化檢查合計 23 項），包括：三組碰撞碼正確歸屬；無負值或非有限值；每個指標、每一年皆滿足
           <em>可上色總和 + 無法顯示總和 = 全球總計</em>；來源國×庇護國雙邊矩陣的行列加總與各國邊際總計一致；年度總計與前一快照差異不超過 20%；三個
           <strong>黃金數字</strong>（土耳其 2024 難民、敘利亞 2016 IDP、全球 2024 難民）誤差須在 1%
           內。
@@ -277,7 +277,7 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
           <code>null</code> / <code>0</code> / integer.
         </li>
         <li>
-          <strong>Validate</strong> — 16 data invariants (22 automated checks in total) must hold before anything is published,
+          <strong>Validate</strong> — 17 data invariants (23 automated checks in total) must hold before anything is published,
           including: the three collision cases are keyed correctly; no negative or non-finite
           values; <em>mapped total + unmappable total = global total</em> for every metric and year;
           the origin×asylum bilateral matrix sums back to each country's marginal totals;
@@ -332,6 +332,53 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
         <>
           All stock figures are <strong>year-end (31 December)</strong>. "Returned" figures are
           flows during the year.
+        </>
+      )
+    }
+  </p>
+
+  <h3 id="displaced-vs-poc">
+    {zh ? '「被迫流離失所」與「受關注人口」不是同一件事' : '"Forcibly displaced" is not "people of concern"'}
+  </h3>
+  <p>
+    {
+      zh ? (
+        <>
+          <strong>受關注人口（total_poc）</strong>是 UNHCR
+          的保護職責範圍，不是流離失所的定義。它包含<strong>無國籍者</strong>（按<em>居住國</em
+          >計算，不必然離開過家園）與<strong>其他受關注者</strong
+          >（無流離失所定義的剩餘類別)。兩者合計約占總數的 6%。
+          <br />
+          因此本站凡是寫「<strong>被迫流離失所</strong>」的數字——包括首頁「每 N 人中有 1
+          人」那一句——一律只由<strong>難民 + 庇護申請者 + 境內流離失所者 + OIP</strong
+          >四項相加,與 UNHCR 自己認定為強制流離的人口群一致。收容社區與回返者從不計入。
+          <br />
+          <small class="muted">
+            更正紀錄:2026-09-05 之前,該句誤用 total_poc 為分子,數字約高出 6%。此後由
+            <code>FORCED_DISPLACEMENT_COMPONENTS</code> 單一定義,並由資料驗證第 17
+            條不變量在每次發布前檢查。
+          </small>
+        </>
+      ) : (
+        <>
+          <strong>People of concern (total_poc)</strong> is the scope of UNHCR's protection
+          mandate, not a definition of displacement. It includes <strong>stateless persons</strong>,
+          who are counted by <em>country of residence</em> and have not necessarily left anywhere,
+          and <strong>others of concern</strong>, a residual category with no displacement
+          definition at all. Together they are roughly 6% of the total.
+          <br />
+          So every figure on this site that says <strong>forcibly displaced</strong> — including
+          the "1 in every N people" sentence on the home page — is the sum of{' '}
+          <strong>refugees + asylum-seekers + IDPs + OIP</strong> only, matching the population
+          groups UNHCR itself reports as forcibly displaced. Host community and returnees are never
+          included.
+          <br />
+          <small class="muted">
+            Correction: before 2026-09-05 that sentence used total_poc as its numerator and ran
+            about 6% high. It is now computed from a single definition,{' '}
+            <code>FORCED_DISPLACEMENT_COMPONENTS</code>, checked before every publish by data
+            invariant #17.
+          </small>
         </>
       )
     }

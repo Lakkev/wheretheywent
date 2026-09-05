@@ -18,7 +18,36 @@ export const METRIC_IDS = [
 ] as const;
 export type MetricId = (typeof METRIC_IDS)[number];
 
-/** Derived metric for UI: refugees + asylum_seekers + idps + stateless + ooc + oip (+ hst). */
+/**
+ * Components of `total_poc` — UNHCR's "people of concern", which is a protection-mandate
+ * category, not a displacement one. Excludes host community and returnees.
+ */
+export const TOTAL_POC_COMPONENTS = [
+  'refugees',
+  'asylum_seekers',
+  'idps',
+  'stateless',
+  'ooc',
+  'oip',
+] as const satisfies readonly MetricId[];
+
+/**
+ * Components of forced displacement — people who left, or were driven from, where they lived.
+ *
+ * This is deliberately NARROWER than `total_poc`. Stateless persons are counted by country of
+ * residence and are not necessarily displaced; "others of concern" is a residual protection
+ * category with no displacement definition at all. Together they are roughly 6% of `total_poc`,
+ * so any sentence that says "forcibly displaced" must be computed from this list and never
+ * from `total_poc`. Matches the population groups UNHCR itself reports as forcibly displaced.
+ */
+export const FORCED_DISPLACEMENT_COMPONENTS = [
+  'refugees',
+  'asylum_seekers',
+  'idps',
+  'oip',
+] as const satisfies readonly MetricId[];
+
+/** Derived metric for UI: refugees + asylum_seekers + idps + stateless + ooc + oip. */
 export type DerivedMetricId = 'total_poc';
 export type AnyMetricId = MetricId | DerivedMetricId;
 
@@ -270,9 +299,14 @@ export interface InsightsFile {
   year: number;
   global: {
     total_poc: number | null;
+    /**
+     * refugees + asylum-seekers + IDPs + OIP. Narrower than `total_poc`: excludes stateless
+     * persons and others of concern, neither of whom is necessarily displaced.
+     */
+    forced_displacement: number | null;
     refugees: number | null;
     idps: number | null;
-    /** world population ÷ total people of concern */
+    /** world population ÷ `forced_displacement` — the denominator of "1 in N is displaced" */
     one_in_n: number | null;
     top_hosts: { iso3: string; value: number }[];
     top_origins: { iso3: string; value: number }[];

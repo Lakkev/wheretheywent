@@ -9,7 +9,7 @@ below with the measured reason.
 
 A **static site** (Astro 7, `output: 'static'`) with **Svelte 5** islands. All data is produced at
 build/ETL time by a **Node 22 TypeScript pipeline** (no build step, native type stripping) that
-fetches UNHCR / IDMC / UN WPP, normalises to ISO3, validates 22 checks, and commits JSON/CSV files
+fetches UNHCR / IDMC / UN WPP, normalises to ISO3, validates 23 checks, and commits JSON/CSV files
 into `public/data/v1/`. The browser never calls an upstream API. Hosting is Cloudflare Pages
 (direct upload via wrangler from GitHub Actions, free). The ETL runs daily on GitHub Actions and commits **only when content
 changes**, so most days produce no commit and no deploy.

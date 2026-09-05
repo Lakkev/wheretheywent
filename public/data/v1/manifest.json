@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "712d33bb",
-  "git_commit": "547c899",
-  "generated_at": "2026-09-04T08:03:04Z",
+  "snapshot_id": "9be20fda",
+  "git_commit": null,
+  "generated_at": "2026-09-05T03:46:43Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1087,15 +1087,15 @@
       "bytes": 169416
     },
     "insights.json": {
-      "sha256": "3d7708bbbb736ed5bcf1da6b1c62c1cf97124486b492b4c2884cb616e952dba0",
-      "bytes": 52934
+      "sha256": "61e575d8d25aaaa63c60f6004785c2443288a78a8c02aeb11a1877ffa6c317b7",
+      "bytes": 52966
     },
     "metrics.json": {
       "sha256": "e2c674f35c6a3dac70180723413fb09e1e6d957ea19a85ade96e0fa37e0a7623",
       "bytes": 25774
     },
     "sources.json": {
-      "sha256": "d96ff6d61e8d26b49f0278f332eeb9be8e366c2e7ab02d7b6d1fbbe6fd71989d",
+      "sha256": "1dc15e2cc9ac647ad9c23f85cd23b5aad1fd511b14c93aa556c6011cd9f65277",
       "bytes": 29976
     },
     "stock/1951-2014.json": {

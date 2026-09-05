@@ -65,7 +65,22 @@ const boiler = zh
             </td>
           </tr>
           <tr>
-            <td>{zh ? '地球上每 N 人中有 1 人流離失所' : 'One person in N on Earth is displaced'}</td>
+            <td>
+              {zh ? '其中：被迫流離失所者' : 'Of those: forcibly displaced'}
+              <br />
+              <small class="muted">
+                {zh
+                  ? '難民 + 庇護申請者 + 境內流離失所者 + OIP'
+                  : 'refugees + asylum-seekers + IDPs + OIP'}
+              </small>
+            </td>
+            <td class="num">{n(G.forced_displacement)}</td>
+            <td>
+              <a href={localizePath('/methodology', locale)}>{zh ? '方法 →' : 'method →'}</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{zh ? '地球上每 N 人中有 1 人被迫流離失所' : 'One person in N on Earth is forcibly displaced'}</td>
             <td class="num">{zh ? `每 ${n(G.one_in_n)} 人` : `1 in ${n(G.one_in_n)}`}</td>
             <td>
               <a href={localizePath('/methodology', locale)}>{zh ? '方法 →' : 'method →'}</a>
