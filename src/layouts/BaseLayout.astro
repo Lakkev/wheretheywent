@@ -5,7 +5,7 @@
  */
 import '../styles/global.css';
 import { LOCALES, localeFromPath, localizePath, stripLocale, useT, type Locale } from '../i18n/ui';
-import { SITE_URL, SITE_NAME, CONTACT_EMAIL } from '../lib/site';
+import { SITE_URL, SITE_NAME, CONTACT_EMAIL, canonicalPath } from '../lib/site';
 import SiteHeader from '../components/ui/SiteHeader.astro';
 import SiteFooter from '../components/ui/SiteFooter.astro';
 
@@ -37,8 +37,11 @@ const tr = useT(locale);
 const desc = description ?? tr('site.description');
 const path = Astro.url.pathname;
 const base = stripLocale(path);
-const canonical = `${SITE_URL}${localizePath(base, locale)}`;
-const alternates = LOCALES.map((l) => ({ l, href: `${SITE_URL}${localizePath(base, l)}` }));
+const canonical = `${SITE_URL}${canonicalPath(localizePath(base, locale))}`;
+const alternates = LOCALES.map((l) => ({
+  l,
+  href: `${SITE_URL}${canonicalPath(localizePath(base, l))}`,
+}));
 const htmlLang = locale;
 const OG_LOCALE: Record<Locale, string> = {
   en: 'en_US',

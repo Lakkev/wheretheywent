@@ -2,6 +2,20 @@
 export const SITE_URL = (
   import.meta.env.PUBLIC_SITE_URL || 'https://wheretheywent.lakkev.com'
 ).replace(/\/$/, '');
+/**
+ * Canonical form of a site path: exactly one trailing slash.
+ *
+ * The host 308-redirects "/facts" to "/facts/". Page markup was already canonical because it
+ * derives from Astro.url.pathname, but sitemap.xml built its URLs from a hand-written list of
+ * unslashed paths — so every URL we submitted to Google was a redirect, and Search Console
+ * reported "Page with redirect" for the whole sitemap on 2026-09-07. Both now go through here so
+ * the two cannot disagree again.
+ */
+export function canonicalPath(path: string): string {
+  const clean = path.startsWith('/') ? path : `/${path}`;
+  return clean.endsWith('/') ? clean : `${clean}/`;
+}
+
 export const CONTACT_EMAIL = import.meta.env.PUBLIC_CONTACT_EMAIL || 'roccafcheng@gmail.com';
 /** Shown alongside e-mail for readers in the Chinese-speaking world. */
 export const CONTACT_WECHAT = 'palaceofversailles';
