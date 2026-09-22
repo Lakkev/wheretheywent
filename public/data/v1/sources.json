@@ -394,14 +394,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-07-01",
+    "data_as_of": "2026-08-01",
     "period_type": "monthly",
-    "retrieved_at": "2026-08-25T04:02:42Z",
+    "retrieved_at": "2026-09-22T08:36:11Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:22df080143d03f6cf19c9eb35d1368ad1ce20a7cd2dcc021b5a5d17cd55bfab1",
+    "content_hash": "sha256:17dfeb2361f6159c5929c7476fc4491d3c43a90069f3aec1c8aaf2b044379e8d",
     "status": "ok",
     "caveats": [
       "Statistical estimates produced by UNHCR to predict current figures; not reported counts. Only refugees and asylum-seekers by country of asylum.",
@@ -506,14 +506,14 @@
       "url": "https://creativecommons.org/licenses/by/3.0/igo/"
     },
     "attribution": "Internal Displacement Monitoring Centre (IDMC), Internal Displacement Updates",
-    "data_as_of": "2026-09-18",
+    "data_as_of": "2026-09-21",
     "period_type": "rolling",
-    "retrieved_at": "2026-09-21T09:01:20Z",
+    "retrieved_at": "2026-09-22T08:36:11Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:5b7e7f04d7ea9750e27e6db86638d031158eee9d57de2f3888c80a54901e2b5d",
+    "content_hash": "sha256:27e848661174f25f6528b21fbcc293d890b39bb3aa915691f148988591249476",
     "status": "ok",
     "caveats": [
       "Preliminary event-level estimates compiled from media and partner reports; revised figures are published in the GIDD.",
