@@ -128,8 +128,23 @@ export function localeFromPath(pathname: string): Locale {
 /** Build a path for a locale: localizePath('/country/SYR', 'fr') → '/fr/country/SYR' */
 export function localizePath(path: string, locale: Locale): string {
   const clean = path.replace(PREFIX_RE, '') || '/';
-  if (locale === DEFAULT_LOCALE) return clean;
-  return clean === '/' ? `/${locale}/` : `/${locale}${clean}`;
+  if (locale === DEFAULT_LOCALE) return withTrailingSlash(clean);
+  return clean === '/' ? `/${locale}/` : withTrailingSlash(`/${locale}${clean}`);
+}
+
+/**
+ * Every page is served at its slashed form; the host 308-redirects "/methodology" to
+ * "/methodology/". This function builds every internal link on the site, so returning the
+ * unslashed form meant every internal link was a redirect: 728 distinct targets, "/methodology"
+ * alone linked 807 times per locale. Google kept discovering those unslashed URLs from our own
+ * pages and filing them under "Page with redirect" — fixing only the sitemap (dee00a0) could not
+ * stop that. A fragment or query stays after the slash: "/methodology/#metric-views".
+ */
+function withTrailingSlash(p: string): string {
+  const cut = p.search(/[?#]/);
+  const path = cut < 0 ? p : p.slice(0, cut);
+  const rest = cut < 0 ? '' : p.slice(cut);
+  return (path.endsWith('/') ? path : `${path}/`) + rest;
 }
 
 /** Strip locale prefix: '/fr/compare' → '/compare' */

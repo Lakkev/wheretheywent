@@ -95,10 +95,18 @@ describe('paths', () => {
     expect(localizePath('/', 'en')).toBe('/');
     expect(localizePath('/', 'zh-Hant')).toBe('/zh-Hant/');
     expect(localizePath('/', 'fr')).toBe('/fr/');
-    expect(localizePath('/country/SYR', 'zh-Hant')).toBe('/zh-Hant/country/SYR');
-    expect(localizePath('/country/SYR', 'es')).toBe('/es/country/SYR');
-    expect(localizePath('/zh-Hant/compare', 'en')).toBe('/compare');
-    expect(localizePath('/fr/compare', 'zh-Hant')).toBe('/zh-Hant/compare');
+    // Canonical slashed form: the host redirects the unslashed one, and these build every
+    // internal link on the site.
+    expect(localizePath('/country/SYR', 'zh-Hant')).toBe('/zh-Hant/country/SYR/');
+    expect(localizePath('/country/SYR', 'es')).toBe('/es/country/SYR/');
+    expect(localizePath('/country/SYR', 'en')).toBe('/country/SYR/');
+    expect(localizePath('/zh-Hant/compare', 'en')).toBe('/compare/');
+    expect(localizePath('/fr/compare', 'zh-Hant')).toBe('/zh-Hant/compare/');
+    expect(localizePath('/compare/', 'fr')).toBe('/fr/compare/');
+    // fragments and queries stay after the slash
+    expect(localizePath('/methodology#metric-views', 'en')).toBe('/methodology/#metric-views');
+    expect(localizePath('/methodology#metric-views', 'ja')).toBe('/ja/methodology/#metric-views');
+    expect(localizePath('/compare?cmp=SYR', 'en')).toBe('/compare/?cmp=SYR');
   });
   it('stripLocale / localeFromPath', () => {
     expect(stripLocale('/zh-Hant')).toBe('/');

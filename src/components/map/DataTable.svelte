@@ -8,7 +8,7 @@
   import { METRIC_IDS, type MetricId } from '../../lib/types';
   import { displayName } from '../../lib/data';
   import { fmtInt, fmtRate } from '../../lib/format';
-  import { useT, type Locale, type MessageKey } from '../../i18n/ui';
+  import { useT, localizePath, type Locale, type MessageKey } from '../../i18n/ui';
   import { toCsv } from '../../lib/csv';
   import { saveFile } from '../../lib/csv-client';
 
@@ -228,7 +228,7 @@
               {#if c === 'rank'}<td class="num">{r.rank || ''}</td>
               {:else if c === 'name'}<td
                   ><a
-                    href={`/country/${r.iso3}`}
+                    href={localizePath(`/country/${r.iso3}`, locale)}
                     onclick={(e) => {
                       e.preventDefault();
                       selectCountry(r.iso3);

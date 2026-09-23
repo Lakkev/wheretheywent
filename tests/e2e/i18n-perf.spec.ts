@@ -93,6 +93,9 @@ test('compare keeps the order the reader built, through a share and a reload', a
   await fresh.goto(shared);
   await fresh.locator('input[aria-controls="compare-add-listbox"]').waitFor({ timeout: 30_000 });
   expect(new URL(fresh.url()).searchParams.get('cmp')).toBe('UGA,DEU');
+  // The adder renders before the country files finish loading; read the chips only once both
+  // exist, or the assertion races the fetch (seen once under full-suite parallel load).
+  await expect(fresh.locator('.chip.big')).toHaveCount(2);
   const chips = await fresh.locator('.chip.big').allTextContents();
   expect(chips.join(' ')).toMatch(/Uganda[\s\S]*Germany/);
   await fresh.close();

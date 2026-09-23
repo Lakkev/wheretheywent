@@ -222,7 +222,7 @@
         attribution: sources[0]?.attribution ?? 'UNHCR',
       })}
     </p>
-    <p class="small"><a href="/data">{tr('download.allYears')} →</a></p>
+    <p class="small"><a href={localizePath('/data', locale)}>{tr('download.allYears')} →</a></p>
   </Modal>
 {:else if session.dialog === 'keys'}
   <Modal title={tr('keys.title')} onclose={close} closeLabel={tr('common.close')}>

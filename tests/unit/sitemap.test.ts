@@ -58,3 +58,39 @@ describe('sitemap route list', () => {
     expect(canonicalPath('/zh-Hant/stories/rwanda')).toBe('/zh-Hant/stories/rwanda/');
   });
 });
+
+/**
+ * The sitemap fix alone was not enough: localizePath built every internal link in unslashed form,
+ * so Google kept discovering redirecting URLs from our own pages (Search Console "Page with
+ * redirect" rose from 29 to 54 after dee00a0). Two components also hand-wrote hrefs, one of them
+ * dropping the reader's language. No internal link may be written outside localizePath.
+ */
+import { readFileSync } from 'node:fs';
+describe('internal links', () => {
+  function sources(dir: string): string[] {
+    const out: string[] = [];
+    for (const n of readdirSync(dir)) {
+      const f = join(dir, n);
+      if (statSync(f).isDirectory()) out.push(...sources(f));
+      else if (/\.(svelte|astro)$/.test(n)) out.push(f);
+    }
+    return out;
+  }
+  it('are never hand-written root-relative page paths', () => {
+    const bad: string[] = [];
+    for (const f of sources('src')) {
+      const text = readFileSync(f, 'utf8');
+      // href="/page" or href={`/page...`} — static assets and data files are exempt
+      const re = /href=(?:"|\{\s*`)(\/[a-z][^"`]*)/g;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(text))) {
+        const target = m[1]!;
+        // the data directory and static assets, not the /data page itself
+        if (/^\/(data\/v1\/|docs\/|_astro\/|og\/|favicon)/.test(target)) continue;
+        if (/\.(csv|json|xml|pdf|png|svg|ico|txt)$/.test(target)) continue;
+        bad.push(`${f}: ${target}`);
+      }
+    }
+    expect(bad, bad.join('\n')).toEqual([]);
+  });
+});
