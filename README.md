@@ -41,7 +41,8 @@ The site ships in seven languages (English, 繁體中文, 简体中文, Françai
 ## Licence
 
 Code: MIT (see `LICENSE`). Data: original
-open licences (CC BY 4.0 UNHCR, CC BY-IGO IDMC, CC BY 3.0 IGO UN WPP, public domain Natural Earth).
+open licences (CC BY 4.0 UNHCR, CC BY-IGO IDMC, CC BY 3.0 IGO UN WPP, public domain Natural Earth);
+our derived layer is CC BY 4.0. Full terms and required attribution: `DATA-LICENSE.md`.
 
 ## Display policies
 

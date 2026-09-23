@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Data files under public/data/ are derived from third-party sources and are
-redistributed under their respective licenses — see DATA-LICENSE.md
-(UNHCR CC BY 4.0 · IDMC CC BY-IGO · UN WPP CC BY 3.0 IGO · Natural Earth
-public domain).
