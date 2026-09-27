@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "snapshot_id": "64feb76b",
-  "git_commit": "3aa7659",
-  "generated_at": "2026-09-26T08:40:52Z",
+  "snapshot_id": "dc812fb7",
+  "git_commit": "4b57fec",
+  "generated_at": "2026-09-27T09:20:53Z",
   "year_min": 1951,
   "year_max": 2025,
   "stock_files": [
@@ -1095,7 +1095,7 @@
       "bytes": 25774
     },
     "sources.json": {
-      "sha256": "d50ccb7609490faca3b177bc57fd889ea564226e6a35a018bbe1f87950cd8686",
+      "sha256": "fb527f7b00d3a013fea68faebdaedf7c59fc405aed0c7a89a0f073df0177591c",
       "bytes": 29976
     },
     "stock/1951-2014.json": {
