@@ -506,14 +506,14 @@
       "url": "https://creativecommons.org/licenses/by/3.0/igo/"
     },
     "attribution": "Internal Displacement Monitoring Centre (IDMC), Internal Displacement Updates",
-    "data_as_of": "2026-10-27",
+    "data_as_of": "2026-10-28",
     "period_type": "rolling",
-    "retrieved_at": "2026-10-28T09:44:55Z",
+    "retrieved_at": "2026-10-29T10:03:14Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:a03f33cc7476a290b355e17c2b2d9694fccd37c12f7ad529aee58453510ca053",
+    "content_hash": "sha256:ed6c45075841f1bd3f0702079faadaf67fc4e65a9b0c49d0d95b21369799042b",
     "status": "ok",
     "caveats": [
       "Preliminary event-level estimates compiled from media and partner reports; revised figures are published in the GIDD.",
