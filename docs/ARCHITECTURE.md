@@ -239,6 +239,19 @@ any of them back.
 - **F8**: the dialog stack and the data table are dynamically imported — neither loads until the
   user opens them, keeping the first-paint bundle lean as features accumulate.
 
+### 3.19 Year-end only (2026-11-24, deviation from SPEC §7.3)
+
+UNHCR publishes mid-year figures (as at 30 June Y) under the same `year=Y` label from about
+October of Y, and replaces them with year-end figures in June of Y+1. SPEC §7.3 only asked
+"does year Y have rows?", so on 2026-11-17 the ETL promoted mid-2026 figures as the latest year
+and the site labelled them "data as of 2026-12-31" (a future date) until the 2026-11-24 fix.
+`scripts/etl/lib/release-calendar.ts` now holds the rule: the latest year is capped at the last
+year whose year-end figures could exist (`latestPossibleYearEnd`: Y-1 from June, Y-2 before),
+and a year whose footnotes describe a mid-year release ("mid-Y" outnumbering "end-Y") is
+skipped. Invariant #3 enforces the cap and allows `year_max` to go backwards only to withdraw a
+year that broke it. Mid-year figures are not shown at all; showing them would need explicit
+"mid-year" labelling of every stock and a half-year caveat on every flow (returns).
+
 ## 4. Budgets (measured 2026-08-19)
 
 | Item                                       | Measured               | Budget                   |

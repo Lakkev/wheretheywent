@@ -358,6 +358,8 @@ userAgent: "WhereTheyWent/1.0 (+https://<site>; <contact-email>)"
 ```
 → 2027 年 UNHCR 發布 2026 資料時,網站自動跟上,零人工介入。
 
+> **實作修訂(2026-11-24)**:上述三步不足。UNHCR 每年 10/11 月以**同一個 year 標籤**發布當年年中(6/30)數字,步驟 2 因此會通過,網站便把年中數字當成年末發布(2026-11-17 至 11-24 實際發生,data_as_of 顯示為未來日期 2026-12-31)。現行規則見 `scripts/etl/lib/release-calendar.ts`:(a) Y 年年末數字最早於 Y+1 年 6 月發布,上界不得超過此日曆上限;(b) 該年 footnotes 若描述年中發布(「mid-Y」多於「end-Y」)則退回 Y-1。不變量 #3 同時檢查 year_max 不超過日曆上限。
+
 ## 7.4 各 source 抓取參數
 
 | Source | 參數 | 頁數 |

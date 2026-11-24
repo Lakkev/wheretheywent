@@ -26,6 +26,7 @@ import {
 import { buildGeo, type GeoIndex } from './geo/build-geo.ts';
 import { fetchUnhcrCountries, type UnhcrCountry } from './sources/unhcr-countries.ts';
 import { detectMaxYear } from './sources/unhcr-years.ts';
+import { latestPossibleYearEnd } from './lib/release-calendar.ts';
 import {
   fetchPopulation,
   type UnmatchedEntry,
@@ -248,7 +249,8 @@ async function main() {
     maxYear = (await detectMaxYear()).maxYear;
   } catch (e) {
     if (!prevManifest) throw e;
-    maxYear = prevManifest.year_max;
+    // Never fall back past the release calendar: the previous snapshot may itself be wrong.
+    maxYear = Math.min(prevManifest.year_max, latestPossibleYearEnd(new Date()));
     log.warn(`years: detection failed (${String(e)}), using previous max ${maxYear}`);
   }
   const yearMin = YEARS.min;

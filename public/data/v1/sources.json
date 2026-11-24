@@ -56,14 +56,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "year-end",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 1951,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:bd64c53b30192ed8dc1330cb3e73be9e6e7b005c17f47245f2635444f5c39db8",
+    "content_hash": "sha256:2209efcbdf3d66ae392c628e98b0fed24ce55d6283038cdc2805d2e51587cea0",
     "status": "ok",
     "caveats": [
       "Compiled from what governments and UNHCR operations report. States have incentives to over- and under-count — funding appeals, sovereignty claims, contested legal statuses. A missing figure is not an absence of displaced people.",
@@ -132,9 +132,9 @@
       ]
     },
     "endpoints": [
-      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2026&coa_all=true&cf_type=ISO",
-      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2026&coo_all=true&cf_type=ISO",
-      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2026&coo_all=true&coa_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coo_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/population/?yearFrom=1951&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
     ]
   },
   "unhcr_demographics": {
@@ -146,14 +146,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "year-end",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 2010,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:bc29123c21b11d529c78866ad3ff26254b2bd0a29a10fed0f56801782c743940",
+    "content_hash": "sha256:a064fdd53f66ec6f636ebfbe1375254e190427315ef07147542dec09bd8fd511",
     "status": "ok",
     "caveats": [
       "Age/sex breakdown is available for a subset of the population; rows with zero breakdown but a non-zero total mean no demographic data was reported.",
@@ -205,8 +205,7 @@
       "https://api.unhcr.org/population/v1/demographics/?year=2022&coa_all=true&cf_type=ISO",
       "https://api.unhcr.org/population/v1/demographics/?year=2023&coa_all=true&cf_type=ISO",
       "https://api.unhcr.org/population/v1/demographics/?year=2024&coa_all=true&cf_type=ISO",
-      "https://api.unhcr.org/population/v1/demographics/?year=2025&coa_all=true&cf_type=ISO",
-      "https://api.unhcr.org/population/v1/demographics/?year=2026&coa_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/demographics/?year=2025&coa_all=true&cf_type=ISO"
     ]
   },
   "unhcr_idmc": {
@@ -218,14 +217,14 @@
       "url": "https://creativecommons.org/licenses/by/3.0/igo/"
     },
     "attribution": "Internal Displacement Monitoring Centre (IDMC), via UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "year-end",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 2009,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:8ab33059e8a220173a1d849c3a9c3a6610d315a4c52261a1511dace701312443",
+    "content_hash": "sha256:a43f3bef8a72fee0ef73f5348728f11c9f1ef86fb8485adfe7ddb6b8e64e71fd",
     "status": "ok",
     "caveats": [
       "Conflict and violence IDP stock figures as reported by IDMC; disaster displacement is not included."
@@ -254,7 +253,7 @@
       ]
     },
     "endpoints": [
-      "https://api.unhcr.org/population/v1/idmc/?yearFrom=2009&yearTo=2026&coo_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/idmc/?yearFrom=2009&yearTo=2025&coo_all=true&cf_type=ISO"
     ]
   },
   "unhcr_solutions": {
@@ -266,14 +265,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "annual",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 2000,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:86527c07329236008da3656fe033270ece2998618729525c208e3dd6d9b930f4",
+    "content_hash": "sha256:32f5d49580f058fa0e75890d3229af5312d32f52b21dbcb80ce04c4c03e049bc",
     "status": "ok",
     "caveats": [
       "Flows during the year (returns, resettlement departures, naturalisations), not stocks."
@@ -302,7 +301,7 @@
       ]
     },
     "endpoints": [
-      "https://api.unhcr.org/population/v1/solutions/?yearFrom=2000&yearTo=2026&coo_all=true&coa_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/solutions/?yearFrom=2000&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
     ]
   },
   "unhcr_asylum_applications": {
@@ -314,14 +313,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "annual",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 2015,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:17ba6552ce1bb909a9145ba26bbc18c0f057bc8aa3daf2b9cbe6d51c5a2c7c2f",
+    "content_hash": "sha256:12caf8e2dd74a3d811c30366e8b82bbe28bb8d66439587ee18b3bcfe74394a95",
     "status": "ok",
     "caveats": [
       "Only rows measured in persons (app_pc = P) are kept; case-based rows (C) are excluded to avoid double counting."
@@ -350,7 +349,7 @@
       ]
     },
     "endpoints": [
-      "https://api.unhcr.org/population/v1/asylum-applications/?yearFrom=2015&yearTo=2026&coo_all=true&coa_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/asylum-applications/?yearFrom=2015&yearTo=2025&coo_all=true&coa_all=true&cf_type=ISO"
     ]
   },
   "unhcr_footnotes": {
@@ -362,14 +361,14 @@
       "url": "https://creativecommons.org/licenses/by/4.0/"
     },
     "attribution": "UNHCR Refugee Population Statistics Database",
-    "data_as_of": "2026-12-31",
+    "data_as_of": "2025-12-31",
     "period_type": "annual",
-    "retrieved_at": "2026-11-17T11:57:33Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 1951,
-      "year_max": 2026
+      "year_max": 2025
     },
-    "content_hash": "sha256:5137768cf3619dc550c5e21628a21e3757004b5b0ce818e8502231123fb1c795",
+    "content_hash": "sha256:8b13168167b33c4c84f5e6f7f7fd1d5e6dd5af1ac2ba74a4624a0a3a239c3ec3",
     "status": "ok",
     "caveats": [],
     "caveats_zh": [],
@@ -382,8 +381,8 @@
       "ko": []
     },
     "endpoints": [
-      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2026&coa_all=true&cf_type=ISO",
-      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2026&coo_all=true&cf_type=ISO"
+      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2025&coa_all=true&cf_type=ISO",
+      "https://api.unhcr.org/population/v1/footnotes/?yearFrom=1951&yearTo=2025&coo_all=true&cf_type=ISO"
     ]
   },
   "unhcr_nowcasting": {
@@ -456,7 +455,7 @@
     "retrieved_at": "2026-08-19T14:21:59Z",
     "coverage": {
       "year_min": 1950,
-      "year_max": 2026
+      "year_max": 2025
     },
     "content_hash": "sha256:66b84489fd7875b62de9b40d960b803b8c8439367c98deab89c2f770970925b9",
     "status": "ok",
@@ -507,14 +506,14 @@
       "url": "https://creativecommons.org/licenses/by/3.0/igo/"
     },
     "attribution": "Internal Displacement Monitoring Centre (IDMC), Internal Displacement Updates",
-    "data_as_of": "2026-11-20",
+    "data_as_of": "2026-11-22",
     "period_type": "rolling",
-    "retrieved_at": "2026-11-23T12:55:40Z",
+    "retrieved_at": "2026-11-24T11:59:05Z",
     "coverage": {
       "year_min": 2026,
       "year_max": 2026
     },
-    "content_hash": "sha256:09d50130dc45ea7b4a1cb9bfa9081dc219ac298e9b61bd15c0d2266cb8d3891f",
+    "content_hash": "sha256:424fc2d71ac95f56c68318cc6ccbad356431a6a964d17ff481ba29679d254fe6",
     "status": "ok",
     "caveats": [
       "Preliminary event-level estimates compiled from media and partner reports; revised figures are published in the GIDD.",

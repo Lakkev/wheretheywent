@@ -322,16 +322,38 @@ const metricList = Object.values(metrics?.metrics ?? {}).map((m) => ({
       ))
     }
   </dl>
-  <p>
+  <p id="year-end">
     {
       zh ? (
         <>
           所有存量皆為<strong>年末（12 月 31 日）</strong>數字；「回返」為年度流量。
+          <br />
+          UNHCR 每年 10、11 月會先公布當年<strong>年中（6 月 30 日）</strong>數字，與隔年 6
+          月才公布的年末數字使用同一個年份標籤。本站不收錄年中數字：最新年度只會是已公布年末數字的那一年。
+          <br />
+          <small class="muted">
+            更正紀錄：2026-11-17 至 11-24，本站把 UNHCR 的 2026 年年中數字當成年度數字發布，並標示為「資料截至
+            2026-12-31」（一個尚未到來的日期）；返鄉人數也因此只有半年。已撤回至 2025
+            年末資料，並由資料驗證第 3 條不變量在每次發布前檢查年份上限。
+          </small>
         </>
       ) : (
         <>
           All stock figures are <strong>year-end (31 December)</strong>. "Returned" figures are
           flows during the year.
+          <br />
+          Each October or November UNHCR first publishes <strong>mid-year (30 June)</strong>{' '}
+          figures for the current year, under the same year label that its year-end figures
+          take the following June. This site does not carry mid-year figures: the latest year is
+          always the latest one with published year-end figures.
+          <br />
+          <small class="muted">
+            Correction: from 2026-11-17 to 2026-11-24 this site published UNHCR's mid-2026 figures
+            as an annual year, labelled "data as of 2026-12-31" (a date still in the future), so its
+            returns covered only half a year. The site has been rolled back to year-end 2025, and
+            data invariant #3 now checks the latest year against UNHCR's release calendar before
+            every publish.
+          </small>
         </>
       )
     }

@@ -28,6 +28,7 @@ import {
   type MetricsFile,
 } from '../../src/lib/types.ts';
 import { log } from './lib/log.ts';
+import { latestPossibleYearEnd } from './lib/release-calendar.ts';
 
 const argv = process.argv.slice(2);
 const IN = argv[argv.indexOf('--in') + 1] ?? PATHS.staging;
@@ -467,14 +468,23 @@ function main() {
       assert(nulls > 0 && zeros > 0, `expected both nulls (${nulls}) and zeros (${zeros}) in data`);
       return `${series} series round-tripped; ${nulls} nulls and ${zeros} zeros coexist`;
     });
-    guard('#3 max year ≥ previous snapshot', 'core', () => {
+    guard('#3 ★ max year is a published year-end and ≥ previous snapshot', 'core', () => {
       assert(manifest, 'manifest missing');
-      if (!prevManifest) return 'no previous snapshot';
+      const ceiling = latestPossibleYearEnd(new Date(manifest.generated_at));
       assert(
-        manifest.year_max >= prevManifest.year_max,
+        manifest.year_max <= ceiling,
+        `year_max ${manifest.year_max} cannot be year-end data on ${manifest.generated_at.slice(0, 10)} (latest possible: ${ceiling}) — a mid-year release?`,
+      );
+      if (!prevManifest) return `year_max ${manifest.year_max} ≤ ${ceiling}; no previous snapshot`;
+      // Going backwards is allowed only to undo a previous snapshot that broke the rule above.
+      const prevValid = prevManifest.year_max <= ceiling;
+      assert(
+        manifest.year_max >= prevManifest.year_max || !prevValid,
         `year_max went backwards: ${manifest.year_max} < ${prevManifest.year_max}`,
       );
-      return `${prevManifest.year_max} → ${manifest.year_max}`;
+      return prevValid
+        ? `${prevManifest.year_max} → ${manifest.year_max} (≤ ${ceiling})`
+        : `${prevManifest.year_max} → ${manifest.year_max}: withdrew a year that was not year-end data`;
     });
     guard('#4 global totals drift < 20% vs previous (per metric/year)', 'core', () => {
       if (!prevManifest) return 'no previous snapshot';
